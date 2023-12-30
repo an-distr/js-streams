@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<title>Testing DownloadStream</title>
+<h4>Testing DownloadStream</h4>
+<input id="url" type="url" size="100" value="https://jsonplaceholder.typicode.com/photos">
+<button id="download">Download</button>
+<script type="module">
+  import { DownloadStream } from "../DownloadStream.mjs"
+
+  document.getElementById("download").onclick = async () => {
+    const url = document.getElementById("url")
+    const readable = (await fetch(url.value, { credentials: "include" })).body
+    await readable.pipeTo(new DownloadStream("photos.json"))
+  }
+</script>
