@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="stylesheet" href="../../misc/DomConsole/DomConsole.css">
 <title>Testing AccumuratorStream</title>
 <h4>Testing AccumuratorStream</h4>
-<h5>Open the debugger and press the Run button.</h5>
-<button onclick="run(this)">Run</button>
-<script>
-  async function run(target) {
-    target.disabled = "disabled"
-    await import("./test.mjs")
+<button id="run">Run</button>
+<div id="console"></div>
+<script type="module">
+  import { DomConsole } from "../../misc/DomConsole/DomConsole.mjs"
+  globalThis.console = new DomConsole("console")
+
+  document.getElementById("run").onclick = (e) => {
+    e.target.disabled = "disabled"
+    e.target.textContent = "Plese waiting..."
+    setTimeout(() => import("./test.mjs").then(_ => e.target.textContent = "Test complete."), 10);
   }
 </script>

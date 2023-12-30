@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="stylesheet" href="../DomConsole.css">
+<title>Testing ConsoleRedirector</title>
+<fieldset>
+  <legend>Logging</legend>
+  <button id="log">log</button>
+  <button id="trace">trace</button>
+  <button id="debug">debug</button>
+  <button id="info">info</button>
+  <button id="warn">warn</button>
+  <button id="error">error</button>
+  <button id="assert">assert</button>
+</fieldset>
+<fieldset>
+  <legend>Table</legend>
+  <button id="table">table</button>
+</fieldset>
+<fieldset>
+  <legend>Grouping</legend>
+  <button id="group">group</button>
+  <button id="groupCollapsed">groupCollapsed</button>
+  <button id="groupEnd">groupEnd</button>
+</fieldset>
+<fieldset>
+  <legend>Clear</legend>
+  <button id="clear">clear</button>
+</fieldset>
+<fieldset>
+  <legend>Redirection</legend>
+  <div id="owner"></div>
+</fieldset>
+<script type="module">
+  import { DomConsole } from "../DomConsole.mjs"
+
+  const owner = document.getElementById("owner")
+  const console = new DomConsole(owner)
+
+  document.getElementById("log").onclick = () => console.log("invoke log.", [1, 2, 3])
+  document.getElementById("trace").onclick = () => console.trace("invoke trace.", [1, 2, 3])
+  document.getElementById("debug").onclick = () => console.debug("invoke debug.", [1, 2, 3])
+  document.getElementById("info").onclick = () => console.info("invoke info.", [1, 2, 3])
+  document.getElementById("warn").onclick = () => console.warn("invoke warn.", [1, 2, 3])
+  document.getElementById("error").onclick = () => {
+    console.error("invoke error.", [1, 2, 3])
+    console.error("invoke error.", { a: 1, b: 2, c: 3 })
+    console.error("aa", "bb", { a: 1, b: 2 }, [1, 2, 3, { a: [1, 2, 3] }])
+  }
+  document.getElementById("assert").onclick = () => {
+    console.assert(true)
+    console.assert(true, [1, 2, 3])
+    console.assert(false)
+    console.assert(false, [1, 2, 3])
+  }
+
+  document.getElementById("table").onclick = () => {
+    console.table({ a: 1, b: 2, c: 3 })
+    console.table([{ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 }])
+    console.table([{ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 }], ["a", "c"])
+    console.table([{ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 }], "a", "c")
+  }
+
+  document.getElementById("group").onclick = () => console.group("invoke group.", [1, 2, 3])
+  document.getElementById("groupCollapsed").onclick = () => console.groupCollapsed("invoke groupCollapsed.", [1, 2, 3])
+  document.getElementById("groupEnd").onclick = () => console.groupEnd()
+
+  document.getElementById("clear").onclick = () => console.clear()
+</script>

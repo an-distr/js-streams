@@ -1,0 +1,52 @@
+.console-list {
+  list-style: none;
+}
+
+.console-list>.console-list-item {
+  margin-bottom: 0.5em;
+}
+
+.console-list>.console-list-item.console-list-item-assert {
+  color: azure;
+  background-color: red;
+}
+
+.console-list>.console-list-item.console-list-item-log {
+  background-color: unset;
+}
+
+.console-list>.console-list-item.console-list-item-trace {
+  color: azure;
+  background-color: black;
+}
+
+.console-list>.console-list-item.console-list-item-debug {
+  background-color: dimgray;
+}
+
+.console-list>.console-list-item.console-list-item-info {
+  background-color: unset;
+}
+
+.console-list>.console-list-item.console-list-item-warn {
+  background-color: darkkhaki;
+}
+
+.console-list>.console-list-item.console-list-item-error {
+  background-color: hotpink;
+}
+
+.console-list>.console-list-item .console-list-item-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.console-list>.console-list-item .console-list-item-table thead {
+  font-weight: bold;
+  color: azure;
+  background-color: darkgrey;
+}
+
+.console-list>.console-list-item .console-list-item-table th,td {
+  border: 1px solid black;
+}
