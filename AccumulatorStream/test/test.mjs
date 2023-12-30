@@ -142,6 +142,9 @@ const run2 = (chunkSize) => __awaiter(void 0, void 0, void 0, function* () {
         .pipeTo(writable);
 });
 (() => __awaiter(void 0, void 0, void 0, function* () {
+    yield readable(1, 1)
+        .pipeThrough(new AccumulatorStream(1))
+        .pipeTo(new WritableStream);
     const totalSizes = [
         1,
         1000,

@@ -158,6 +158,11 @@ const run2 = async (chunkSize: number) => {
 }
 
 (async () => {
+  // warmup
+  await readable(1, 1)
+    .pipeThrough(new AccumulatorStream(1))
+    .pipeTo(new WritableStream)
+
   const totalSizes = [
     1,
     1000,
