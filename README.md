@@ -1,4 +1,11 @@
 # Streams
+Stream utilities for JavaScript/TypeScript.
+
+* **This is a project that I made as a hobby while learning TypeScript. Sudden breaking changes and management that do not take into account distribution may occur. If you want long-term retention, plese fork or copy.**
+
+* **I don't understand English very well. I use a translation tool. I'm sorry if the sentence is wrong.**
+
+## Modules
 |Module|Description|
 |-|-|
 |[AccumulatorStream](AccumulatorStream/README.md)|Accumulate the stream and emit it at a constant size or condition.|
