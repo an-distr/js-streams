@@ -6,8 +6,8 @@ Accumulate the stream and emit it at a constant size or condition.
 ## Input/output definition
 |Direction|Type|
 |-|-|
-|Input|ArrayBufferLike|
-|Output|ArrayBufferLike|
+|Input|ArrayBufferLike | ArrayLike<any>|
+|Output|ArrayBufferLike | ArrayLike<any>|
 
 ## Compatibility
 * \>= ES6(ECMAScript 2015)

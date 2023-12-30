@@ -21,14 +21,20 @@ if (!("now" in performance) ||
     console.warn("globalThis.performance switch to CompatiblePerformance");
     performance = new CompatiblePerformance;
 }
-function readable(totalSize, chunkSize) {
+function readable(totalSize, chunkSize, isArray) {
     return new ReadableStream({
         start(controller) {
             const bytes = new ArrayBuffer(totalSize);
             const count = bytes.byteLength / chunkSize;
             for (let i = 0; i < count; ++i) {
                 const bytesView = new Uint8Array(bytes.slice(i * chunkSize, i * chunkSize + chunkSize));
-                controller.enqueue(bytesView);
+                if (isArray) {
+                    const array = Array.from(bytesView.values());
+                    controller.enqueue(array);
+                }
+                else {
+                    controller.enqueue(bytesView);
+                }
             }
             controller.close();
         }
@@ -37,7 +43,12 @@ function readable(totalSize, chunkSize) {
 function writable(result) {
     return new WritableStream({
         write(chunk) {
-            result.sizeOfWritten += chunk.byteLength;
+            if (Array.isArray(chunk)) {
+                result.sizeOfWritten += chunk.length;
+            }
+            else {
+                result.sizeOfWritten += chunk.byteLength;
+            }
         }
     });
 }
@@ -60,22 +71,29 @@ function measure(measureName, startMark, endMark) {
 function assertChunkSize(totalSize, chunkSize) {
     return new TransformStream({
         transform(chunk, controller) {
+            let length;
+            if (Array.isArray(chunk)) {
+                length = chunk.length;
+            }
+            else {
+                length = chunk.byteLength;
+            }
             console.assert([
                 totalSize,
                 chunkSize,
                 totalSize - (chunkSize * Math.floor(totalSize / chunkSize)),
-            ].indexOf(chunk.byteLength) !== -1, {
-                receivedChunkSize: chunk.byteLength,
+            ].indexOf(length) !== -1, {
+                receivedChunkSize: length,
             });
             controller.enqueue(chunk);
         }
     });
 }
-const run = (totalSize, readableChunkSize, chunkSize, fixed) => __awaiter(void 0, void 0, void 0, function* () {
+const test = (totalSize, readableChunkSize, chunkSize, fixed, isArray) => __awaiter(void 0, void 0, void 0, function* () {
     readableChunkSize = readableChunkSize === 0 ? totalSize : readableChunkSize;
     console.group([
-        "run:",
-        `ReadableStream(${totalSize.toLocaleString()}) =>`,
+        `run: `,
+        `ReadableStream(${totalSize.toLocaleString()}, { isArray: ${isArray} }) =>`,
         `chunk(${readableChunkSize.toLocaleString()}) =>`,
         `AccumulatorStream(${chunkSize.toLocaleString()}, { fixed: ${fixed} })`,
     ].join(" "));
@@ -83,7 +101,7 @@ const run = (totalSize, readableChunkSize, chunkSize, fixed) => __awaiter(void 0
     performance.clearMarks("start");
     performance.clearMarks("end");
     const result = { sizeOfWritten: 0 };
-    yield readable(totalSize, readableChunkSize)
+    yield readable(totalSize, readableChunkSize, isArray)
         .pipeThrough(mark("start"))
         .pipeThrough(new AccumulatorStream(chunkSize, { fixed }))
         .pipeThrough(mark("end"))
@@ -122,7 +140,7 @@ const run = (totalSize, readableChunkSize, chunkSize, fixed) => __awaiter(void 0
     });
     console.groupEnd();
 });
-const run2 = (chunkSize) => __awaiter(void 0, void 0, void 0, function* () {
+const testNewLine = (chunkSize) => __awaiter(void 0, void 0, void 0, function* () {
     const text = "aaaaaaaaaa\nbbbbbbbbbb\ncccccccccc\ndddddddddd\neeeeeeeeee\n11111";
     const readable = new ReadableStream({
         start(controller) {
@@ -142,7 +160,7 @@ const run2 = (chunkSize) => __awaiter(void 0, void 0, void 0, function* () {
         .pipeTo(writable);
 });
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    yield readable(1, 1)
+    yield readable(1, 1, false)
         .pipeThrough(new AccumulatorStream(1))
         .pipeTo(new WritableStream);
     const totalSizes = [
@@ -167,17 +185,20 @@ const run2 = (chunkSize) => __awaiter(void 0, void 0, void 0, function* () {
     for (const totalSize of totalSizes) {
         for (const readableChunkSize of readableChunkSizes) {
             for (const chunkSize of chunkSizes) {
-                yield run(totalSize, readableChunkSize, chunkSize, false);
-                yield run(totalSize, readableChunkSize, chunkSize, true);
+                for (const fixed of [false, true]) {
+                    for (const isArray of [false, true]) {
+                        yield test(totalSize, readableChunkSize, chunkSize, fixed, isArray);
+                    }
+                }
             }
         }
     }
     console.log("Testing line separate(> size)");
-    yield run2(8);
+    yield testNewLine(8);
     console.log("Testing line separate(= size)");
-    yield run2(10);
+    yield testNewLine(10);
     console.log("Testing line separate(< size)");
-    yield run2(13);
+    yield testNewLine(13);
     console.log("Test completed.");
 }))();
 //# sourceMappingURL=test.mjs.map

@@ -64,8 +64,17 @@ export class AccumulatorStream extends TransformStream {
                 pos = 0;
             },
             transform(chunk, controller) {
-                const chunkView = new Uint8Array(chunk);
-                let chunkSize = chunk.byteLength;
+                let chunkView;
+                let chunkSize;
+                if (Array.isArray(chunk)) {
+                    chunkView = new Uint8Array(chunk);
+                    chunkSize = chunk.length;
+                }
+                else {
+                    const buffer = chunk;
+                    chunkView = new Uint8Array(buffer);
+                    chunkSize = buffer.byteLength;
+                }
                 let chunkPos = 0;
                 let copySize;
                 while (chunkSize > 0) {

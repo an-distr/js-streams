@@ -16,14 +16,20 @@ if (
   performance = new CompatiblePerformance
 }
 
-function readable(totalSize: number, chunkSize: number) {
-  return new ReadableStream<Uint8Array>({
+function readable(totalSize: number, chunkSize: number, isArray: boolean) {
+  return new ReadableStream<Uint8Array | Array<number>>({
     start(controller) {
       const bytes = new ArrayBuffer(totalSize)
       const count = bytes.byteLength / chunkSize
       for (let i = 0; i < count; ++i) {
         const bytesView = new Uint8Array(bytes.slice(i * chunkSize, i * chunkSize + chunkSize))
-        controller.enqueue(bytesView)
+        if (isArray) {
+          const array = Array.from(bytesView.values())
+          controller.enqueue(array)
+        }
+        else {
+          controller.enqueue(bytesView)
+        }
       }
       controller.close()
     }
@@ -34,10 +40,15 @@ interface WritableResult {
   sizeOfWritten: number
 }
 
-function writable<T extends ArrayBuffer>(result: WritableResult) {
+function writable<T extends ArrayBufferLike | ArrayLike<any>>(result: WritableResult) {
   return new WritableStream<T>({
     write(chunk) {
-      result.sizeOfWritten += chunk.byteLength
+      if (Array.isArray(chunk)) {
+        result.sizeOfWritten += chunk.length
+      }
+      else {
+        result.sizeOfWritten += (chunk as ArrayBufferLike).byteLength
+      }
     }
   })
 }
@@ -60,27 +71,34 @@ function measure<T>(measureName: string, startMark: string, endMark: string) {
   })
 }
 
-function assertChunkSize<T extends ArrayBuffer>(totalSize: number, chunkSize: number) {
+function assertChunkSize<T extends ArrayBufferLike | ArrayLike<any>>(totalSize: number, chunkSize: number) {
   return new TransformStream<T, T>({
     transform(chunk, controller) {
+      let length: number
+      if (Array.isArray(chunk)) {
+        length = chunk.length
+      }
+      else {
+        length = (chunk as ArrayBufferLike).byteLength
+      }
       console.assert([
         totalSize,
         chunkSize,
         totalSize - (chunkSize * Math.floor(totalSize / chunkSize)),
-      ].indexOf(chunk.byteLength) !== -1, {
-        receivedChunkSize: chunk.byteLength,
+      ].indexOf(length) !== -1, {
+        receivedChunkSize: length,
       })
       controller.enqueue(chunk)
     }
   })
 }
 
-const run = async (totalSize: number, readableChunkSize: number, chunkSize: number, fixed: boolean) => {
+const test = async (totalSize: number, readableChunkSize: number, chunkSize: number, fixed: boolean, isArray: boolean) => {
   readableChunkSize = readableChunkSize === 0 ? totalSize : readableChunkSize
 
   console.group([
-    "run:",
-    `ReadableStream(${totalSize.toLocaleString()}) =>`,
+    `run: `,
+    `ReadableStream(${totalSize.toLocaleString()}, { isArray: ${isArray} }) =>`,
     `chunk(${readableChunkSize.toLocaleString()}) =>`,
     `AccumulatorStream(${chunkSize.toLocaleString()}, { fixed: ${fixed} })`,
   ].join(" "))
@@ -91,7 +109,7 @@ const run = async (totalSize: number, readableChunkSize: number, chunkSize: numb
 
   const result: WritableResult = { sizeOfWritten: 0 }
 
-  await readable(totalSize, readableChunkSize)
+  await readable(totalSize, readableChunkSize, isArray)
     .pipeThrough(mark("start"))
     .pipeThrough(new AccumulatorStream(chunkSize, { fixed }))
     .pipeThrough(mark("end"))
@@ -134,7 +152,7 @@ const run = async (totalSize: number, readableChunkSize: number, chunkSize: numb
   console.groupEnd()
 }
 
-const run2 = async (chunkSize: number) => {
+const testNewLine = async (chunkSize: number) => {
   const text = "aaaaaaaaaa\nbbbbbbbbbb\ncccccccccc\ndddddddddd\neeeeeeeeee\n11111"
 
   const readable = new ReadableStream<string>({
@@ -159,7 +177,7 @@ const run2 = async (chunkSize: number) => {
 
 (async () => {
   // warmup
-  await readable(1, 1)
+  await readable(1, 1, false)
     .pipeThrough(new AccumulatorStream(1))
     .pipeTo(new WritableStream)
 
@@ -186,18 +204,21 @@ const run2 = async (chunkSize: number) => {
   for (const totalSize of totalSizes) {
     for (const readableChunkSize of readableChunkSizes) {
       for (const chunkSize of chunkSizes) {
-        await run(totalSize, readableChunkSize, chunkSize, false)
-        await run(totalSize, readableChunkSize, chunkSize, true)
+        for (const fixed of [false, true]) {
+          for (const isArray of [false, true]) {
+            await test(totalSize, readableChunkSize, chunkSize, fixed, isArray)
+          }
+        }
       }
     }
   }
 
   console.log("Testing line separate(> size)")
-  await run2(8)
+  await testNewLine(8)
   console.log("Testing line separate(= size)")
-  await run2(10)
+  await testNewLine(10)
   console.log("Testing line separate(< size)")
-  await run2(13)
+  await testNewLine(13)
 
   console.log("Test completed.")
 })()

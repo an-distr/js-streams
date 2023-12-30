@@ -22,7 +22,7 @@ export interface AccumulatorStreamOptions {
   fixed?: boolean
 }
 
-export class AccumulatorStream<I extends ArrayBufferLike> extends TransformStream<I, I> {
+export class AccumulatorStream<I extends ArrayBufferLike | ArrayLike<any>> extends TransformStream<I, I> {
   constructor(size: number, options?: AccumulatorStreamOptions) {
     let forceEmit: ((bytes: IterableIterator<number>) => number) | undefined
     let fixed: boolean
@@ -71,8 +71,17 @@ export class AccumulatorStream<I extends ArrayBufferLike> extends TransformStrea
       },
 
       transform(chunk, controller) {
-        const chunkView = new Uint8Array(chunk)
-        let chunkSize = chunk.byteLength
+        let chunkView: Uint8Array
+        let chunkSize: number
+        if (Array.isArray(chunk)) {
+          chunkView = new Uint8Array(chunk)
+          chunkSize = chunk.length
+        }
+        else {
+          const buffer = chunk as ArrayBufferLike
+          chunkView = new Uint8Array(buffer)
+          chunkSize = buffer.byteLength
+        }
         let chunkPos = 0
         let copySize
 
