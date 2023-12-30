@@ -17,7 +17,7 @@ Read through the stream and terminate it.
 
 ## Usage
 ```ts
-import { NullStream } from "https://js-streams.pages.dev/mod.mjs"
+import { NullStream } from "https://an-js-streams.pages.dev/mod.mjs"
 
 await readable
   .pipeTo(new NullStream)

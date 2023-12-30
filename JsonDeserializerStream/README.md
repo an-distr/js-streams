@@ -18,7 +18,7 @@ Convert the stream to a JSON/JSON Lines array.
 
 ## Usage
 ```ts
-import { JsonDeserializerStream } from "https://js-streams.pages.dev/mod.mjs"
+import { JsonDeserializerStream } from "https://an-js-streams.pages.dev/mod.mjs"
 
 const deserializer = new JsonDeserializerStream(
   // The options.

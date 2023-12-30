@@ -17,7 +17,7 @@ Generate a stream from events in the DOM.
 
 ## Usage
 ```ts
-import { HTMLElementStream } from "https://js-streams.pages.dev/dom/mod.mjs"
+import { HTMLElementStream } from "https://an-js-streams.pages.dev/dom/mod.mjs"
 
 const txt = document.getElementById("txt")
 

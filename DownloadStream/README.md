@@ -15,7 +15,7 @@ Download the stream.
 
 ## Usage
 ```ts
-import { DownloadStream } from "https://js-streams.pages.dev/mod.mjs"
+import { DownloadStream } from "https://an-js-streams.pages.dev/mod.mjs"
 
 const download = new DownloaderStream(
   // Specify save name.
