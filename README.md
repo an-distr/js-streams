@@ -18,5 +18,8 @@ Stream utilities for JavaScript/TypeScript.
 |[DownloadStream](DownloadStream/README.md)|Download the stream.|
 |[DomStreams](dom/README.md)|Generate a stream from events in the DOM.|
 
+## Demo / Test
+* [https://js-streams.pages.dev/](https://js-streams.pages.dev/)
+
 ## License
 This project is licensed under the [MIT No Attribution (MIT-0)](LICENSE).

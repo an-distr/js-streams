@@ -18,7 +18,7 @@ Convert the stream to a CSV line.
 
 ## Usage
 ```ts
-import { CsvLineEncoderStream } from "streams/mod.mjs"
+import { CsvLineEncoderStream } from "https://js-streams.pages.dev/mod.mjs"
 
 const encoder = new CsvLineEncoderStream(
   // The options.

@@ -18,7 +18,7 @@ Convert the stream to a JSON/JSON Lines string.
 
 ## Usage
 ```ts
-import { JsonSerializerStream } from "streams/mod.mjs"
+import { JsonSerializerStream } from "https://js-streams.pages.dev/mod.mjs"
 
 const serializer = new JsonSerializerStream(
   // The options.

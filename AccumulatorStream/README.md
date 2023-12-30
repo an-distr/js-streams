@@ -18,7 +18,7 @@ Accumulate the stream and emit it at a constant size or condition.
 
 ## Usage
 ```ts
-import { AccumulatorStream } from "streams/mod.mjs"
+import { AccumulatorStream } from "https://js-streams.pages.dev/mod.mjs"
 
 const accumulator = new AccumulatorStream(
   // Specify emit size.

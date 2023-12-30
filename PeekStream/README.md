@@ -18,7 +18,7 @@ Peeking chunk of stream.
 
 ## Usage
 ```ts
-import { PeekStream } from "streams/mod.mjs"
+import { PeekStream } from "https://js-streams.pages.dev/mod.mjs"
 
 await readable
   // Peeking chunk.

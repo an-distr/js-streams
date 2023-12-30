@@ -19,7 +19,7 @@ It is an alternative in environments where [TextDecoderStream](https://developer
 
 ## Usage
 ```ts
-import { Utf8DecoderStream, Utf8EncoderStream } from "streams/Utf8Streams/Utf8Streams.mjs"
+import { Utf8DecoderStream, Utf8EncoderStream } from "https://js-streams.pages.dev/Utf8Streams/Utf8Streams.mjs"
 
 await readable
   .pipeThrough(new Utf8DecoderStream)
