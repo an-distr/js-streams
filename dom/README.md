@@ -3,9 +3,13 @@
 ## Description
 Generate a stream from events in the DOM.
 
+## Stream type
+* [ReadableStream](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)
+
 ## Input/output definition
 |Direction|Type|
 |-|-|
+|Input|EventTarget|
 |Output|any|
 
 ## Compatibility

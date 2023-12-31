@@ -3,6 +3,9 @@
 ## Description
 Peeking chunk of stream.
 
+## Stream type
+* [TransformStream](https://developer.mozilla.org/en-US/docs/Web/API/TransformStream)
+
 ## Input/output definition
 |Direction|Type|
 |-|-|

@@ -3,10 +3,14 @@
 ## Description
 Read through the stream and terminate it.
 
+## Stream type
+* [WritableStream](https://developer.mozilla.org/en-US/docs/Web/API/WritableStream)
+
 ## Input/output definition
 |Direction|Type|
 |-|-|
 |Input|any|
+|Output|none|
 
 ## Compatibility
 * \>= ES6(ECMAScript 2015)

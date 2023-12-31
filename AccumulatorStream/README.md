@@ -3,6 +3,9 @@
 ## Description
 Accumulate the stream and emit it at a constant size or condition.
 
+## Stream type
+* [TransformStream](https://developer.mozilla.org/en-US/docs/Web/API/TransformStream)
+
 ## Input/output definition
 |Direction|Type|
 |-|-|

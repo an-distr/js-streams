@@ -12,6 +12,7 @@ Stream utilities for JavaScript/TypeScript.
 |[JsonDeserializerStream](JsonDeserializerStream/README.md)|Convert the stream to a JSON/JSON Lines array.|
 |[JsonSerializerStream](JsonSerializerStream/README.md)|Convert the stream to a JSON/JSON Lines string.|
 |[CsvLineEncoderStream](CsvLineEncoderStream/README.md)|Convert the stream to a CSV line.|
+|[SourceStream](SourceStream/README.md)|Streaming for object(s).|
 |[NullStream](NullStream/README.md)|Read through the stream and terminate it.|
 |[PeekStream](PeekStream/README.md)|Peeking chunk of stream.|
 |[Utf8Streams](Utf8Streams/README.md)|Convert streams and UTF-8 strings to and from each other.|

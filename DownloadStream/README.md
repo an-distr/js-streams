@@ -3,10 +3,14 @@
 ## Description
 Download the stream.
 
+## Stream type
+* [WritableStream](https://developer.mozilla.org/en-US/docs/Web/API/WritableStream)
+
 ## Input/output definition
 |Direction|Type|
 |-|-|
 |Input|any|
+|Output|Download by browser|
 
 ## Compatibility
 * \>= ES6(ECMAScript 2015)
