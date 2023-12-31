@@ -83,6 +83,9 @@ export class DomConsole implements Console {
     }
     this.log(...data)
     this.child = new DomConsole(this.holder, this)
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["group"](...data)
+    }
   }
 
   groupCollapsed(...data: any[]): void {
@@ -92,6 +95,9 @@ export class DomConsole implements Console {
     }
     this.log(...data)
     this.child = new DomConsole(this.holder, this)
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["groupCollapsed"](...data)
+    }
   }
 
   groupEnd(): void {
@@ -101,6 +107,9 @@ export class DomConsole implements Console {
     }
     if (this.parent) {
       this.parent.child = undefined
+    }
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["groupEnd"]()
     }
   }
 
@@ -114,6 +123,9 @@ export class DomConsole implements Console {
     this.owner.replaceChild(newHolder, oldHolder)
     this.holder = newHolder as HTMLUListElement
     this.child = undefined
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["clear"]()
+    }
   }
 
   assert(condition?: boolean | undefined, ...data: any[]): void {
@@ -124,6 +136,9 @@ export class DomConsole implements Console {
     if (condition !== undefined && !condition) {
       this.appendItem("assert", "Assertion failed:", ...data)
     }
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["assert"](...data)
+    }
   }
 
   log(...data: any[]): void {
@@ -132,6 +147,9 @@ export class DomConsole implements Console {
       return
     }
     this.appendItem("log", ...data)
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["log"](...data)
+    }
   }
 
   trace(...data: any[]): void {
@@ -140,6 +158,9 @@ export class DomConsole implements Console {
       return
     }
     this.appendItem("trace", ...data)
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["trace"](...data)
+    }
   }
 
   debug(...data: any[]): void {
@@ -148,6 +169,9 @@ export class DomConsole implements Console {
       return
     }
     this.appendItem("debug", ...data)
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["debug"](...data)
+    }
   }
 
   info(...data: any[]): void {
@@ -156,6 +180,9 @@ export class DomConsole implements Console {
       return
     }
     this.appendItem("info", ...data)
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["info"](...data)
+    }
   }
 
   warn(...data: any[]): void {
@@ -164,6 +191,9 @@ export class DomConsole implements Console {
       return
     }
     this.appendItem("warn", ...data)
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["warn"](...data)
+    }
   }
 
   error(...data: any[]): void {
@@ -172,6 +202,9 @@ export class DomConsole implements Console {
       return
     }
     this.appendItem("error", ...data)
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["error"](...data)
+    }
   }
 
   private createHeaderCell(textContent: string) {
@@ -232,38 +265,90 @@ export class DomConsole implements Console {
     const li = this.appendItem()
     li.append(table)
     this.holder.append(li)
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["table"](tabularData, properties)
+    }
   }
 
-
-
-
-
-
+  /*! Not implemented. **/
 
   count(label?: string | undefined): void {
-    throw new Error("Method not implemented.");
+    if (this.child) {
+      this.child.count(label)
+      return
+    }
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["count"](label)
+    }
   }
+
   countReset(label?: string | undefined): void {
-    throw new Error("Method not implemented.");
+    if (this.child) {
+      this.child.countReset(label)
+      return
+    }
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["countReset"](label)
+    }
   }
 
   dir(item?: any, options?: any): void {
-    throw new Error("Method not implemented.");
+    if (this.child) {
+      this.child.dir(item, options)
+      return
+    }
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["dir"](item, options)
+    }
   }
+
   dirxml(...data: any[]): void {
-    throw new Error("Method not implemented.");
+    if (this.child) {
+      this.child.dirxml(...data)
+      return
+    }
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["dirxml"](...data)
+    }
   }
 
   time(label?: string | undefined): void {
-    throw new Error("Method not implemented.");
+    if (this.child) {
+      this.child.time(label)
+      return
+    }
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["time"](label)
+    }
   }
+
   timeEnd(label?: string | undefined): void {
-    throw new Error("Method not implemented.");
+    if (this.child) {
+      this.child.timeEnd(label)
+      return
+    }
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["timeEnd"](label)
+    }
   }
+
   timeLog(label?: string | undefined, ...data: any[]): void {
-    throw new Error("Method not implemented.");
+    if (this.child) {
+      this.child.timeLog(label, ...data)
+      return
+    }
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["timeLog"](label, ...data)
+    }
   }
+
   timeStamp(label?: string | undefined): void {
-    throw new Error("Method not implemented.");
+    if (this.child) {
+      this.child.timeStamp(label)
+      return
+    }
+    if (!("holder" in globalThis.console)) {
+      globalThis.console["timeStamp"](label)
+    }
   }
 }

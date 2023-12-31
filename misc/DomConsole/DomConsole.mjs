@@ -74,6 +74,9 @@ export class DomConsole {
         }
         this.log(...data);
         this.child = new DomConsole(this.holder, this);
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["group"](...data);
+        }
     }
     groupCollapsed(...data) {
         if (this.child) {
@@ -82,6 +85,9 @@ export class DomConsole {
         }
         this.log(...data);
         this.child = new DomConsole(this.holder, this);
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["groupCollapsed"](...data);
+        }
     }
     groupEnd() {
         if (this.child) {
@@ -90,6 +96,9 @@ export class DomConsole {
         }
         if (this.parent) {
             this.parent.child = undefined;
+        }
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["groupEnd"]();
         }
     }
     clear() {
@@ -102,6 +111,9 @@ export class DomConsole {
         this.owner.replaceChild(newHolder, oldHolder);
         this.holder = newHolder;
         this.child = undefined;
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["clear"]();
+        }
     }
     assert(condition, ...data) {
         if (this.child) {
@@ -111,6 +123,9 @@ export class DomConsole {
         if (condition !== undefined && !condition) {
             this.appendItem("assert", "Assertion failed:", ...data);
         }
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["assert"](...data);
+        }
     }
     log(...data) {
         if (this.child) {
@@ -118,6 +133,9 @@ export class DomConsole {
             return;
         }
         this.appendItem("log", ...data);
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["log"](...data);
+        }
     }
     trace(...data) {
         if (this.child) {
@@ -125,6 +143,9 @@ export class DomConsole {
             return;
         }
         this.appendItem("trace", ...data);
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["trace"](...data);
+        }
     }
     debug(...data) {
         if (this.child) {
@@ -132,6 +153,9 @@ export class DomConsole {
             return;
         }
         this.appendItem("debug", ...data);
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["debug"](...data);
+        }
     }
     info(...data) {
         if (this.child) {
@@ -139,6 +163,9 @@ export class DomConsole {
             return;
         }
         this.appendItem("info", ...data);
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["info"](...data);
+        }
     }
     warn(...data) {
         if (this.child) {
@@ -146,6 +173,9 @@ export class DomConsole {
             return;
         }
         this.appendItem("warn", ...data);
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["warn"](...data);
+        }
     }
     error(...data) {
         if (this.child) {
@@ -153,6 +183,9 @@ export class DomConsole {
             return;
         }
         this.appendItem("error", ...data);
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["error"](...data);
+        }
     }
     createHeaderCell(textContent) {
         const headerCell = document.createElement("th");
@@ -211,30 +244,81 @@ export class DomConsole {
         const li = this.appendItem();
         li.append(table);
         this.holder.append(li);
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["table"](tabularData, properties);
+        }
     }
     count(label) {
-        throw new Error("Method not implemented.");
+        if (this.child) {
+            this.child.count(label);
+            return;
+        }
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["count"](label);
+        }
     }
     countReset(label) {
-        throw new Error("Method not implemented.");
+        if (this.child) {
+            this.child.countReset(label);
+            return;
+        }
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["countReset"](label);
+        }
     }
     dir(item, options) {
-        throw new Error("Method not implemented.");
+        if (this.child) {
+            this.child.dir(item, options);
+            return;
+        }
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["dir"](item, options);
+        }
     }
     dirxml(...data) {
-        throw new Error("Method not implemented.");
+        if (this.child) {
+            this.child.dirxml(...data);
+            return;
+        }
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["dirxml"](...data);
+        }
     }
     time(label) {
-        throw new Error("Method not implemented.");
+        if (this.child) {
+            this.child.time(label);
+            return;
+        }
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["time"](label);
+        }
     }
     timeEnd(label) {
-        throw new Error("Method not implemented.");
+        if (this.child) {
+            this.child.timeEnd(label);
+            return;
+        }
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["timeEnd"](label);
+        }
     }
     timeLog(label, ...data) {
-        throw new Error("Method not implemented.");
+        if (this.child) {
+            this.child.timeLog(label, ...data);
+            return;
+        }
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["timeLog"](label, ...data);
+        }
     }
     timeStamp(label) {
-        throw new Error("Method not implemented.");
+        if (this.child) {
+            this.child.timeStamp(label);
+            return;
+        }
+        if (!("holder" in globalThis.console)) {
+            globalThis.console["timeStamp"](label);
+        }
     }
 }
 //# sourceMappingURL=DomConsole.mjs.map

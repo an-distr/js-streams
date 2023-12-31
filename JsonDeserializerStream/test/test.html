@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="stylesheet" href="../../misc/DomConsole/DomConsole.css">
+<link rel="stylesheet" href="../../misc/DomConsole/DomConsole.chrome.dark.css">
 <title>Testing JsonDeserializerStream</title>
 <h4>Testing JsonDeserializerStream</h4>
 <button id="run">Run</button>
-<div id="console"></div>
+<fieldset style="max-height: 25em; overflow-y: scroll;">
+  <legend>Test Code</legend>
+  <pre id="source"></pre>
+</fieldset>
+<fieldset>
+  <legend>Result</legend>
+  <div id="console"></div>
+</fieldset>
 <script type="module">
   import { DomConsole } from "../../misc/DomConsole/DomConsole.mjs"
   globalThis.console = new DomConsole("console")
 
-  document.getElementById("run").onclick = async (target) => {
-    target.disabled = "disabled"
-    await import("./test.mjs")
+  fetch("./test.mts").then(resp => resp.text().then(text => document.getElementById("source").textContent = text))
+
+  document.getElementById("run").onclick = e => {
+    e.target.disabled = "disabled"
+    e.target.textContent = "Plese waiting..."
+    setTimeout(() => import("./test.mjs").then(_ => e.target.textContent = "Test complete."), 1);
   }
 </script>
