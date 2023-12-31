@@ -127,7 +127,6 @@ if (
         : sortedDurations[medianDurationIndex - 1] + sortedDurations[medianDurationIndex]
 
     console.groupCollapsed([
-      `run: `,
       `ReadableStream(${totalSize.toLocaleString()}, { isArray: ${isArray} }) =>`,
       `chunk(${readableChunkSize.toLocaleString()}) =>`,
       `AccumulatorStream(${chunkSize.toLocaleString()}, { fixed: ${fixed} })`,
@@ -204,8 +203,9 @@ if (
     8192,
   ]
 
+  console.groupCollapsed("Testing ArrayBuffer|Array")
   for (const totalSize of totalSizes) {
-    console.groupCollapsed(`totalSize: ${totalSize}`)
+    console.groupCollapsed(`Tests totalSize: ${totalSize}`)
     for (const readableChunkSize of readableChunkSizes) {
       for (const chunkSize of chunkSizes) {
         for (const fixed of [false, true]) {
@@ -217,6 +217,7 @@ if (
     }
     console.groupEnd()
   }
+  console.groupEnd()
 
   console.groupCollapsed("Testing line separate")
   console.log("> size")
