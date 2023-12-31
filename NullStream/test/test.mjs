@@ -8,21 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { NullStream } from "../NullStream.mjs";
-function readable() {
-    return new ReadableStream({
+(() => __awaiter(void 0, void 0, void 0, function* () {
+    const readable = () => new ReadableStream({
         start(controller) {
-            controller.enqueue(Uint8Array.from([1, 2, 3]));
-            console.log("controller.enqueue(Uint8Array.from([1, 2, 3]))");
-            controller.enqueue(Uint8Array.from([1, 2, 3, 4, 5, 6]));
-            console.log("controller.enqueue(Uint8Array.from([1, 2, 3, 4, 5, 6]))");
-            controller.enqueue(Uint8Array.from([1, 2, 3, 4, 5, 6, 7, 8, 9]));
-            console.log("controller.enqueue(Uint8Array.from([1, 2, 3, 4, 5, 6, 7, 8, 9]))");
+            controller.enqueue([1, 2, 3]);
+            console.log("controller.enqueue([1, 2, 3])");
+            controller.enqueue([1, 2, 3, 4, 5, 6]);
+            console.log("controller.enqueue([1, 2, 3, 4, 5, 6])");
+            controller.enqueue([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+            console.log("controller.enqueue([1, 2, 3, 4, 5, 6, 7, 8, 9])");
             controller.close();
             console.log("controller.close()");
         }
     });
-}
-(() => __awaiter(void 0, void 0, void 0, function* () {
     yield readable()
         .pipeTo(new NullStream);
     console.log("Test completed.");

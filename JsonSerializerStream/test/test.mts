@@ -1,10 +1,11 @@
 import { JsonSerializerStream } from "../JsonSerializerStream.mjs"
 
 (async () => {
-  const readable = (objs: any[]) => new ReadableStream({
+
+  const readable = (data: any[]) => new ReadableStream({
     start(controller) {
-      for (const obj of objs) {
-        controller.enqueue(obj)
+      for (const chunk of data) {
+        controller.enqueue(chunk)
       }
       controller.close()
     }
@@ -33,4 +34,5 @@ import { JsonSerializerStream } from "../JsonSerializerStream.mjs"
     .pipeTo(logger())
 
   console.log("Test completed.")
+
 })()

@@ -1,20 +1,32 @@
 import { PeekStream } from "../PeekStream.mjs"
 
-function readable() {
-  return new ReadableStream<ArrayBuffer>({
+(async () => {
+
+  const readable = (data: any[]) => new ReadableStream({
     start(controller) {
-      controller.enqueue(Uint8Array.from([1, 2, 3]))
-      controller.enqueue(Uint8Array.from([1, 2, 3, 4, 5, 6]))
-      controller.enqueue(Uint8Array.from([1, 2, 3, 4, 5, 6, 7, 8, 9]))
+      for (const chunk of data) {
+        controller.enqueue(chunk)
+      }
       controller.close()
     }
   })
-}
 
-(async () => {
-  await readable()
-    .pipeThrough(new PeekStream((chunk, index) => console.log(`${index}: size=${chunk.byteLength}`)))
-    .pipeTo(new WritableStream)
+  const logger = () => new PeekStream((chunk, index) => {
+    console.log(index, chunk)
+  })
+
+  const terminator = () => new WritableStream
+
+  const data = [
+    [1, 2, 3],
+    [1, 2, 3, 4, 5, 6],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  ]
+
+  await readable(data)
+    .pipeThrough(logger())
+    .pipeTo(terminator())
 
   console.log("Test completed.")
+
 })()

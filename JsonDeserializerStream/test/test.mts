@@ -1,6 +1,7 @@
 import { JsonDeserializerStream } from "../JsonDeserializerStream.mjs"
 
 (async () => {
+
   const readable = (s: string) => new ReadableStream({
     start(controller) {
       controller.enqueue(s)
@@ -27,4 +28,5 @@ import { JsonDeserializerStream } from "../JsonDeserializerStream.mjs"
     .pipeTo(logger())
 
   console.log("Test completed.")
+
 })()

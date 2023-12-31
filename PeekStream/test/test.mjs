@@ -8,20 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { PeekStream } from "../PeekStream.mjs";
-function readable() {
-    return new ReadableStream({
+(() => __awaiter(void 0, void 0, void 0, function* () {
+    const readable = (data) => new ReadableStream({
         start(controller) {
-            controller.enqueue(Uint8Array.from([1, 2, 3]));
-            controller.enqueue(Uint8Array.from([1, 2, 3, 4, 5, 6]));
-            controller.enqueue(Uint8Array.from([1, 2, 3, 4, 5, 6, 7, 8, 9]));
+            for (const chunk of data) {
+                controller.enqueue(chunk);
+            }
             controller.close();
         }
     });
-}
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield readable()
-        .pipeThrough(new PeekStream((chunk, index) => console.log(`${index}: size=${chunk.byteLength}`)))
-        .pipeTo(new WritableStream);
+    const logger = () => new PeekStream((chunk, index) => {
+        console.log(index, chunk);
+    });
+    const terminator = () => new WritableStream;
+    const data = [
+        [1, 2, 3],
+        [1, 2, 3, 4, 5, 6],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    ];
+    yield readable(data)
+        .pipeThrough(logger())
+        .pipeTo(terminator());
     console.log("Test completed.");
 }))();
 //# sourceMappingURL=test.mjs.map

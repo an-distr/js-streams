@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { JsonSerializerStream } from "../JsonSerializerStream.mjs";
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    const readable = (objs) => new ReadableStream({
+    const readable = (data) => new ReadableStream({
         start(controller) {
-            for (const obj of objs) {
-                controller.enqueue(obj);
+            for (const chunk of data) {
+                controller.enqueue(chunk);
             }
             controller.close();
         }
