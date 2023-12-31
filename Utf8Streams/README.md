@@ -4,6 +4,9 @@
 Convert streams and UTF-8 strings to and from each other.
 It is an alternative in environments where [TextDecoderStream](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoderStream)/[TextEncoderStream](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoderStream) is not available.
 
+## Stream type
+* [TransformStream](https://developer.mozilla.org/en-US/docs/Web/API/TransformStream)
+
 ## Input/output definition
 |Direction|Type|
 |-|-|
