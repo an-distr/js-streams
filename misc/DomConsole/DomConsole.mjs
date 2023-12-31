@@ -46,7 +46,8 @@ export class DomConsole {
                     break;
                 default:
                     if (Array.isArray(data[i])) {
-                        lst.push(`(${data[i].length}) ` + this.dataToString(...data[i]));
+                        const arr = data[i];
+                        lst.push(`(${arr.length}) [${arr.map(v => this.dataToString(v)).join(", ")}]`);
                     }
                     else {
                         lst.push(JSON.stringify(data[i]));
@@ -55,6 +56,16 @@ export class DomConsole {
             }
         }
         return lst.join(" ");
+    }
+    appendItem(classSuffix, ...data) {
+        const li = document.createElement("li");
+        li.classList.add("console-list-item");
+        if (classSuffix) {
+            li.classList.add(`console-list-item-${classSuffix}`);
+        }
+        li.textContent = this.dataToString(...data);
+        this.holder.append(li);
+        return li;
     }
     group(...data) {
         if (this.child) {
@@ -98,11 +109,7 @@ export class DomConsole {
             return;
         }
         if (condition !== undefined && !condition) {
-            const li = document.createElement("li");
-            li.classList.add("console-list-item", "console-list-item-assert");
-            li.textContent = `assert: ${this.dataToString(data)}`;
-            this.holder.append(li);
-            debugger;
+            this.appendItem("assert", "Assertion failed:", ...data);
         }
     }
     log(...data) {
@@ -110,86 +117,70 @@ export class DomConsole {
             this.child.log(...data);
             return;
         }
-        const li = document.createElement("li");
-        li.classList.add("console-list-item", "console-list-item-log");
-        li.textContent = `log: ${this.dataToString(data)}`;
-        this.holder.append(li);
+        this.appendItem("log", ...data);
     }
     trace(...data) {
         if (this.child) {
             this.child.trace(...data);
             return;
         }
-        const li = document.createElement("li");
-        li.classList.add("console-list-item", "console-list-item-trace");
-        li.textContent = `trace: ${this.dataToString(data)}`;
-        this.holder.append(li);
+        this.appendItem("trace", ...data);
     }
     debug(...data) {
         if (this.child) {
             this.child.debug(...data);
             return;
         }
-        const li = document.createElement("li");
-        li.classList.add("console-list-item", "console-list-item-debug");
-        li.textContent = `debug: ${this.dataToString(data)}`;
-        this.holder.append(li);
+        this.appendItem("debug", ...data);
     }
     info(...data) {
         if (this.child) {
             this.child.info(...data);
             return;
         }
-        const li = document.createElement("li");
-        li.classList.add("console-list-item", "console-list-item-info");
-        li.textContent = `info: ${this.dataToString(data)}`;
-        this.holder.append(li);
+        this.appendItem("info", ...data);
     }
     warn(...data) {
         if (this.child) {
             this.child.warn(...data);
             return;
         }
-        const li = document.createElement("li");
-        li.classList.add("console-list-item", "console-list-item-warn");
-        li.textContent = `warn: ${this.dataToString(data)}`;
-        this.holder.append(li);
+        this.appendItem("warn", ...data);
     }
     error(...data) {
         if (this.child) {
             this.child.error(...data);
             return;
         }
-        const li = document.createElement("li");
-        li.classList.add("console-list-item", "console-list-item-error");
-        li.textContent = `error: ${this.dataToString(data)}`;
-        this.holder.append(li);
+        this.appendItem("error", ...data);
+    }
+    createHeaderCell(textContent) {
+        const headerCell = document.createElement("th");
+        headerCell.textContent = textContent;
+        return headerCell;
     }
     table(tabularData, properties) {
         if (this.child) {
             this.child.table(tabularData, properties);
             return;
         }
-        const li = document.createElement("li");
-        li.classList.add("console-list-item", "console-list-item-log");
         const table = document.createElement("table");
         table.classList.add("console-list-item-table");
         const header = table.createTHead();
         const headerRow = header.insertRow(-1);
+        headerRow.append(this.createHeaderCell("(index)"));
         if (Array.isArray(tabularData)) {
-            headerRow.insertCell(-1).textContent = "(index)";
             for (const key in tabularData[0]) {
                 if (properties) {
                     if (properties.indexOf(key) === -1) {
                         continue;
                     }
                 }
-                headerRow.insertCell(-1).textContent = key;
+                headerRow.append(this.createHeaderCell(key));
             }
         }
         else {
-            headerRow.insertCell(-1).textContent = "(key)";
-            headerRow.insertCell(-1).textContent = "(value)";
+            headerRow.append(this.createHeaderCell("Value"));
         }
         const body = table.createTBody();
         if (tabularData) {
@@ -217,6 +208,7 @@ export class DomConsole {
                 }
             }
         }
+        const li = this.appendItem();
         li.append(table);
         this.holder.append(li);
     }

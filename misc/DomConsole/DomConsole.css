@@ -1,52 +1,50 @@
 .console-list {
   list-style: none;
+  color: rgb(222, 222, 222);
+  background-color: rgb(40, 40, 40);
 }
 
 .console-list>.console-list-item {
-  margin-bottom: 0.5em;
-}
-
-.console-list>.console-list-item.console-list-item-assert {
-  color: azure;
-  background-color: red;
-}
-
-.console-list>.console-list-item.console-list-item-log {
-  background-color: unset;
-}
-
-.console-list>.console-list-item.console-list-item-trace {
-  color: azure;
-  background-color: black;
-}
-
-.console-list>.console-list-item.console-list-item-debug {
-  background-color: dimgray;
-}
-
-.console-list>.console-list-item.console-list-item-info {
-  background-color: unset;
+  border-top: 1px solid rgb(71, 71, 71);
+  margin: 0.25em;
 }
 
 .console-list>.console-list-item.console-list-item-warn {
-  background-color: darkkhaki;
+  color: rgb(253, 243, 170);
+  background-color: rgb(65, 60, 38);
 }
 
-.console-list>.console-list-item.console-list-item-error {
-  background-color: hotpink;
+.console-list>.console-list-item.console-list-item-error,
+.console-list>.console-list-item.console-list-item-assert {
+  color: rgb(231, 204, 203);
+  background-color: rgb(78, 53, 52);
 }
 
 .console-list>.console-list-item .console-list-item-table {
   width: 100%;
   border-collapse: collapse;
+  border: 1px solid rgb(71, 71, 71);
 }
 
-.console-list>.console-list-item .console-list-item-table thead {
-  font-weight: bold;
-  color: azure;
-  background-color: darkgrey;
+.console-list>.console-list-item .console-list-item-table th {
+  border: 1px solid rgb(71, 71, 71);
+  padding-left: 0.25em;
 }
 
-.console-list>.console-list-item .console-list-item-table th,td {
-  border: 1px solid black;
+.console-list>.console-list-item .console-list-item-table td {
+  border-right: 1px solid rgb(71, 71, 71);
+  padding-left: 0.25em;
+}
+
+.console-list>.console-list-item .console-list-item-table tbody tr:nth-child(even) {
+  background-color: rgb(40, 41, 42);
+}
+
+.console-list>.console-list-item .console-list-item-table thead th:hover,
+.console-list>.console-list-item .console-list-item-table tbody tr:nth-child(odd):hover {
+  background-color: rgb(62, 62, 62);
+}
+
+.console-list>.console-list-item .console-list-item-table tbody td:not(:first-child) {
+  color: rgb(152, 127, 253);
 }

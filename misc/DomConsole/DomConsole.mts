@@ -53,7 +53,8 @@ export class DomConsole implements Console {
           break
         default:
           if (Array.isArray(data[i])) {
-            lst.push(`(${(data[i] as Array<any>).length}) ` + this.dataToString(...data[i]))
+            const arr = data[i] as Array<any>
+            lst.push(`(${arr.length}) [${arr.map(v => this.dataToString(v)).join(", ")}]`)
           }
           else {
             lst.push(JSON.stringify(data[i]))
@@ -62,6 +63,17 @@ export class DomConsole implements Console {
       }
     }
     return lst.join(" ")
+  }
+
+  private appendItem(classSuffix?: string, ...data: any[]): HTMLLIElement {
+    const li = document.createElement("li")
+    li.classList.add("console-list-item")
+    if (classSuffix) {
+      li.classList.add(`console-list-item-${classSuffix}`)
+    }
+    li.textContent = this.dataToString(...data)
+    this.holder.append(li)
+    return li
   }
 
   group(...data: any[]): void {
@@ -110,11 +122,7 @@ export class DomConsole implements Console {
       return
     }
     if (condition !== undefined && !condition) {
-      const li = document.createElement("li")
-      li.classList.add("console-list-item", "console-list-item-assert")
-      li.textContent = `assert: ${this.dataToString(data)}`
-      this.holder.append(li)
-      debugger
+      this.appendItem("assert", "Assertion failed:", ...data)
     }
   }
 
@@ -123,10 +131,7 @@ export class DomConsole implements Console {
       this.child.log(...data)
       return
     }
-    const li = document.createElement("li")
-    li.classList.add("console-list-item", "console-list-item-log")
-    li.textContent = `log: ${this.dataToString(data)}`
-    this.holder.append(li)
+    this.appendItem("log", ...data)
   }
 
   trace(...data: any[]): void {
@@ -134,10 +139,7 @@ export class DomConsole implements Console {
       this.child.trace(...data)
       return
     }
-    const li = document.createElement("li")
-    li.classList.add("console-list-item", "console-list-item-trace")
-    li.textContent = `trace: ${this.dataToString(data)}`
-    this.holder.append(li)
+    this.appendItem("trace", ...data)
   }
 
   debug(...data: any[]): void {
@@ -145,10 +147,7 @@ export class DomConsole implements Console {
       this.child.debug(...data)
       return
     }
-    const li = document.createElement("li")
-    li.classList.add("console-list-item", "console-list-item-debug")
-    li.textContent = `debug: ${this.dataToString(data)}`
-    this.holder.append(li)
+    this.appendItem("debug", ...data)
   }
 
   info(...data: any[]): void {
@@ -156,10 +155,7 @@ export class DomConsole implements Console {
       this.child.info(...data)
       return
     }
-    const li = document.createElement("li")
-    li.classList.add("console-list-item", "console-list-item-info")
-    li.textContent = `info: ${this.dataToString(data)}`
-    this.holder.append(li)
+    this.appendItem("info", ...data)
   }
 
   warn(...data: any[]): void {
@@ -167,10 +163,7 @@ export class DomConsole implements Console {
       this.child.warn(...data)
       return
     }
-    const li = document.createElement("li")
-    li.classList.add("console-list-item", "console-list-item-warn")
-    li.textContent = `warn: ${this.dataToString(data)}`
-    this.holder.append(li)
+    this.appendItem("warn", ...data)
   }
 
   error(...data: any[]): void {
@@ -178,10 +171,13 @@ export class DomConsole implements Console {
       this.child.error(...data)
       return
     }
-    const li = document.createElement("li")
-    li.classList.add("console-list-item", "console-list-item-error")
-    li.textContent = `error: ${this.dataToString(data)}`
-    this.holder.append(li)
+    this.appendItem("error", ...data)
+  }
+
+  private createHeaderCell(textContent: string) {
+    const headerCell = document.createElement("th")
+    headerCell.textContent = textContent
+    return headerCell
   }
 
   table(tabularData?: any, properties?: string[] | undefined): void {
@@ -189,26 +185,23 @@ export class DomConsole implements Console {
       this.child.table(tabularData, properties)
       return
     }
-    const li = document.createElement("li")
-    li.classList.add("console-list-item", "console-list-item-log")
     const table = document.createElement("table")
     table.classList.add("console-list-item-table")
     const header = table.createTHead()
     const headerRow = header.insertRow(-1)
+    headerRow.append(this.createHeaderCell("(index)"))
     if (Array.isArray(tabularData)) {
-      headerRow.insertCell(-1).textContent = "(index)"
       for (const key in tabularData[0]) {
         if (properties) {
           if (properties.indexOf(key) === -1) {
             continue
           }
         }
-        headerRow.insertCell(-1).textContent = key
+        headerRow.append(this.createHeaderCell(key))
       }
     }
     else {
-      headerRow.insertCell(-1).textContent = "(key)"
-      headerRow.insertCell(-1).textContent = "(value)"
+      headerRow.append(this.createHeaderCell("Value"))
     }
     const body = table.createTBody()
     if (tabularData) {
@@ -236,6 +229,7 @@ export class DomConsole implements Console {
         }
       }
     }
+    const li = this.appendItem()
     li.append(table)
     this.holder.append(li)
   }
