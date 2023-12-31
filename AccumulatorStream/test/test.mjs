@@ -92,12 +92,6 @@ if (!("now" in performance) ||
     }
     const test = (totalSize, readableChunkSize, chunkSize, fixed, isArray) => __awaiter(void 0, void 0, void 0, function* () {
         readableChunkSize = readableChunkSize === 0 ? totalSize : readableChunkSize;
-        console.group([
-            `run: `,
-            `ReadableStream(${totalSize.toLocaleString()}, { isArray: ${isArray} }) =>`,
-            `chunk(${readableChunkSize.toLocaleString()}) =>`,
-            `AccumulatorStream(${chunkSize.toLocaleString()}, { fixed: ${fixed} })`,
-        ].join(" "));
         performance.clearMeasures("AccumulatorStream.transform");
         performance.clearMarks("start");
         performance.clearMarks("end");
@@ -110,11 +104,6 @@ if (!("now" in performance) ||
             .pipeThrough(measure("AccumulatorStream.transform", "start", "end"))
             .pipeThrough(mark("start"))
             .pipeTo(writable(result));
-        console.assert((fixed
-            ? chunkSize * Math.ceil(totalSize / chunkSize)
-            : totalSize) === result.sizeOfWritten, {
-            sizeOfWritten: result.sizeOfWritten,
-        });
         const entries = performance.getEntriesByName("AccumulatorStream.transform");
         const durations = entries.map(e => e.duration);
         const totalDuration = durations.reduce((s, d) => s += d, 0.0);
@@ -127,6 +116,18 @@ if (!("now" in performance) ||
             : sortedDurations.length % 2
                 ? sortedDurations[medianDurationIndex]
                 : sortedDurations[medianDurationIndex - 1] + sortedDurations[medianDurationIndex];
+        console.groupCollapsed([
+            `run: `,
+            `ReadableStream(${totalSize.toLocaleString()}, { isArray: ${isArray} }) =>`,
+            `chunk(${readableChunkSize.toLocaleString()}) =>`,
+            `AccumulatorStream(${chunkSize.toLocaleString()}, { fixed: ${fixed} })`,
+            `durationOfOccupancy: ${totalDuration}`,
+        ].join(" "));
+        console.assert((fixed
+            ? chunkSize * Math.ceil(totalSize / chunkSize)
+            : totalSize) === result.sizeOfWritten, {
+            sizeOfWritten: result.sizeOfWritten,
+        });
         console.table({
             totalSize,
             readableChunkSize,
@@ -183,6 +184,7 @@ if (!("now" in performance) ||
         8192,
     ];
     for (const totalSize of totalSizes) {
+        console.groupCollapsed(`totalSize: ${totalSize}`);
         for (const readableChunkSize of readableChunkSizes) {
             for (const chunkSize of chunkSizes) {
                 for (const fixed of [false, true]) {
@@ -192,13 +194,16 @@ if (!("now" in performance) ||
                 }
             }
         }
+        console.groupEnd();
     }
-    console.log("Testing line separate(> size)");
+    console.groupCollapsed("Testing line separate");
+    console.log("> size");
     yield testNewLine(8);
-    console.log("Testing line separate(= size)");
+    console.log("= size");
     yield testNewLine(10);
-    console.log("Testing line separate(< size)");
+    console.log("< size");
     yield testNewLine(13);
+    console.groupEnd();
     console.log("Test completed.");
 }))();
 //# sourceMappingURL=test.mjs.map
