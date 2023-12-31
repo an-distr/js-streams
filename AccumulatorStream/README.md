@@ -1,4 +1,4 @@
-# AccumuratorStream
+# AccumulatorStream
 
 ## Description
 Accumulate the stream and emit it at a constant size or condition.
