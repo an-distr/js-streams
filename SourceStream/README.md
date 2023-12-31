@@ -9,6 +9,7 @@ Streaming for object(s).
 ## Input/output definition
 |Direction|Type|
 |-|-|
+|Input|ArrayBufferLike \| ArrayLike \| any|
 |Output|ArrayBufferLike \| ArrayLike \| any|
 
 ## Compatibility
