@@ -26,6 +26,16 @@ export class DomConsole implements Console {
   constructor(owner: Node | string, parent?: DomConsole) {
     if (typeof owner === "string") {
       this.owner = document.getElementById(owner) as Node
+      const scopedStyle = document.createElement("style")
+      scopedStyle.setAttribute("scoped", "")
+      scopedStyle.textContent = `
+        .console-list>.console-list-item>input[type="checkbox"]:not(:checked)~.console-list {
+          display: none;
+        }
+        .console-list>.console-list-item>input[type="checkbox"]:checked~.console-list {
+          display: block;
+        }`
+      this.owner.appendChild(scopedStyle)
     }
     else {
       this.owner = owner
@@ -76,13 +86,21 @@ export class DomConsole implements Console {
     return li
   }
 
+  private toNextHolder(collapsed: boolean, ...data: any[]) {
+    const current = this.appendItem("log", ...data)
+    const chk = document.createElement("input")
+    chk.type = "checkbox"
+    chk.checked = !collapsed
+    current.prepend(chk)
+    this.child = new DomConsole(current, this)
+  }
+
   group(...data: any[]): void {
     if (this.child) {
       this.child.group(...data)
       return
     }
-    this.log(...data)
-    this.child = new DomConsole(this.holder, this)
+    this.toNextHolder(false, ...data)
     if (!("holder" in globalThis.console)) {
       globalThis.console["group"](...data)
     }
@@ -90,11 +108,10 @@ export class DomConsole implements Console {
 
   groupCollapsed(...data: any[]): void {
     if (this.child) {
-      this.child.group(...data)
+      this.child.groupCollapsed(...data)
       return
     }
-    this.log(...data)
-    this.child = new DomConsole(this.holder, this)
+    this.toNextHolder(true, ...data)
     if (!("holder" in globalThis.console)) {
       globalThis.console["groupCollapsed"](...data)
     }
