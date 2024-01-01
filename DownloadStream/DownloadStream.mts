@@ -17,37 +17,72 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export class DownloadStream extends WritableStream {
-  constructor(name: string) {
-    let directory: FileSystemDirectoryHandle
-    let handle: FileSystemFileHandle
-    let fileStream: FileSystemWritableFileStream
+export interface DownloadStreamOptions {
+  mode?: "blob" | "filesystem"
+  linkHolder?: Node
+}
 
-    super({
-      async start() {
-        directory = await navigator.storage.getDirectory()
-        handle = await directory.getFileHandle(name, { create: true })
-        fileStream = await handle.createWritable()
-      },
-      async write(chunk) {
-        await fileStream.write(chunk)
-      },
-      async close() {
-        await fileStream.close();
-        const file = await handle.getFile()
-        const url = URL.createObjectURL(file)
-        const trigger = document.createElement("a")
-        trigger.href = url
-        trigger.target = "_blank"
-        trigger.download = name
+export class DownloadStream extends WritableStream {
+  constructor(name: string, options?: DownloadStreamOptions) {
+    const download = (blob: Blob) => {
+      const url = URL.createObjectURL(blob)
+      const trigger = document.createElement("a")
+      trigger.href = url
+      trigger.target = "_blank"
+      trigger.download = name
+      trigger.innerText = name
+      if (options?.linkHolder) {
+        options.linkHolder.appendChild(trigger)
+      }
+      else {
         trigger.click()
         trigger.remove()
         setTimeout(() => URL.revokeObjectURL(url), 10 * 1000)
-      },
-      async abort(reason) {
-        fileStream.abort(reason)
-        await directory.removeEntry(name)
       }
-    })
+    }
+
+    if (options?.mode === "filesystem") {
+      let directory: FileSystemDirectoryHandle
+      let handle: FileSystemFileHandle
+      let fileStream: FileSystemWritableFileStream
+      super({
+        async start() {
+          directory = await navigator.storage.getDirectory()
+          handle = await directory.getFileHandle(name, { create: true })
+          fileStream = await handle.createWritable()
+        },
+        async write(chunk) {
+          await fileStream.write(chunk)
+        },
+        async close() {
+          await fileStream.close();
+          const file = await handle.getFile()
+          download(file)
+        },
+        async abort(reason) {
+          fileStream.abort(reason)
+          await directory.removeEntry(name)
+        }
+      })
+    }
+
+    else {
+      let chunks: any[]
+      super({
+        start() {
+          chunks = []
+        },
+        write(chunk) {
+          chunks.push(chunk)
+        },
+        close() {
+          const blob = new Blob(chunks)
+          download(blob)
+        },
+        abort() {
+          chunks = []
+        }
+      })
+    }
   }
 }

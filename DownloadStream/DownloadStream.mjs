@@ -26,44 +26,73 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 export class DownloadStream extends WritableStream {
-    constructor(name) {
-        let directory;
-        let handle;
-        let fileStream;
-        super({
-            start() {
-                return __awaiter(this, void 0, void 0, function* () {
-                    directory = yield navigator.storage.getDirectory();
-                    handle = yield directory.getFileHandle(name, { create: true });
-                    fileStream = yield handle.createWritable();
-                });
-            },
-            write(chunk) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    yield fileStream.write(chunk);
-                });
-            },
-            close() {
-                return __awaiter(this, void 0, void 0, function* () {
-                    yield fileStream.close();
-                    const file = yield handle.getFile();
-                    const url = URL.createObjectURL(file);
-                    const trigger = document.createElement("a");
-                    trigger.href = url;
-                    trigger.target = "_blank";
-                    trigger.download = name;
-                    trigger.click();
-                    trigger.remove();
-                    setTimeout(() => URL.revokeObjectURL(url), 10 * 1000);
-                });
-            },
-            abort(reason) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    fileStream.abort(reason);
-                    yield directory.removeEntry(name);
-                });
+    constructor(name, options) {
+        const download = (blob) => {
+            const url = URL.createObjectURL(blob);
+            const trigger = document.createElement("a");
+            trigger.href = url;
+            trigger.target = "_blank";
+            trigger.download = name;
+            trigger.innerText = name;
+            if (options === null || options === void 0 ? void 0 : options.linkHolder) {
+                options.linkHolder.appendChild(trigger);
             }
-        });
+            else {
+                trigger.click();
+                trigger.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 10 * 1000);
+            }
+        };
+        if ((options === null || options === void 0 ? void 0 : options.mode) === "filesystem") {
+            let directory;
+            let handle;
+            let fileStream;
+            super({
+                start() {
+                    return __awaiter(this, void 0, void 0, function* () {
+                        directory = yield navigator.storage.getDirectory();
+                        handle = yield directory.getFileHandle(name, { create: true });
+                        fileStream = yield handle.createWritable();
+                    });
+                },
+                write(chunk) {
+                    return __awaiter(this, void 0, void 0, function* () {
+                        yield fileStream.write(chunk);
+                    });
+                },
+                close() {
+                    return __awaiter(this, void 0, void 0, function* () {
+                        yield fileStream.close();
+                        const file = yield handle.getFile();
+                        download(file);
+                    });
+                },
+                abort(reason) {
+                    return __awaiter(this, void 0, void 0, function* () {
+                        fileStream.abort(reason);
+                        yield directory.removeEntry(name);
+                    });
+                }
+            });
+        }
+        else {
+            let chunks;
+            super({
+                start() {
+                    chunks = [];
+                },
+                write(chunk) {
+                    chunks.push(chunk);
+                },
+                close() {
+                    const blob = new Blob(chunks);
+                    download(blob);
+                },
+                abort() {
+                    chunks = [];
+                }
+            });
+        }
     }
 }
 //# sourceMappingURL=DownloadStream.mjs.map
