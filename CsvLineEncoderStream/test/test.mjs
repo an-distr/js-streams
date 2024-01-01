@@ -29,37 +29,43 @@ import { CsvLineEncoderStream } from "../CsvLineEncoderStream.mjs";
         { "a": 7, "b": 8, "c": 9 },
         { "c1": "a", "c2": "b", "c3": "c", "c4": "d" },
     ];
-    console.log("=== escape: all ===");
+    console.groupCollapsed("=== escape: all ===");
     yield readable(data)
         .pipeThrough(new CsvLineEncoderStream({ escape: "all" }))
         .pipeThrough(logger())
         .pipeTo(new WritableStream);
-    console.log("=== escape: auto ===");
+    console.groupEnd();
+    console.groupCollapsed("=== escape: auto ===");
     yield readable(data)
         .pipeThrough(new CsvLineEncoderStream({ escape: "auto" }))
         .pipeThrough(logger())
         .pipeTo(new WritableStream);
-    console.log("=== escape: none ===");
+    console.groupEnd();
+    console.groupCollapsed("=== escape: none ===");
     yield readable(data)
         .pipeThrough(new CsvLineEncoderStream({ escape: "none" }))
         .pipeThrough(logger())
         .pipeTo(new WritableStream);
-    console.log("=== escape: custom ===");
+    console.groupEnd();
+    console.groupCollapsed("=== escape: custom ===");
     yield readable(data)
         .pipeThrough(new CsvLineEncoderStream({ escape: s => `[${s}]` }))
         .pipeThrough(logger())
         .pipeTo(new WritableStream);
-    console.log("=== delimiter: custom ===");
+    console.groupEnd();
+    console.groupCollapsed("=== delimiter: custom ===");
     yield readable(data)
         .pipeThrough(new CsvLineEncoderStream({ delimiter: "|" }))
         .pipeThrough(logger())
         .pipeTo(new WritableStream);
-    console.log("=== newLine: custom ===");
+    console.groupEnd();
+    console.groupCollapsed("=== newLine: custom ===");
     yield readable(data)
         .pipeThrough(new CsvLineEncoderStream({ newLine: "|" }))
         .pipeThrough(logger())
         .pipeTo(new WritableStream);
-    console.log("\n=== no new line ===");
+    console.groupEnd();
+    console.groupCollapsed("\n=== no new line ===");
     let text = "";
     yield readable(data)
         .pipeThrough(new CsvLineEncoderStream({ withNewLine: false }))
@@ -69,6 +75,7 @@ import { CsvLineEncoderStream } from "../CsvLineEncoderStream.mjs";
         }
     }));
     console.log(text);
+    console.groupEnd();
     console.log("\nTest completed.");
 }))();
 //# sourceMappingURL=test.mjs.map

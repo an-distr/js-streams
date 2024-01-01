@@ -80,6 +80,7 @@ export class DomConsole {
     toNextHolder(collapsed, ...data) {
         const current = this.appendItem("log", ...data);
         const chk = document.createElement("input");
+        chk.name = "table-visibility";
         chk.type = "checkbox";
         chk.checked = !collapsed;
         current.prepend(chk);

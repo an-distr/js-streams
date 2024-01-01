@@ -17,11 +17,13 @@ import { SourceStream } from "../SourceStream.mjs";
     });
     const terminator = () => new WritableStream;
     function test(data) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(`=== data: ${JSON.stringify(data)} ===`);
+            console.groupCollapsed(`=== data: ${(_a = JSON.stringify(data)) === null || _a === void 0 ? void 0 : _a.slice(0, 25)} ===`);
             yield new SourceStream(data)
                 .pipeThrough(logger())
                 .pipeTo(terminator());
+            console.groupEnd();
         });
     }
     yield test(undefined);

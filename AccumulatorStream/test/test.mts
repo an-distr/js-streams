@@ -205,7 +205,7 @@ if (
 
   console.groupCollapsed("Testing ArrayBuffer|Array")
   for (const totalSize of totalSizes) {
-    console.groupCollapsed(`Tests totalSize: ${totalSize}`)
+    console.groupCollapsed(`totalSize: ${totalSize}`)
     for (const readableChunkSize of readableChunkSizes) {
       for (const chunkSize of chunkSizes) {
         for (const fixed of [false, true]) {
@@ -220,12 +220,15 @@ if (
   console.groupEnd()
 
   console.groupCollapsed("Testing line separate")
-  console.log("> size")
+  console.groupCollapsed("> size")
   await testNewLine(8)
-  console.log("= size")
+  console.groupEnd()
+  console.groupCollapsed("= size")
   await testNewLine(10)
-  console.log("< size")
+  console.groupEnd()
+  console.groupCollapsed("< size")
   await testNewLine(13)
+  console.groupEnd()
   console.groupEnd()
 
   console.log("Test completed.")

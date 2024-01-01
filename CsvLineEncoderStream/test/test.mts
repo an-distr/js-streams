@@ -25,43 +25,49 @@ import { CsvLineEncoderStream } from "../CsvLineEncoderStream.mjs"
     { "c1": "a", "c2": "b", "c3": "c", "c4": "d" },
   ]
 
-  console.log("=== escape: all ===")
+  console.groupCollapsed("=== escape: all ===")
   await readable(data)
     .pipeThrough(new CsvLineEncoderStream({ escape: "all" }))
     .pipeThrough(logger())
     .pipeTo(new WritableStream)
+  console.groupEnd()
 
-  console.log("=== escape: auto ===")
+  console.groupCollapsed("=== escape: auto ===")
   await readable(data)
     .pipeThrough(new CsvLineEncoderStream({ escape: "auto" }))
     .pipeThrough(logger())
     .pipeTo(new WritableStream)
+  console.groupEnd()
 
-  console.log("=== escape: none ===")
+  console.groupCollapsed("=== escape: none ===")
   await readable(data)
     .pipeThrough(new CsvLineEncoderStream({ escape: "none" }))
     .pipeThrough(logger())
     .pipeTo(new WritableStream)
+  console.groupEnd()
 
-  console.log("=== escape: custom ===")
+  console.groupCollapsed("=== escape: custom ===")
   await readable(data)
     .pipeThrough(new CsvLineEncoderStream({ escape: s => `[${s}]` }))
     .pipeThrough(logger())
     .pipeTo(new WritableStream)
+  console.groupEnd()
 
-  console.log("=== delimiter: custom ===")
+  console.groupCollapsed("=== delimiter: custom ===")
   await readable(data)
     .pipeThrough(new CsvLineEncoderStream({ delimiter: "|" }))
     .pipeThrough(logger())
     .pipeTo(new WritableStream)
+  console.groupEnd()
 
-  console.log("=== newLine: custom ===")
+  console.groupCollapsed("=== newLine: custom ===")
   await readable(data)
     .pipeThrough(new CsvLineEncoderStream({ newLine: "|" }))
     .pipeThrough(logger())
     .pipeTo(new WritableStream)
+  console.groupEnd()
 
-  console.log("\n=== no new line ===")
+  console.groupCollapsed("\n=== no new line ===")
   let text = ""
   await readable(data)
     .pipeThrough(new CsvLineEncoderStream({ withNewLine: false }))
@@ -71,6 +77,7 @@ import { CsvLineEncoderStream } from "../CsvLineEncoderStream.mjs"
       }
     }))
   console.log(text)
+  console.groupEnd()
 
   console.log("\nTest completed.")
 

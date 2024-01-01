@@ -20,6 +20,7 @@ export * from "./AccumulatorStream/AccumulatorStream.mjs";
 export * from "./JsonDeserializerStream/JsonDeserializerStream.mjs";
 export * from "./JsonSerializerStream/JsonSerializerStream.mjs";
 export * from "./CsvLineEncoderStream/CsvLineEncoderStream.mjs";
+export * from "./SourceStream/SourceStream.mjs";
 export * from "./NullStream/NullStream.mjs";
 export * from "./PeekStream/PeekStream.mjs";
 //# sourceMappingURL=mod.mjs.map

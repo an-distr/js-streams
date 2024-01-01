@@ -12,10 +12,13 @@ import { SourceStream } from "../SourceStream.mjs"
   const terminator = () => new WritableStream
 
   async function test<T>(data: T) {
-    console.log(`=== data: ${JSON.stringify(data)} ===`)
+    console.groupCollapsed(`=== data: ${JSON.stringify(data)?.slice(0, 25)} ===`)
+
     await new SourceStream<T>(data)
       .pipeThrough(logger())
       .pipeTo(terminator())
+
+    console.groupEnd()
   }
 
   await test(undefined)
