@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<style>
+  fieldset {
+    display: flex;
+  }
+
+  input {
+    width: 100%;
+  }
+</style>
+<title>Json to CSV</title>
+
+<fieldset>
+  <legend>JSON to CSV (Download)</legend>
+  <script type="module" src="JsonToCsv.download.mjs"></script>
+  <input id="txtUrl" type="url" value="https://jsonplaceholder.typicode.com/posts">
+  <button id="btnConvertUrl">Convert</button>
+</fieldset>
+
+<fieldset>
+  <legend>JSON to CSV (Upload)</legend>
+  <script type="module" src="JsonToCsv.upload.mjs"></script>
+  <input id="txtFile" type="file" accept=".json,.jsonl">
+</fieldset>
