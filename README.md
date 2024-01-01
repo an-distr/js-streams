@@ -17,7 +17,6 @@ Stream utilities for JavaScript/TypeScript.
 |[PeekStream](PeekStream/README.md)|Peeking chunk of stream.|
 |[Utf8Streams](Utf8Streams/README.md)|Convert streams and UTF-8 strings to and from each other.|
 |[DownloadStream](DownloadStream/README.md)|Download the stream.|
-|[DomStreams](dom/README.md)|Generate a stream from events in the DOM.|
 
 ## Demo / Test
 * [https://an-js-streams.pages.dev/](https://an-js-streams.pages.dev/)
