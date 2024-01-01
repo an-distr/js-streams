@@ -9,15 +9,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as streams from "../mod.mjs";
 import { DownloadStream } from "../DownloadStream/DownloadStream.mjs";
+const chkDirect = document.getElementById("chkDirect");
 const txtFile = document.getElementById("txtFile");
+const linkHolder = txtFile.parentElement.querySelector("div");
 txtFile.onchange = () => __awaiter(void 0, void 0, void 0, function* () {
+    linkHolder.innerHTML = "";
     if (!txtFile.files) {
         return;
+    }
+    let options;
+    if (!chkDirect.checked) {
+        options = {
+            linkHolder
+        };
     }
     txtFile.files[0].stream()
         .pipeThrough(new TextDecoderStream)
         .pipeThrough(new streams.JsonDeserializerStream({ lineSeparated: txtFile.name.includes(".jsonl") }))
         .pipeThrough(new streams.CsvLineEncoderStream({ withNewLine: true }))
-        .pipeTo(new DownloadStream("download.csv"));
+        .pipeTo(new DownloadStream("download.csv", options));
 });
 //# sourceMappingURL=JsonToCsv.upload.mjs.map

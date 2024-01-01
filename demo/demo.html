@@ -1,25 +1,33 @@
 <!DOCTYPE html>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <style>
-  fieldset {
+  .control fieldset {
     display: flex;
   }
 
-  input {
+  .control input {
     width: 100%;
   }
 </style>
 <title>Json to CSV</title>
 
 <fieldset>
+  <legend>Options</legend>
+  <input id="chkDirect" type="checkbox">
+  <label for="chkDirect">Direct download</label>
+</fieldset>
+
+<fieldset class="control">
   <legend>JSON to CSV (Download)</legend>
   <script type="module" src="JsonToCsv.download.mjs"></script>
   <input id="txtUrl" type="url" value="https://jsonplaceholder.typicode.com/posts">
   <button id="btnConvertUrl">Convert</button>
+  <div></div>
 </fieldset>
 
-<fieldset>
+<fieldset class="control">
   <legend>JSON to CSV (Upload)</legend>
   <script type="module" src="JsonToCsv.upload.mjs"></script>
   <input id="txtFile" type="file" accept=".json,.jsonl">
+  <div></div>
 </fieldset>
