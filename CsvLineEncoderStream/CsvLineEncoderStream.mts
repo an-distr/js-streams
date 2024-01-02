@@ -18,16 +18,16 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 export interface CsvLineEncoderStreamEscape {
-  auto: "auto",
-  all: "all",
-  none: "none",
+  auto: "auto"
+  all: "all"
+  none: "none"
 }
 
 export interface CsvLineEncoderStreamOptions {
-  delimiter?: string,
-  escape?: keyof CsvLineEncoderStreamEscape | ((s: string) => string),
-  withNewLine?: boolean,
-  newLine?: string,
+  delimiter?: string
+  escape?: keyof CsvLineEncoderStreamEscape | ((s: string) => string)
+  withNewLine?: boolean
+  newLine?: string
 }
 
 export class CsvLineEncoderStream<I = any> extends TransformStream<I, string> {

@@ -29,6 +29,7 @@ const data = [
   { a: 1, b: 2, c: 3 },
 ]
 
-await new SourceStream(data)
+await new SourceStream(data, 
+                       strategy: { highWaterMark: 8192 }) // options
   .pipeTo(writable)
 ```

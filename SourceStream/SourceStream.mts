@@ -17,13 +17,8 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export interface SourceStreamOptions<R> {
-  arrayBufferChunkSize?: number
-  strategy?: QueuingStrategy<R>
-}
-
 export class SourceStream<R extends ArrayBufferLike | ArrayLike<any> | any> extends ReadableStream<R> {
-  constructor(source: R, options?: SourceStreamOptions<R>) {
+  constructor(source: R, strategy?: QueuingStrategy<R>) {
     super({
       start(controller) {
         if (source) {
@@ -33,7 +28,7 @@ export class SourceStream<R extends ArrayBufferLike | ArrayLike<any> | any> exte
             }
           }
           else if (ArrayBuffer.isView(source)) {
-            const chunkSize = options?.arrayBufferChunkSize ?? 8192
+            const chunkSize = controller.desiredSize ?? 1
             for (let pos = 0; pos < source.byteLength; pos += chunkSize) {
               controller.enqueue(source.buffer.slice(pos, pos + chunkSize) as R)
             }
@@ -44,6 +39,6 @@ export class SourceStream<R extends ArrayBufferLike | ArrayLike<any> | any> exte
         }
         controller.close()
       }
-    }, options?.strategy)
+    }, strategy)
   }
 }

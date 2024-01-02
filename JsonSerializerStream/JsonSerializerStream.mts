@@ -18,8 +18,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 export interface JsonSerializerStreamOptions {
-  lineSeparated?: boolean,
-  stringify?: (value: any) => string,
+  lineSeparated?: boolean
+  stringify?: (value: any) => string
 }
 
 export class JsonSerializerStream<I = any> extends TransformStream<I, string> {

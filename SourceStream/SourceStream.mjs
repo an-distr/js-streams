@@ -17,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 export class SourceStream extends ReadableStream {
-    constructor(source, options) {
+    constructor(source, strategy) {
         super({
             start(controller) {
                 var _a;
@@ -28,7 +28,7 @@ export class SourceStream extends ReadableStream {
                         }
                     }
                     else if (ArrayBuffer.isView(source)) {
-                        const chunkSize = (_a = options === null || options === void 0 ? void 0 : options.arrayBufferChunkSize) !== null && _a !== void 0 ? _a : 8192;
+                        const chunkSize = (_a = controller.desiredSize) !== null && _a !== void 0 ? _a : 1;
                         for (let pos = 0; pos < source.byteLength; pos += chunkSize) {
                             controller.enqueue(source.buffer.slice(pos, pos + chunkSize));
                         }
@@ -39,7 +39,7 @@ export class SourceStream extends ReadableStream {
                 }
                 controller.close();
             }
-        }, options === null || options === void 0 ? void 0 : options.strategy);
+        }, strategy);
     }
 }
 //# sourceMappingURL=SourceStream.mjs.map

@@ -18,8 +18,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 export interface JsonDeserializerStreamOptions {
-  lineSeparated?: boolean,
-  parse?: (text: string) => any,
+  lineSeparated?: boolean
+  parse?: (text: string) => any
 }
 
 export class JsonDeserializerStream<O = any> extends TransformStream<string, O> {
@@ -105,20 +105,20 @@ export class JsonDeserializerStream<O = any> extends TransformStream<string, O> 
         buffer += chunk
         const lastSeparator = indexOfLastSeparator(buffer)
         if (lastSeparator) {
-          const json = "[" + sanitize(buffer.slice(0, lastSeparator)) + "]";
+          const json = "[" + sanitize(buffer.slice(0, lastSeparator)) + "]"
           const arr = parse(json)
           for (const a of arr) {
-            controller.enqueue(a);
+            controller.enqueue(a)
           }
           buffer = buffer.slice(lastSeparator)
         }
       },
       flush(controller) {
         if (buffer.length > 0) {
-          const json = "[" + sanitize(buffer) + "]";
+          const json = "[" + sanitize(buffer) + "]"
           const arr = parse(json)
           for (const a of arr) {
-            controller.enqueue(a);
+            controller.enqueue(a)
           }
         }
       }

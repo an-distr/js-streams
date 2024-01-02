@@ -3,6 +3,8 @@
 ## Description
 Accumulate the stream and emit it at a constant size or condition.
 
+**If you can set a "[highWaterMark](https://developer.mozilla.org/en-US/docs/Web/API/ByteLengthQueuingStrategy/highWaterMark)" for "[ReadableStream](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)", it is more efficient.**
+
 ## Stream type
 * [TransformStream](https://developer.mozilla.org/en-US/docs/Web/API/TransformStream)
 
