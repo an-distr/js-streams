@@ -20,6 +20,9 @@ Stream utilities for JavaScript/TypeScript.
 |[Utf8Streams](Utf8Streams/README.md)|Convert streams and UTF-8 strings to and from each other.|
 |[DownloadStream](DownloadStream/README.md)|Download the stream.|
 
+## Functions
+* [Functions](./funcs/README.md)
+
 ## Demo / Test
 * [https://an-js-streams.pages.dev/](https://an-js-streams.pages.dev/)
 

@@ -16,13 +16,17 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-export * from "./ArrayBufferAccumulatorStream/ArrayBufferAccumulatorStream.mjs";
-export * from "./ArrayAccumulatorStream/ArrayAccumulatorStream.mjs";
-export * from "./JsonDeserializerStream/JsonDeserializerStream.mjs";
-export * from "./JsonSerializerStream/JsonSerializerStream.mjs";
-export * from "./CsvLineEncoderStream/CsvLineEncoderStream.mjs";
-export * from "./SourceStream/SourceStream.mjs";
-export * from "./FlattenStream/FlattenStream.mjs";
-export * from "./NullStream/NullStream.mjs";
-export * from "./PeekStream/PeekStream.mjs";
-//# sourceMappingURL=mod.mjs.map
+
+export async function* toAsyncIterableIterator<R>(readable: ReadableStream<R>) {
+  const reader = readable.getReader()
+  try {
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      yield value
+    }
+  }
+  finally {
+    reader.releaseLock()
+  }
+}
