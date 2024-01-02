@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { AccumulatorStream } from "../AccumulatorStream.mjs";
+import { ArrayBufferAccumulatorStream } from "../ArrayBufferAccumulatorStream.mjs";
 import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.mjs";
 import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Streams.mjs";
 if (!("now" in performance) ||
@@ -92,19 +92,19 @@ if (!("now" in performance) ||
     }
     const test = (totalSize, readableChunkSize, chunkSize, fixed, isArray) => __awaiter(void 0, void 0, void 0, function* () {
         readableChunkSize = readableChunkSize === 0 ? totalSize : readableChunkSize;
-        performance.clearMeasures("AccumulatorStream.transform");
+        performance.clearMeasures("ArrayBufferAccumulatorStream.transform");
         performance.clearMarks("start");
         performance.clearMarks("end");
         const result = { sizeOfWritten: 0 };
         yield readable(totalSize, readableChunkSize, isArray)
             .pipeThrough(mark("start"))
-            .pipeThrough(new AccumulatorStream(chunkSize, { fixed }))
+            .pipeThrough(new ArrayBufferAccumulatorStream(chunkSize, { fixed }))
             .pipeThrough(mark("end"))
             .pipeThrough(assertChunkSize(totalSize, chunkSize))
-            .pipeThrough(measure("AccumulatorStream.transform", "start", "end"))
+            .pipeThrough(measure("ArrayBufferAccumulatorStream.transform", "start", "end"))
             .pipeThrough(mark("start"))
             .pipeTo(writable(result));
-        const entries = performance.getEntriesByName("AccumulatorStream.transform");
+        const entries = performance.getEntriesByName("ArrayBufferAccumulatorStream.transform");
         const durations = entries.map(e => e.duration);
         const totalDuration = durations.reduce((s, d) => s += d, 0.0);
         const minDuration = durations.reduce((l, r) => Math.min(l, r));
@@ -119,7 +119,7 @@ if (!("now" in performance) ||
         console.groupCollapsed([
             `ReadableStream(${totalSize.toLocaleString()}, { isArray: ${isArray} }) =>`,
             `chunk(${readableChunkSize.toLocaleString()}) =>`,
-            `AccumulatorStream(${chunkSize.toLocaleString()}, { fixed: ${fixed} })`,
+            `ArrayBufferAccumulatorStream(${chunkSize.toLocaleString()}, { fixed: ${fixed} })`,
             `durationOfOccupancy: ${totalDuration}`,
         ].join(" "));
         console.assert((fixed
@@ -156,12 +156,12 @@ if (!("now" in performance) ||
         });
         yield readable
             .pipeThrough(new Utf8EncoderStream)
-            .pipeThrough(new AccumulatorStream(chunkSize, { forceEmit: [[10, 13], [13], [10]] }))
+            .pipeThrough(new ArrayBufferAccumulatorStream(chunkSize, { forceEmit: [[10, 13], [13], [10]] }))
             .pipeThrough(new Utf8DecoderStream)
             .pipeTo(writable);
     });
     yield readable(1, 1, false)
-        .pipeThrough(new AccumulatorStream(1))
+        .pipeThrough(new ArrayBufferAccumulatorStream(1))
         .pipeTo(new WritableStream);
     const totalSizes = [
         1,

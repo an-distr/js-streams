@@ -16,12 +16,23 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-export * from "./ArrayBufferAccumulatorStream/ArrayBufferAccumulatorStream.mjs";
-export * from "./ArrayAccumulatorStream/ArrayAccumulatorStream.mjs";
-export * from "./JsonDeserializerStream/JsonDeserializerStream.mjs";
-export * from "./JsonSerializerStream/JsonSerializerStream.mjs";
-export * from "./CsvLineEncoderStream/CsvLineEncoderStream.mjs";
-export * from "./SourceStream/SourceStream.mjs";
-export * from "./NullStream/NullStream.mjs";
-export * from "./PeekStream/PeekStream.mjs";
-//# sourceMappingURL=mod.mjs.map
+
+export class FlattenStream<I, O> extends TransformStream<I, O> {
+  constructor(limit?: number) {
+    const flatten = (level: number, chunk: any, controller: TransformStreamDefaultController) => {
+      if (Array.isArray(chunk) && (limit ?? level) >= level) {
+        for (const obj of chunk) {
+          flatten(level + 1, obj, controller)
+        }
+      }
+      else {
+        controller.enqueue(chunk)
+      }
+    }
+    super({
+      transform(chunk, controller) {
+        flatten(0, chunk, controller)
+      }
+    })
+  }
+}

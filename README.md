@@ -8,7 +8,8 @@ Stream utilities for JavaScript/TypeScript.
 ## Modules
 |Module|Description|
 |-|-|
-|[AccumulatorStream](AccumulatorStream/README.md)|Accumulate the stream and emit it at a constant size or condition.|
+|[ArrayBufferAccumulatorStream](ArrayBufferAccumulatorStream/README.md)|Accumulate the ArrayBuffer stream and emit it at a constant size or condition.|
+|[ArrayAccumulatorStream](ArrayAccumulatorStream/README.md)|Accumulate the stream and emit it at a constant size array.|
 |[JsonDeserializerStream](JsonDeserializerStream/README.md)|Convert the stream to a JSON/JSON Lines array.|
 |[JsonSerializerStream](JsonSerializerStream/README.md)|Convert the stream to a JSON/JSON Lines string.|
 |[CsvLineEncoderStream](CsvLineEncoderStream/README.md)|Convert the stream to a CSV line.|

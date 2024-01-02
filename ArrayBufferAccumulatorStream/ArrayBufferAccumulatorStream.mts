@@ -17,13 +17,13 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export interface AccumulatorStreamOptions {
+export interface ArrayBufferAccumulatorStreamOptions {
   forceEmit?: number[][] | ((bytes: IterableIterator<number>) => number)
   fixed?: boolean
 }
 
-export class AccumulatorStream<I extends ArrayBufferLike | ArrayLike<any>> extends TransformStream<I, I> {
-  constructor(size: number, options?: AccumulatorStreamOptions) {
+export class ArrayBufferAccumulatorStream<I extends ArrayBufferLike | ArrayLike<number>> extends TransformStream<I, I> {
+  constructor(size: number, options?: ArrayBufferAccumulatorStreamOptions) {
     let forceEmit: ((bytes: IterableIterator<number>) => number) | undefined
     let fixed: boolean
     let buffer: ArrayBuffer | null

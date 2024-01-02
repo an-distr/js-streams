@@ -16,12 +16,35 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-export * from "./ArrayBufferAccumulatorStream/ArrayBufferAccumulatorStream.mjs";
-export * from "./ArrayAccumulatorStream/ArrayAccumulatorStream.mjs";
-export * from "./JsonDeserializerStream/JsonDeserializerStream.mjs";
-export * from "./JsonSerializerStream/JsonSerializerStream.mjs";
-export * from "./CsvLineEncoderStream/CsvLineEncoderStream.mjs";
-export * from "./SourceStream/SourceStream.mjs";
-export * from "./NullStream/NullStream.mjs";
-export * from "./PeekStream/PeekStream.mjs";
-//# sourceMappingURL=mod.mjs.map
+
+export class ArrayAccumulatorStream<I = any> extends TransformStream<ArrayLike<I>> {
+  constructor(count: number) {
+    let chunks: any[] = []
+    super({
+      transform(chunk, controller) {
+        if (Array.isArray(chunk)) {
+          for (const obj of chunk) {
+            chunks.push(obj)
+            if (chunks.length === count) {
+              controller.enqueue(chunks)
+              chunks = []
+            }
+          }
+        }
+        else {
+          chunks.push(chunk)
+          if (chunks.length === count) {
+            controller.enqueue(chunks)
+            chunks = []
+          }
+        }
+      },
+      flush(controller) {
+        if (chunks.length > 0) {
+          controller.enqueue(chunks)
+          chunks = []
+        }
+      }
+    })
+  }
+}

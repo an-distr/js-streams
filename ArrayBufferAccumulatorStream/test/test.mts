@@ -1,4 +1,4 @@
-import { AccumulatorStream } from "../AccumulatorStream.mjs"
+import { ArrayBufferAccumulatorStream } from "../ArrayBufferAccumulatorStream.mjs"
 import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.mjs"
 import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Streams.mjs"
 
@@ -98,7 +98,7 @@ if (
   const test = async (totalSize: number, readableChunkSize: number, chunkSize: number, fixed: boolean, isArray: boolean) => {
     readableChunkSize = readableChunkSize === 0 ? totalSize : readableChunkSize
 
-    performance.clearMeasures("AccumulatorStream.transform")
+    performance.clearMeasures("ArrayBufferAccumulatorStream.transform")
     performance.clearMarks("start")
     performance.clearMarks("end")
 
@@ -106,14 +106,14 @@ if (
 
     await readable(totalSize, readableChunkSize, isArray)
       .pipeThrough(mark("start"))
-      .pipeThrough(new AccumulatorStream(chunkSize, { fixed }))
+      .pipeThrough(new ArrayBufferAccumulatorStream(chunkSize, { fixed }))
       .pipeThrough(mark("end"))
       .pipeThrough(assertChunkSize(totalSize, chunkSize))
-      .pipeThrough(measure("AccumulatorStream.transform", "start", "end"))
+      .pipeThrough(measure("ArrayBufferAccumulatorStream.transform", "start", "end"))
       .pipeThrough(mark("start"))
       .pipeTo(writable(result))
 
-    const entries = performance.getEntriesByName("AccumulatorStream.transform")
+    const entries = performance.getEntriesByName("ArrayBufferAccumulatorStream.transform")
     const durations = entries.map(e => e.duration)
     const totalDuration = durations.reduce((s, d) => s += d, 0.0)
     const minDuration = durations.reduce((l, r) => Math.min(l, r))
@@ -129,7 +129,7 @@ if (
     console.groupCollapsed([
       `ReadableStream(${totalSize.toLocaleString()}, { isArray: ${isArray} }) =>`,
       `chunk(${readableChunkSize.toLocaleString()}) =>`,
-      `AccumulatorStream(${chunkSize.toLocaleString()}, { fixed: ${fixed} })`,
+      `ArrayBufferAccumulatorStream(${chunkSize.toLocaleString()}, { fixed: ${fixed} })`,
       `durationOfOccupancy: ${totalDuration}`,
     ].join(" "))
   
@@ -173,14 +173,14 @@ if (
 
     await readable
       .pipeThrough(new Utf8EncoderStream)
-      .pipeThrough(new AccumulatorStream(chunkSize, { forceEmit: [[10, 13], [13], [10]] }))
+      .pipeThrough(new ArrayBufferAccumulatorStream(chunkSize, { forceEmit: [[10, 13], [13], [10]] }))
       .pipeThrough(new Utf8DecoderStream)
       .pipeTo(writable)
   }
 
   // warmup
   await readable(1, 1, false)
-    .pipeThrough(new AccumulatorStream(1))
+    .pipeThrough(new ArrayBufferAccumulatorStream(1))
     .pipeTo(new WritableStream)
 
   const totalSizes = [

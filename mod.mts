@@ -17,10 +17,12 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export * from "./AccumulatorStream/AccumulatorStream.mjs"
+export * from "./ArrayBufferAccumulatorStream/ArrayBufferAccumulatorStream.mjs"
+export * from "./ArrayAccumulatorStream/ArrayAccumulatorStream.mjs"
 export * from "./JsonDeserializerStream/JsonDeserializerStream.mjs"
 export * from "./JsonSerializerStream/JsonSerializerStream.mjs"
 export * from "./CsvLineEncoderStream/CsvLineEncoderStream.mjs"
 export * from "./SourceStream/SourceStream.mjs"
+export * from "./FlattenStream/FlattenStream.mjs"
 export * from "./NullStream/NullStream.mjs"
 export * from "./PeekStream/PeekStream.mjs"

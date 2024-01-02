@@ -1,7 +1,7 @@
-# AccumulatorStream
+# ArrayBufferAccumulatorStream
 
 ## Description
-Accumulate the stream and emit it at a constant size or condition.
+Accumulate the ArrayBuffer stream and emit it at a constant size or condition.
 
 **If you can set a "[highWaterMark](https://developer.mozilla.org/en-US/docs/Web/API/ByteLengthQueuingStrategy/highWaterMark)" for "[ReadableStream](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)", it is more efficient.**
 
@@ -11,8 +11,8 @@ Accumulate the stream and emit it at a constant size or condition.
 ## Input/output definition
 |Direction|Type|
 |-|-|
-|Input|ArrayBufferLike \| ArrayLike<any>|
-|Output|ArrayBufferLike \| ArrayLike<any>|
+|Input|ArrayBufferLike \| ArrayLike<number>|
+|Output|ArrayBufferLike \| ArrayLike<number>|
 
 ## Compatibility
 * \>= ES6(ECMAScript 2015)
@@ -23,9 +23,9 @@ Accumulate the stream and emit it at a constant size or condition.
 
 ## Usage
 ```ts
-import { AccumulatorStream } from "https://an-js-streams.pages.dev/mod.mjs"
+import { ArrayBufferAccumulatorStream } from "https://an-js-streams.pages.dev/mod.mjs"
 
-const accumulator = new AccumulatorStream(
+const accumulator = new ArrayBufferAccumulatorStream(
   // Specify emit size.
   512,
   // The options.
