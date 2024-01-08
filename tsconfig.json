@@ -4,6 +4,7 @@
     "module": "ESNext",
     "strict": true,
     "removeComments": true,
-    "sourceMap": true
+    "newLine": "crlf",
+    "sourceMap": true,
   }
 }
