@@ -19,6 +19,22 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 export class CompatiblePerformance {
 
+  static replaceIfUnsupported() {
+    if (
+      !("now" in globalThis.performance) ||
+      !("mark" in globalThis.performance) ||
+      !("measure" in globalThis.performance) ||
+      !("getEntries" in globalThis.performance) ||
+      !("getEntriesByType" in globalThis.performance) ||
+      !("getEntriesByName" in globalThis.performance) ||
+      !("clearMeasures" in globalThis.performance) ||
+      !("clearMarks" in globalThis.performance)
+    ) {
+      console.warn("globalThis.performance switch to CompatiblePerformance")
+      globalThis.performance = new CompatiblePerformance
+    }
+  }
+
   /*! Not implemented */
   navigation: PerformanceNavigation = {} as PerformanceNavigation
   /*! Not implemented */
