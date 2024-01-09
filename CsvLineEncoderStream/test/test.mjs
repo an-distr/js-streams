@@ -1,4 +1,4 @@
-import { CsvLineEncoder } from "../CsvLineEncoderStream.mjs";
+import { CsvLineEncoder } from "../CsvLineEncoder.mjs";
 (async () => {
     const readable = (data) => new ReadableStream({
         start(controller) {

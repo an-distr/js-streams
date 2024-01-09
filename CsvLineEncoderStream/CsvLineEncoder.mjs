@@ -64,4 +64,4 @@ export class CsvLineEncoder extends PushPull {
         }
     }
 }
-//# sourceMappingURL=CsvLineEncoderStream.mjs.map
+//# sourceMappingURL=CsvLineEncoder.mjs.map
