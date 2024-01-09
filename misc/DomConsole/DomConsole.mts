@@ -19,11 +19,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 export class DomConsole implements Console {
   owner: Node
+  redirect?: Console
   parent: DomConsole | undefined
   child: DomConsole | undefined
   holder: HTMLUListElement
 
-  constructor(owner: Node | string, parent?: DomConsole) {
+  constructor(owner: Node | string, redirect?: Console, parent?: DomConsole) {
     if (typeof owner === "string") {
       this.owner = document.getElementById(owner) as Node
       const scopedStyle = document.createElement("style")
@@ -40,6 +41,7 @@ export class DomConsole implements Console {
     else {
       this.owner = owner
     }
+    this.redirect = redirect
     this.parent = parent
     this.holder = document.createElement("ul")
     this.holder.classList.add("console-list")
@@ -93,7 +95,7 @@ export class DomConsole implements Console {
     chk.type = "checkbox"
     chk.checked = !collapsed
     current.prepend(chk)
-    this.child = new DomConsole(current, this)
+    this.child = new DomConsole(current, this.redirect, this)
   }
 
   group(...data: any[]): void {
@@ -102,9 +104,7 @@ export class DomConsole implements Console {
       return
     }
     this.toNextHolder(false, ...data)
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["group"](...data)
-    }
+    this.redirect?.group(...data)
   }
 
   groupCollapsed(...data: any[]): void {
@@ -113,9 +113,7 @@ export class DomConsole implements Console {
       return
     }
     this.toNextHolder(true, ...data)
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["groupCollapsed"](...data)
-    }
+    this.redirect?.groupCollapsed(...data)
   }
 
   groupEnd(): void {
@@ -126,9 +124,7 @@ export class DomConsole implements Console {
     if (this.parent) {
       this.parent.child = undefined
     }
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["groupEnd"]()
-    }
+    this.redirect?.groupEnd()
   }
 
   clear(): void {
@@ -141,9 +137,7 @@ export class DomConsole implements Console {
     this.owner.replaceChild(newHolder, oldHolder)
     this.holder = newHolder as HTMLUListElement
     this.child = undefined
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["clear"]()
-    }
+    this.redirect?.clear()
   }
 
   assert(condition?: boolean | undefined, ...data: any[]): void {
@@ -154,9 +148,7 @@ export class DomConsole implements Console {
     if (condition !== undefined && !condition) {
       this.appendItem("assert", "Assertion failed:", ...data)
     }
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["assert"](...data)
-    }
+    this.redirect?.assert(...data)
   }
 
   log(...data: any[]): void {
@@ -165,9 +157,7 @@ export class DomConsole implements Console {
       return
     }
     this.appendItem("log", ...data)
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["log"](...data)
-    }
+    this.redirect?.log(...data)
   }
 
   trace(...data: any[]): void {
@@ -176,9 +166,7 @@ export class DomConsole implements Console {
       return
     }
     this.appendItem("trace", ...data)
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["trace"](...data)
-    }
+    this.redirect?.trace(...data)
   }
 
   debug(...data: any[]): void {
@@ -187,9 +175,7 @@ export class DomConsole implements Console {
       return
     }
     this.appendItem("debug", ...data)
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["debug"](...data)
-    }
+    this.redirect?.debug(...data)
   }
 
   info(...data: any[]): void {
@@ -198,9 +184,7 @@ export class DomConsole implements Console {
       return
     }
     this.appendItem("info", ...data)
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["info"](...data)
-    }
+    this.redirect?.info(...data)
   }
 
   warn(...data: any[]): void {
@@ -209,9 +193,7 @@ export class DomConsole implements Console {
       return
     }
     this.appendItem("warn", ...data)
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["warn"](...data)
-    }
+    this.redirect?.warn(...data)
   }
 
   error(...data: any[]): void {
@@ -220,9 +202,7 @@ export class DomConsole implements Console {
       return
     }
     this.appendItem("error", ...data)
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["error"](...data)
-    }
+    this.redirect?.error(...data)
   }
 
   private createHeaderCell(textContent: string) {
@@ -283,9 +263,7 @@ export class DomConsole implements Console {
     const li = this.appendItem()
     li.append(table)
     this.holder.append(li)
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["table"](tabularData, properties)
-    }
+    this.redirect?.table(tabularData, properties)
   }
 
   /*! Not implemented. **/
@@ -295,9 +273,7 @@ export class DomConsole implements Console {
       this.child.count(label)
       return
     }
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["count"](label)
-    }
+    this.redirect?.count(label)
   }
 
   countReset(label?: string | undefined): void {
@@ -305,9 +281,7 @@ export class DomConsole implements Console {
       this.child.countReset(label)
       return
     }
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["countReset"](label)
-    }
+    this.redirect?.countReset(label)
   }
 
   dir(item?: any, options?: any): void {
@@ -315,9 +289,7 @@ export class DomConsole implements Console {
       this.child.dir(item, options)
       return
     }
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["dir"](item, options)
-    }
+    this.redirect?.dir(item, options)
   }
 
   dirxml(...data: any[]): void {
@@ -325,9 +297,7 @@ export class DomConsole implements Console {
       this.child.dirxml(...data)
       return
     }
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["dirxml"](...data)
-    }
+    this.redirect?.dirxml(...data)
   }
 
   time(label?: string | undefined): void {
@@ -335,9 +305,7 @@ export class DomConsole implements Console {
       this.child.time(label)
       return
     }
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["time"](label)
-    }
+    this.redirect?.time(label)
   }
 
   timeEnd(label?: string | undefined): void {
@@ -345,9 +313,7 @@ export class DomConsole implements Console {
       this.child.timeEnd(label)
       return
     }
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["timeEnd"](label)
-    }
+    this.redirect?.timeEnd(label)
   }
 
   timeLog(label?: string | undefined, ...data: any[]): void {
@@ -355,9 +321,7 @@ export class DomConsole implements Console {
       this.child.timeLog(label, ...data)
       return
     }
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["timeLog"](label, ...data)
-    }
+    this.redirect?.timeLog(label, ...data)
   }
 
   timeStamp(label?: string | undefined): void {
@@ -365,8 +329,6 @@ export class DomConsole implements Console {
       this.child.timeStamp(label)
       return
     }
-    if (!("holder" in globalThis.console)) {
-      globalThis.console["timeStamp"](label)
-    }
+    this.redirect?.timeStamp(label)
   }
 }

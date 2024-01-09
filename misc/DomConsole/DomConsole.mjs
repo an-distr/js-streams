@@ -17,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 export class DomConsole {
-    constructor(owner, parent) {
+    constructor(owner, redirect, parent) {
         if (typeof owner === "string") {
             this.owner = document.getElementById(owner);
             const scopedStyle = document.createElement("style");
@@ -34,6 +34,7 @@ export class DomConsole {
         else {
             this.owner = owner;
         }
+        this.redirect = redirect;
         this.parent = parent;
         this.holder = document.createElement("ul");
         this.holder.classList.add("console-list");
@@ -84,29 +85,28 @@ export class DomConsole {
         chk.type = "checkbox";
         chk.checked = !collapsed;
         current.prepend(chk);
-        this.child = new DomConsole(current, this);
+        this.child = new DomConsole(current, this.redirect, this);
     }
     group(...data) {
+        var _a;
         if (this.child) {
             this.child.group(...data);
             return;
         }
         this.toNextHolder(false, ...data);
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["group"](...data);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.group(...data);
     }
     groupCollapsed(...data) {
+        var _a;
         if (this.child) {
             this.child.groupCollapsed(...data);
             return;
         }
         this.toNextHolder(true, ...data);
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["groupCollapsed"](...data);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.groupCollapsed(...data);
     }
     groupEnd() {
+        var _a;
         if (this.child) {
             this.child.groupEnd();
             return;
@@ -114,11 +114,10 @@ export class DomConsole {
         if (this.parent) {
             this.parent.child = undefined;
         }
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["groupEnd"]();
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.groupEnd();
     }
     clear() {
+        var _a;
         if (this.parent) {
             this.parent.clear();
             return;
@@ -128,11 +127,10 @@ export class DomConsole {
         this.owner.replaceChild(newHolder, oldHolder);
         this.holder = newHolder;
         this.child = undefined;
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["clear"]();
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.clear();
     }
     assert(condition, ...data) {
+        var _a;
         if (this.child) {
             this.child.assert(condition, ...data);
             return;
@@ -140,69 +138,61 @@ export class DomConsole {
         if (condition !== undefined && !condition) {
             this.appendItem("assert", "Assertion failed:", ...data);
         }
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["assert"](...data);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.assert(...data);
     }
     log(...data) {
+        var _a;
         if (this.child) {
             this.child.log(...data);
             return;
         }
         this.appendItem("log", ...data);
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["log"](...data);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.log(...data);
     }
     trace(...data) {
+        var _a;
         if (this.child) {
             this.child.trace(...data);
             return;
         }
         this.appendItem("trace", ...data);
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["trace"](...data);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.trace(...data);
     }
     debug(...data) {
+        var _a;
         if (this.child) {
             this.child.debug(...data);
             return;
         }
         this.appendItem("debug", ...data);
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["debug"](...data);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.debug(...data);
     }
     info(...data) {
+        var _a;
         if (this.child) {
             this.child.info(...data);
             return;
         }
         this.appendItem("info", ...data);
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["info"](...data);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.info(...data);
     }
     warn(...data) {
+        var _a;
         if (this.child) {
             this.child.warn(...data);
             return;
         }
         this.appendItem("warn", ...data);
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["warn"](...data);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.warn(...data);
     }
     error(...data) {
+        var _a;
         if (this.child) {
             this.child.error(...data);
             return;
         }
         this.appendItem("error", ...data);
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["error"](...data);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.error(...data);
     }
     createHeaderCell(textContent) {
         const headerCell = document.createElement("th");
@@ -210,6 +200,7 @@ export class DomConsole {
         return headerCell;
     }
     table(tabularData, properties) {
+        var _a;
         if (this.child) {
             this.child.table(tabularData, properties);
             return;
@@ -261,81 +252,71 @@ export class DomConsole {
         const li = this.appendItem();
         li.append(table);
         this.holder.append(li);
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["table"](tabularData, properties);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.table(tabularData, properties);
     }
     count(label) {
+        var _a;
         if (this.child) {
             this.child.count(label);
             return;
         }
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["count"](label);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.count(label);
     }
     countReset(label) {
+        var _a;
         if (this.child) {
             this.child.countReset(label);
             return;
         }
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["countReset"](label);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.countReset(label);
     }
     dir(item, options) {
+        var _a;
         if (this.child) {
             this.child.dir(item, options);
             return;
         }
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["dir"](item, options);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.dir(item, options);
     }
     dirxml(...data) {
+        var _a;
         if (this.child) {
             this.child.dirxml(...data);
             return;
         }
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["dirxml"](...data);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.dirxml(...data);
     }
     time(label) {
+        var _a;
         if (this.child) {
             this.child.time(label);
             return;
         }
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["time"](label);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.time(label);
     }
     timeEnd(label) {
+        var _a;
         if (this.child) {
             this.child.timeEnd(label);
             return;
         }
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["timeEnd"](label);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.timeEnd(label);
     }
     timeLog(label, ...data) {
+        var _a;
         if (this.child) {
             this.child.timeLog(label, ...data);
             return;
         }
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["timeLog"](label, ...data);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.timeLog(label, ...data);
     }
     timeStamp(label) {
+        var _a;
         if (this.child) {
             this.child.timeStamp(label);
             return;
         }
-        if (!("holder" in globalThis.console)) {
-            globalThis.console["timeStamp"](label);
-        }
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.timeStamp(label);
     }
 }
 //# sourceMappingURL=DomConsole.mjs.map
