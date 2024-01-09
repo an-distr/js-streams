@@ -1,24 +1,10 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-import { ArrayAccumulatorStream } from "../ArrayAccumulatorStream.mjs";
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    const readable = (data) => new ReadableStream({
+import { ArrayAccumulator } from "../ArrayAccumulatorStream.mjs";
+import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.mjs";
+(async () => {
+    CompatiblePerformance.replaceIfUnsupported();
+    const source = (data) => new ReadableStream({
         start(controller) {
-            if (Array.isArray(data)) {
-                for (const chunk of data) {
-                    controller.enqueue(chunk);
-                }
-            }
-            else {
-                controller.enqueue(data);
-            }
+            controller.enqueue(data);
             controller.close();
         }
     });
@@ -28,21 +14,110 @@ import { ArrayAccumulatorStream } from "../ArrayAccumulatorStream.mjs";
             controller.enqueue(chunk);
         }
     });
-    const writable = () => new WritableStream;
-    const test = (data, count) => __awaiter(void 0, void 0, void 0, function* () {
-        console.groupCollapsed(`=== data: ${JSON.stringify(data)}, count: ${count} ===`);
-        yield readable(data)
-            .pipeThrough(new ArrayAccumulatorStream(count))
-            .pipeThrough(logging())
-            .pipeTo(writable());
+    const terminate = () => new WritableStream;
+    const testConstructor = async (size, data) => {
+        const accumulator = new ArrayAccumulator(size, data);
+        for await (const value of accumulator.pushpull(undefined, true, true)) {
+            console.log(value);
+        }
+    };
+    const testPush = async (size, data) => {
+        const accumulator = new ArrayAccumulator(size);
+        accumulator.push(data);
+        for await (const value of accumulator.pushpull(undefined, true, true)) {
+            console.log(value);
+        }
+    };
+    const testPushPull = async (size, data) => {
+        const accumulator = new ArrayAccumulator(size);
+        for await (const value of accumulator.pushpull(data, true, true)) {
+            console.log(value);
+        }
+    };
+    const testAsyncIterator = async (size, data) => {
+        const accumulator = new ArrayAccumulator(size, data);
+        for await (const value of accumulator) {
+            console.log(value);
+        }
+    };
+    const testReadable = async (size, data) => {
+        const accumulator = new ArrayAccumulator(size);
+        await accumulator.readable(data).pipeThrough(logging()).pipeTo(terminate());
+    };
+    const testTransform = async (size, data) => {
+        const accumulator = new ArrayAccumulator(size);
+        await source(data).pipeThrough(accumulator.transform()).pipeThrough(logging()).pipeTo(terminate());
+    };
+    const testWritable = async (size, data) => {
+        const accumulator = new ArrayAccumulator(size);
+        await source(data).pipeTo(accumulator.writable());
+        for await (const value of accumulator) {
+            console.log(value);
+        }
+    };
+    const testPerformance = async (size, total) => {
+        console.groupCollapsed(`size=${size}, total=${total}`);
+        performance.clearMeasures("perf");
+        performance.clearMarks("start");
+        performance.clearMarks("end");
+        performance.mark("start");
+        const accumulator = new ArrayAccumulator(size);
+        for (let i = 0; i < total; ++i) {
+            for await (const value of accumulator.pushpull(i, true, false)) {
+                console.assert(value.length === size, "flush= false", "value=", value, "length=", value.length, "size=", size);
+            }
+        }
+        for await (const value of accumulator.pushpull(undefined, true, true)) {
+            console.assert(value.length === total % size, "flush= true", "value=", value, "length=", value.length, "size=", total % size);
+        }
+        performance.mark("end");
+        performance.measure("perf", "start", "end");
+        const perf = performance.getEntriesByName("perf")[0];
+        console.log(`duration: ${perf.duration}`);
         console.groupEnd();
-    });
-    yield test(undefined, 2);
-    yield test(null, 2);
-    yield test("abc", 2);
-    yield test(123, 2);
-    yield test([1, 2, 3, 4, 5], 2);
-    yield test([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 4 }, { a: 5 },], 2);
+    };
+    const testList = [
+        testConstructor,
+        testPush,
+        testPushPull,
+        testAsyncIterator,
+        testReadable,
+        testTransform,
+        testWritable,
+    ];
+    const sizeList = [
+        4,
+        5,
+        6,
+    ];
+    const dataList = [
+        undefined,
+        null,
+        "abc",
+        123,
+        1.23,
+        [1, 2, 3, 4, 5],
+        ["aaa", "bbb", "ccc", "ddd", "eee"],
+        [{ a: 1 }, { b: 2 }, { c: 3 }, { d: 4 }, { e: 5 }],
+        function* () { yield 1; yield 2; yield 3; yield 4; yield 5; },
+        async function* () { yield 1; yield 2; yield 3; yield 4; yield 5; },
+    ];
+    for (const test of testList) {
+        console.groupCollapsed(test.name);
+        for (const data of dataList) {
+            for (const size of sizeList) {
+                console.groupCollapsed(`size=${size}, data=${JSON.stringify(data)}`);
+                await test(size, data);
+                console.groupEnd();
+            }
+        }
+        console.groupEnd();
+    }
+    console.groupCollapsed(testPerformance.name);
+    await testPerformance(8, 100000);
+    await testPerformance(32, 100000);
+    await testPerformance(1000, 100000);
+    console.groupEnd();
     console.log("Test completed.");
-}))();
+})();
 //# sourceMappingURL=test.mjs.map

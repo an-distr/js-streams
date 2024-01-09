@@ -1,17 +1,13 @@
-import { ArrayAccumulatorStream } from "../ArrayAccumulatorStream.mjs"
+import { ArrayAccumulator } from "../ArrayAccumulatorStream.mjs"
+import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.mjs"
 
 (async () => {
 
-  const readable = (data: any) => new ReadableStream({
+  CompatiblePerformance.replaceIfUnsupported()
+
+  const source = (data: any) => new ReadableStream({
     start(controller) {
-      if (Array.isArray(data)) {
-        for (const chunk of data) {
-          controller.enqueue(chunk)
-        }
-      }
-      else {
-        controller.enqueue(data)
-      }
+      controller.enqueue(data)
       controller.close()
     }
   })
@@ -23,23 +19,123 @@ import { ArrayAccumulatorStream } from "../ArrayAccumulatorStream.mjs"
     }
   })
 
-  const writable = () => new WritableStream
+  const terminate = () => new WritableStream
 
-  const test = async (data: any, count: number) => {
-    console.groupCollapsed(`=== data: ${JSON.stringify(data)}, count: ${count} ===`)
-    await readable(data)
-      .pipeThrough(new ArrayAccumulatorStream(count))
-      .pipeThrough(logging())
-      .pipeTo(writable())
+  const testConstructor = async (size: number, data: any) => {
+    const accumulator = new ArrayAccumulator(size, data)
+    for await (const value of accumulator.pushpull(undefined, true, true)) {
+      console.log(value)
+    }
+  }
+
+  const testPush = async (size: number, data: any) => {
+    const accumulator = new ArrayAccumulator(size)
+    accumulator.push(data)
+    for await (const value of accumulator.pushpull(undefined, true, true)) {
+      console.log(value)
+    }
+  }
+
+  const testPushPull = async (size: number, data: any) => {
+    const accumulator = new ArrayAccumulator(size)
+    for await (const value of accumulator.pushpull(data, true, true)) {
+      console.log(value)
+    }
+  }
+
+  const testAsyncIterator = async (size: number, data: any) => {
+    const accumulator = new ArrayAccumulator(size, data)
+    for await (const value of accumulator) {
+      console.log(value)
+    }
+  }
+
+  const testReadable = async (size: number, data: any) => {
+    const accumulator = new ArrayAccumulator(size)
+    await accumulator.readable(data).pipeThrough(logging()).pipeTo(terminate())
+  }
+
+  const testTransform = async (size: number, data: any) => {
+    const accumulator = new ArrayAccumulator(size)
+    await source(data).pipeThrough(accumulator.transform()).pipeThrough(logging()).pipeTo(terminate())
+  }
+
+  const testWritable = async (size: number, data: any) => {
+    const accumulator = new ArrayAccumulator(size)
+    await source(data).pipeTo(accumulator.writable())
+    for await (const value of accumulator) {
+      console.log(value)
+    }
+  }
+
+  const testPerformance = async (size: number, total: number) => {
+    console.groupCollapsed(`size=${size}, total=${total}`)
+    performance.clearMeasures("perf")
+    performance.clearMarks("start")
+    performance.clearMarks("end")
+    performance.mark("start")
+    const accumulator = new ArrayAccumulator(size)
+    for (let i = 0; i < total; ++i) {
+      for await (const value of accumulator.pushpull(i, true, false)) {
+        console.assert(value.length === size, "flush= false", "value=", value, "length=", value.length, "size=", size)
+      }
+    }
+    for await (const value of accumulator.pushpull(undefined, true, true)) {
+      console.assert(value.length === total % size, "flush= true", "value=", value, "length=", value.length, "size=", total % size)
+    }
+    performance.mark("end")
+    performance.measure("perf", "start", "end")
+    const perf = performance.getEntriesByName("perf")[0]
+    console.log(`duration: ${perf.duration}`)
     console.groupEnd()
   }
 
-  await test(undefined, 2)
-  await test(null, 2)
-  await test("abc", 2)
-  await test(123, 2)
-  await test([1, 2, 3, 4, 5], 2)
-  await test([{ a: 1 }, { a: 2 }, { a: 3 }, { a: 4 }, { a: 5 },], 2)
+  const testList = [
+    testConstructor,
+    testPush,
+    testPushPull,
+    testAsyncIterator,
+    testReadable,
+    testTransform,
+    testWritable,
+  ]
+
+  const sizeList = [
+    4,
+    5,
+    6,
+  ]
+
+  const dataList = [
+    undefined,
+    null,
+    "abc",
+    123,
+    1.23,
+    [1, 2, 3, 4, 5],
+    ["aaa", "bbb", "ccc", "ddd", "eee"],
+    [{ a: 1 }, { b: 2 }, { c: 3 }, { d: 4 }, { e: 5 }],
+    function* () { yield 1; yield 2; yield 3; yield 4; yield 5; },
+    async function* () { yield 1; yield 2; yield 3; yield 4; yield 5; },
+  ]
+
+  for (const test of testList) {
+    console.groupCollapsed(test.name)
+    for (const data of dataList) {
+      for (const size of sizeList) {
+        console.groupCollapsed(`size=${size}, data=${JSON.stringify(data)}`)
+        await test(size, data)
+        console.groupEnd()
+      }
+    }
+    console.groupEnd()
+  }
+
+  console.groupCollapsed(testPerformance.name)
+  await testPerformance(8, 100000)
+  await testPerformance(32, 100000)
+  await testPerformance(1000, 100000)
+  console.groupEnd()
 
   console.log("Test completed.")
 
