@@ -1,14 +1,5 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { FlattenStream } from "../FlattenStream.mjs";
-(() => __awaiter(void 0, void 0, void 0, function* () {
+(async () => {
     const readable = (data) => new ReadableStream({
         start(controller) {
             controller.enqueue(data);
@@ -22,25 +13,25 @@ import { FlattenStream } from "../FlattenStream.mjs";
         }
     });
     const writable = () => new WritableStream;
-    const test = (data, limit) => __awaiter(void 0, void 0, void 0, function* () {
+    const test = async (data, limit) => {
         console.groupCollapsed(`=== data: ${JSON.stringify(data)}, limit: ${limit} ===`);
-        yield readable(data)
+        await readable(data)
             .pipeThrough(new FlattenStream(limit))
             .pipeThrough(logging())
             .pipeTo(writable());
         console.groupEnd();
-    });
-    yield test(undefined);
-    yield test(null);
-    yield test("abc");
-    yield test(123);
-    yield test([1, 2, 3, 4, 5]);
-    yield test([{ a: 1 }, { a: 2 }, [{ a: 3 }, [{ a: 4 }]], { a: 5 }]);
-    yield test([0, [1, [2, [3]]]]);
-    yield test([0, [1, [2, [3]]]], 0);
-    yield test([0, [1, [2, [3]]]], 1);
-    yield test([0, [1, [2, [3]]]], 2);
-    yield test([0, [1, [2, [3]]]], 3);
+    };
+    await test(undefined);
+    await test(null);
+    await test("abc");
+    await test(123);
+    await test([1, 2, 3, 4, 5]);
+    await test([{ a: 1 }, { a: 2 }, [{ a: 3 }, [{ a: 4 }]], { a: 5 }]);
+    await test([0, [1, [2, [3]]]]);
+    await test([0, [1, [2, [3]]]], 0);
+    await test([0, [1, [2, [3]]]], 1);
+    await test([0, [1, [2, [3]]]], 2);
+    await test([0, [1, [2, [3]]]], 3);
     console.log("Test completed.");
-}))();
+})();
 //# sourceMappingURL=test.mjs.map

@@ -1,12 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { ArrayBufferAccumulatorStream } from "../ArrayBufferAccumulatorStream.mjs";
 import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.mjs";
 import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Streams.mjs";
@@ -21,7 +12,7 @@ if (!("now" in performance) ||
     console.warn("globalThis.performance switch to CompatiblePerformance");
     performance = new CompatiblePerformance;
 }
-(() => __awaiter(void 0, void 0, void 0, function* () {
+(async () => {
     function readable(totalSize, chunkSize, isArray) {
         return new ReadableStream({
             start(controller) {
@@ -90,13 +81,13 @@ if (!("now" in performance) ||
             }
         });
     }
-    const test = (totalSize, readableChunkSize, chunkSize, fixed, isArray) => __awaiter(void 0, void 0, void 0, function* () {
+    const test = async (totalSize, readableChunkSize, chunkSize, fixed, isArray) => {
         readableChunkSize = readableChunkSize === 0 ? totalSize : readableChunkSize;
         performance.clearMeasures("ArrayBufferAccumulatorStream.transform");
         performance.clearMarks("start");
         performance.clearMarks("end");
         const result = { sizeOfWritten: 0 };
-        yield readable(totalSize, readableChunkSize, isArray)
+        await readable(totalSize, readableChunkSize, isArray)
             .pipeThrough(mark("start"))
             .pipeThrough(new ArrayBufferAccumulatorStream(chunkSize, { fixed }))
             .pipeThrough(mark("end"))
@@ -140,8 +131,8 @@ if (!("now" in performance) ||
             durationMedian: medianDuration,
         });
         console.groupEnd();
-    });
-    const testNewLine = (chunkSize) => __awaiter(void 0, void 0, void 0, function* () {
+    };
+    const testNewLine = async (chunkSize) => {
         const text = "aaaaaaaaaa\nbbbbbbbbbb\ncccccccccc\ndddddddddd\neeeeeeeeee\n11111";
         const readable = new ReadableStream({
             start(controller) {
@@ -154,13 +145,13 @@ if (!("now" in performance) ||
                 console.log(`[${chunk}]`);
             }
         });
-        yield readable
+        await readable
             .pipeThrough(new Utf8EncoderStream)
             .pipeThrough(new ArrayBufferAccumulatorStream(chunkSize, { forceEmit: [[10, 13], [13], [10]] }))
             .pipeThrough(new Utf8DecoderStream)
             .pipeTo(writable);
-    });
-    yield readable(1, 1, false)
+    };
+    await readable(1, 1, false)
         .pipeThrough(new ArrayBufferAccumulatorStream(1))
         .pipeTo(new WritableStream);
     const totalSizes = [
@@ -189,7 +180,7 @@ if (!("now" in performance) ||
             for (const chunkSize of chunkSizes) {
                 for (const fixed of [false, true]) {
                     for (const isArray of [false, true]) {
-                        yield test(totalSize, readableChunkSize, chunkSize, fixed, isArray);
+                        await test(totalSize, readableChunkSize, chunkSize, fixed, isArray);
                     }
                 }
             }
@@ -199,15 +190,15 @@ if (!("now" in performance) ||
     console.groupEnd();
     console.groupCollapsed("Testing line separate");
     console.groupCollapsed("> size");
-    yield testNewLine(8);
+    await testNewLine(8);
     console.groupEnd();
     console.groupCollapsed("= size");
-    yield testNewLine(10);
+    await testNewLine(10);
     console.groupEnd();
     console.groupCollapsed("< size");
-    yield testNewLine(13);
+    await testNewLine(13);
     console.groupEnd();
     console.groupEnd();
     console.log("Test completed.");
-}))();
+})();
 //# sourceMappingURL=test.mjs.map
