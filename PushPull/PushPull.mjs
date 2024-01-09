@@ -17,6 +17,38 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 export class PushPull {
+    constructor() {
+        this.queue = [];
+    }
+    async push(data) {
+        if (data !== undefined) {
+            if (typeof data === "function") {
+                data = (await data());
+            }
+            if (data === null) {
+                this.queue.push(data);
+            }
+            else if (Array.isArray(data)) {
+                for (const value of data)
+                    this.queue.push(value);
+            }
+            else if (typeof data === "string") {
+                this.queue.push(data);
+            }
+            else if (typeof data[Symbol.iterator] === "function") {
+                for (const value of data)
+                    this.queue.push(value);
+            }
+            else if (typeof data[Symbol.asyncIterator] === "function") {
+                for await (const value of data)
+                    this.queue.push(value);
+            }
+            else {
+                this.queue.push(data);
+            }
+        }
+        return this.queue.length;
+    }
     [Symbol.asyncIterator]() {
         return this.pushpull(undefined, true, true);
     }
@@ -35,7 +67,7 @@ export class PushPull {
         const This = this;
         return new TransformStream({
             async transform(data, controller) {
-                for await (const chunk of This.pushpull(data, true, false)) {
+                for await (const chunk of This.pushpull(data, true)) {
                     controller.enqueue(chunk);
                 }
             },
