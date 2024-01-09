@@ -75,4 +75,4 @@ export class ArrayAccumulator extends PushPull {
         }
     }
 }
-//# sourceMappingURL=ArrayAccumulatorStream.mjs.map
+//# sourceMappingURL=ArrayAccumulator.mjs.map

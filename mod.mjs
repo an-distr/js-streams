@@ -17,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 export * from "./ArrayBufferAccumulatorStream/ArrayBufferAccumulatorStream.mjs";
-export * from "./ArrayAccumulatorStream/ArrayAccumulatorStream.mjs";
+export * from "./ArrayAccumulatorStream/ArrayAccumulator.mjs";
 export * from "./JsonDeserializerStream/JsonDeserializerStream.mjs";
 export * from "./JsonSerializerStream/JsonSerializerStream.mjs";
 export * from "./CsvLineEncoderStream/CsvLineEncoderStream.mjs";

@@ -1,4 +1,4 @@
-import { ArrayAccumulator } from "../ArrayAccumulatorStream.mjs";
+import { ArrayAccumulator } from "../ArrayAccumulator.mjs";
 import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.mjs";
 (async () => {
     CompatiblePerformance.replaceIfUnsupported();
