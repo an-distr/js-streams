@@ -32,7 +32,7 @@
 <div id="console"></div>
 <script type="module">
   import { DomConsole } from "../DomConsole.mjs"
-  const console = new DomConsole("console")
+  const console = new DomConsole("console", globalThis.console)
 
   document.getElementById("log").onclick = () => {
     console.log("invoke log.")

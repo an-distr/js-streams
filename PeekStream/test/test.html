@@ -14,7 +14,7 @@
 </fieldset>
 <script type="module">
   import { DomConsole } from "../../misc/DomConsole/DomConsole.mjs"
-  globalThis.console = new DomConsole("console")
+  globalThis.console = new DomConsole("console", globalThis.console)
 
   fetch("./test.mts").then(resp => resp.text().then(text => document.getElementById("source").textContent = text))
 
