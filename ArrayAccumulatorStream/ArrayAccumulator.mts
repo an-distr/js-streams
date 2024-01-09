@@ -20,40 +20,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import { PushPull } from "../PushPull/PushPull.mjs"
 
 export class ArrayAccumulator<I = any> extends PushPull<I, ArrayLike<I>> {
-  private queue: I[] = []
   private size: number
 
   constructor(size: number, data?: ArrayLike<I> | Iterable<I> | I) {
     super()
     this.size = size;
     (async () => await this.push(data))()
-  }
-
-  async push(data?: ArrayLike<I> | Iterable<I> | AsyncIterable<I> | I) {
-    if (data !== undefined) {
-      if (typeof data === "function") {
-        data = (await data())
-      }
-      if (data === null) {
-        this.queue.push(data)
-      }
-      else if (Array.isArray(data)) {
-        for (const value of data) this.queue.push(value)
-      }
-      else if (typeof data === "string") {
-        this.queue.push(data)
-      }
-      else if (typeof (data as Iterable<I>)[Symbol.iterator] === "function") {
-        for (const value of (data as Iterable<I>)) this.queue.push(value)
-      }
-      else if (typeof (data as AsyncIterable<I>)[Symbol.asyncIterator] === "function") {
-        for await (const value of (data as AsyncIterable<I>)) this.queue.push(value)
-      }
-      else {
-        this.queue.push(data as I)
-      }
-    }
-    return this.queue.length
   }
 
   async *pushpull(data?: ArrayLike<I> | Iterable<I> | AsyncIterable<I> | I, pull?: boolean, flush?: boolean) {
@@ -65,7 +37,7 @@ export class ArrayAccumulator<I = any> extends PushPull<I, ArrayLike<I>> {
       }
     }
 
-    if (pull && flush) {
+    if (flush) {
       while (true) {
         while (this.queue.length >= this.size) {
           await this.push(yield this.queue.splice(0, this.size))

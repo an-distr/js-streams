@@ -20,38 +20,8 @@ import { PushPull } from "../PushPull/PushPull.mjs";
 export class ArrayAccumulator extends PushPull {
     constructor(size, data) {
         super();
-        this.queue = [];
         this.size = size;
         (async () => await this.push(data))();
-    }
-    async push(data) {
-        if (data !== undefined) {
-            if (typeof data === "function") {
-                data = (await data());
-            }
-            if (data === null) {
-                this.queue.push(data);
-            }
-            else if (Array.isArray(data)) {
-                for (const value of data)
-                    this.queue.push(value);
-            }
-            else if (typeof data === "string") {
-                this.queue.push(data);
-            }
-            else if (typeof data[Symbol.iterator] === "function") {
-                for (const value of data)
-                    this.queue.push(value);
-            }
-            else if (typeof data[Symbol.asyncIterator] === "function") {
-                for await (const value of data)
-                    this.queue.push(value);
-            }
-            else {
-                this.queue.push(data);
-            }
-        }
-        return this.queue.length;
     }
     async *pushpull(data, pull, flush) {
         await this.push(data);
@@ -60,7 +30,7 @@ export class ArrayAccumulator extends PushPull {
                 await this.push(yield this.queue.splice(0, this.size));
             }
         }
-        if (pull && flush) {
+        if (flush) {
             while (true) {
                 while (this.queue.length >= this.size) {
                     await this.push(yield this.queue.splice(0, this.size));
