@@ -63,7 +63,7 @@ import { CompatiblePerformance } from "../../misc/CompatiblePerformance/Compatib
         performance.mark("start");
         const accumulator = new ArrayAccumulator(size);
         for (let i = 0; i < total; ++i) {
-            for await (const value of accumulator.pushpull(i, true, false)) {
+            for await (const value of accumulator.pushpull(i, true)) {
                 console.assert(value.length === size, "flush= false", "value=", value, "length=", value.length, "size=", size);
             }
         }
