@@ -23,7 +23,7 @@ btnConvertUrl.onclick = async () => {
     response.body
       .pipeThrough(new TextDecoderStream)
       .pipeThrough(new streams.JsonDeserializerStream({ lineSeparated: response.headers.get("content-type")?.includes("jsonl") }))
-      .pipeThrough(new streams.CsvLineEncoderStream({ withNewLine: true }))
+      .pipeThrough(new streams.CsvLineEncoder({ withNewLine: true }).transform())
       .pipeTo(new DownloadStream("download.csv", options))
   })
 }

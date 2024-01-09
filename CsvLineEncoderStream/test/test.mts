@@ -1,4 +1,4 @@
-import { CsvLineEncoderStream } from "../CsvLineEncoderStream.mjs"
+import { CsvLineEncoder } from "../CsvLineEncoder.mjs"
 
 (async () => {
 
@@ -27,42 +27,42 @@ import { CsvLineEncoderStream } from "../CsvLineEncoderStream.mjs"
 
   console.groupCollapsed("=== escape: all ===")
   await readable(data)
-    .pipeThrough(new CsvLineEncoderStream({ escape: "all" }))
+    .pipeThrough(new CsvLineEncoder({ escape: "all" }).transform())
     .pipeThrough(logger())
     .pipeTo(new WritableStream)
   console.groupEnd()
 
   console.groupCollapsed("=== escape: auto ===")
   await readable(data)
-    .pipeThrough(new CsvLineEncoderStream({ escape: "auto" }))
+    .pipeThrough(new CsvLineEncoder({ escape: "auto" }).transform())
     .pipeThrough(logger())
     .pipeTo(new WritableStream)
   console.groupEnd()
 
   console.groupCollapsed("=== escape: none ===")
   await readable(data)
-    .pipeThrough(new CsvLineEncoderStream({ escape: "none" }))
+    .pipeThrough(new CsvLineEncoder({ escape: "none" }).transform())
     .pipeThrough(logger())
     .pipeTo(new WritableStream)
   console.groupEnd()
 
   console.groupCollapsed("=== escape: custom ===")
   await readable(data)
-    .pipeThrough(new CsvLineEncoderStream({ escape: s => `[${s}]` }))
+    .pipeThrough(new CsvLineEncoder(undefined, { escape: s => `[${s}]` }).transform())
     .pipeThrough(logger())
     .pipeTo(new WritableStream)
   console.groupEnd()
 
   console.groupCollapsed("=== delimiter: custom ===")
   await readable(data)
-    .pipeThrough(new CsvLineEncoderStream({ delimiter: "|" }))
+    .pipeThrough(new CsvLineEncoder(undefined, { delimiter: "|" }).transform())
     .pipeThrough(logger())
     .pipeTo(new WritableStream)
   console.groupEnd()
 
   console.groupCollapsed("=== newLine: custom ===")
   await readable(data)
-    .pipeThrough(new CsvLineEncoderStream({ newLine: "|" }))
+    .pipeThrough(new CsvLineEncoder(undefined, { newLine: "|" }).transform())
     .pipeThrough(logger())
     .pipeTo(new WritableStream)
   console.groupEnd()
@@ -70,7 +70,7 @@ import { CsvLineEncoderStream } from "../CsvLineEncoderStream.mjs"
   console.groupCollapsed("\n=== no new line ===")
   let text = ""
   await readable(data)
-    .pipeThrough(new CsvLineEncoderStream({ withNewLine: false }))
+    .pipeThrough(new CsvLineEncoder(undefined, { withNewLine: false }).transform())
     .pipeTo(new WritableStream({
       write(chunk) {
         text += chunk
