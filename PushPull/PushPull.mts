@@ -17,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export type PushableTypes<T> = ArrayLike<T> | Iterable<T> | AsyncIterable<T> | T
+export type PushableTypes<T> = ArrayBufferLike | ArrayLike<T> | Iterable<T> | AsyncIterable<T> | T
 
 export interface PushPullQueue<T, All> {
   length(): number
@@ -27,6 +27,62 @@ export interface PushPullQueue<T, All> {
   pop(): T | undefined
   empty(): void
   splice(start: number, deleteCount?: number): All
+}
+
+export class PushPullArrayBufferQueue implements PushPullQueue<ArrayBufferLike, ArrayBufferLike> {
+  private queue: ArrayBuffer
+  private size: number
+  private pos: number
+
+  constructor(size: number) {
+    this.size = size
+    this.queue = new ArrayBuffer(this.size)
+    this.pos = 0
+  }
+
+  length() {
+    return this.pos
+  }
+
+  more() {
+    return this.pos > 0
+  }
+
+  all() {
+    return this.queue.slice(0, this.pos)
+  }
+
+  push(data: ArrayBuffer) {
+    const queueView = new Uint8Array(this.queue)
+    const dataView = new Uint8Array(data)
+    let chunkSize = data.byteLength
+    let chunkPos = 0
+    while (chunkSize > 0) {
+      const copySize = Math.min(this.size - this.pos, chunkSize)
+      queueView.set(dataView.slice(chunkPos, chunkPos + copySize), this.pos)
+      this.pos += copySize
+      chunkPos += copySize
+      chunkSize -= copySize
+    }
+  }
+
+  pop() {
+    return this.splice(-1)
+  }
+
+  empty() {
+    this.queue = new ArrayBuffer(this.size)
+    this.pos = 0
+  }
+
+  splice(start: number, deleteCount?: number) {
+    const view = new Uint8Array(this.queue)
+    const shiftSize = deleteCount === undefined ? this.size : start + deleteCount
+    const data = view.slice(start, shiftSize)
+    view.set(view.slice(shiftSize), start)
+    this.pos -= shiftSize
+    return data
+  }
 }
 
 export class PushPullArrayQueue<T = any> implements PushPullQueue<T, ArrayLike<T>> {

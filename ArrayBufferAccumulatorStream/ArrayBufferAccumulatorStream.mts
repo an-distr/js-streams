@@ -17,9 +17,58 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+import { PushPull, PushPullArrayBufferQueue, PushableTypes } from "../PushPull/PushPull.mjs"
+
 export interface ArrayBufferAccumulatorStreamOptions {
   forceEmit?: number[][] | ((bytes: IterableIterator<number>) => number)
   fixed?: boolean
+}
+
+export class ArrayBufferAccumulator extends PushPull<ArrayBufferLike | ArrayLike<number>, ArrayBufferLike, PushPullArrayBufferQueue> {
+  private forceEmit: ((bytes: IterableIterator<number>) => number) | undefined
+  private fixed: boolean
+
+  constructor(size: number, options?: ArrayBufferAccumulatorStreamOptions) {
+    super(new PushPullArrayBufferQueue(size))
+    this.fixed = options?.forceEmit ? false : options?.fixed ?? false
+
+    if (options?.forceEmit) {
+      if (Array.isArray(options.forceEmit)) {
+        this.forceEmit = (bytes) => {
+          const clonedBytes: number[] = []
+          for (const byte of bytes) {
+            clonedBytes.push(byte)
+          }
+          const patterns = options.forceEmit as number[][]
+          for (let patternIndex = 0; patternIndex < patterns.length; ++patternIndex) {
+            const pattern = patterns[patternIndex]
+            let byteIndex = 0
+            let patternByteIndex = 0
+            for (const byte of clonedBytes.values()) {
+              if (byte !== pattern[patternByteIndex]) {
+                ++byteIndex
+                patternByteIndex = 0
+                continue
+              }
+              if (pattern.length === patternByteIndex + 1) {
+                return byteIndex + pattern.length
+              }
+              ++byteIndex
+              ++patternByteIndex
+            }
+          }
+          return -1
+        }
+      }
+      else {
+        this.forceEmit = options.forceEmit
+      }
+    }
+  }
+
+  pushpull(data?: PushableTypes<ArrayBufferLike | ArrayLike<number>> | undefined, flush?: boolean | undefined): AsyncGenerator<ArrayBufferLike, any, unknown> {
+    throw new Error("Method not implemented.")
+  }
 }
 
 export class ArrayBufferAccumulatorStream<I extends ArrayBufferLike | ArrayLike<number>> extends TransformStream<I, I> {
