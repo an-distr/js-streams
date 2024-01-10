@@ -19,29 +19,43 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import { PushPull, PushableTypes } from "../PushPull/PushPull.mjs"
 
-export class ArrayAccumulator<I = any> extends PushPull<I, ArrayLike<I>> {
-  private size: number
+export interface JsonSerializerOptions {
+  lineSeparated?: boolean
+  stringify?: (value: any) => string
+}
 
-  constructor(size: number) {
+export class JsonSerializer<I = any> extends PushPull<I, string> {
+  private lineSeparated: boolean
+  private separator: string
+  private stringify: (value: any) => string
+  private isNotFirst: boolean
+
+  constructor(options?: JsonSerializerOptions) {
     super()
-    this.size = size;
+    this.lineSeparated = options?.lineSeparated === true
+    this.separator = this.lineSeparated ? "\n" : ","
+    this.stringify = options?.stringify ?? JSON.stringify
+    this.isNotFirst = false;
   }
 
   async *pushpull(data?: PushableTypes<I>, flush?: boolean) {
     await this.push(data)
 
     do {
-      while (this.queue.length >= this.size) {
-        await this.push(yield this.queue.splice(0, this.size))
+      for (const value of this.queue.splice(0)) {
+        if (this.isNotFirst) {
+          await this.push(yield this.separator + this.stringify(value))
+        }
+        else {
+          if (!this.lineSeparated) await this.push(yield "[")
+          await this.push(yield this.stringify(value))
+          this.isNotFirst = true
+        }
       }
 
       if (flush) {
-        if (this.queue.length > 0) {
-          await this.push(yield this.queue.splice(0))
-        }
-      }
-      else {
-        break
+        if (!this.lineSeparated) await this.push(yield "]")
+        this.isNotFirst = false
       }
     } while (this.queue.length > 0)
   }

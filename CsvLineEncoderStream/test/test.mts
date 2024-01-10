@@ -2,16 +2,14 @@ import { CsvLineEncoder } from "../CsvLineEncoder.mjs"
 
 (async () => {
 
-  const readable = (data: any[]) => new ReadableStream({
+  const source = (data: any[]) => new ReadableStream({
     start(controller) {
-      for (const chunk of data) {
-        controller.enqueue(chunk)
-      }
+      controller.enqueue(data)
       controller.close()
     }
   })
 
-  const logger = () => new TransformStream({
+  const logging = () => new TransformStream({
     transform(chunk, controller) {
       console.log(chunk)
       controller.enqueue(chunk)
@@ -26,51 +24,51 @@ import { CsvLineEncoder } from "../CsvLineEncoder.mjs"
   ]
 
   console.groupCollapsed("=== escape: all ===")
-  await readable(data)
+  await source(data)
     .pipeThrough(new CsvLineEncoder({ escape: "all" }).transform())
-    .pipeThrough(logger())
+    .pipeThrough(logging())
     .pipeTo(new WritableStream)
   console.groupEnd()
 
   console.groupCollapsed("=== escape: auto ===")
-  await readable(data)
+  await source(data)
     .pipeThrough(new CsvLineEncoder({ escape: "auto" }).transform())
-    .pipeThrough(logger())
+    .pipeThrough(logging())
     .pipeTo(new WritableStream)
   console.groupEnd()
 
   console.groupCollapsed("=== escape: none ===")
-  await readable(data)
+  await source(data)
     .pipeThrough(new CsvLineEncoder({ escape: "none" }).transform())
-    .pipeThrough(logger())
+    .pipeThrough(logging())
     .pipeTo(new WritableStream)
   console.groupEnd()
 
   console.groupCollapsed("=== escape: custom ===")
-  await readable(data)
-    .pipeThrough(new CsvLineEncoder(undefined, { escape: s => `[${s}]` }).transform())
-    .pipeThrough(logger())
+  await source(data)
+    .pipeThrough(new CsvLineEncoder({ escape: s => `[${s}]` }).transform())
+    .pipeThrough(logging())
     .pipeTo(new WritableStream)
   console.groupEnd()
 
   console.groupCollapsed("=== delimiter: custom ===")
-  await readable(data)
-    .pipeThrough(new CsvLineEncoder(undefined, { delimiter: "|" }).transform())
-    .pipeThrough(logger())
+  await source(data)
+    .pipeThrough(new CsvLineEncoder({ delimiter: "|" }).transform())
+    .pipeThrough(logging())
     .pipeTo(new WritableStream)
   console.groupEnd()
 
   console.groupCollapsed("=== newLine: custom ===")
-  await readable(data)
-    .pipeThrough(new CsvLineEncoder(undefined, { newLine: "|" }).transform())
-    .pipeThrough(logger())
+  await source(data)
+    .pipeThrough(new CsvLineEncoder({ newLine: "|" }).transform())
+    .pipeThrough(logging())
     .pipeTo(new WritableStream)
   console.groupEnd()
 
   console.groupCollapsed("\n=== no new line ===")
   let text = ""
-  await readable(data)
-    .pipeThrough(new CsvLineEncoder(undefined, { withNewLine: false }).transform())
+  await source(data)
+    .pipeThrough(new CsvLineEncoder({ withNewLine: false }).transform())
     .pipeTo(new WritableStream({
       write(chunk) {
         text += chunk

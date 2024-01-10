@@ -17,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import { PushPull } from "../PushPull/PushPull.mjs"
+import { PushPull, PushableTypes } from "../PushPull/PushPull.mjs"
 
 export interface CsvLineEncoderOptions {
   delimiter?: string
@@ -34,7 +34,7 @@ export class CsvLineEncoder<I = any> extends PushPull<I, string> {
   private newLine: string
   private doEscape: (s: string) => string
 
-  constructor(data?: ArrayLike<I> | Iterable<I> | I, options?: CsvLineEncoderOptions) {
+  constructor(options?: CsvLineEncoderOptions) {
     super()
     this.delimiter = options?.delimiter ?? ","
     this.escape = options?.escape ?? "auto"
@@ -45,43 +45,39 @@ export class CsvLineEncoder<I = any> extends PushPull<I, string> {
       typeof this.escape !== "string"
         ? this.escape
         : this.escape === "auto"
-          ? (s: string) => {
+          ? s => {
             if (s.includes("\"") || s.includes("\n")) {
               return "\"" + s.replace(/\"/g, "\"\"") + "\""
             }
             return s
           }
           : this.escape === "all"
-            ? (s: string) => "\"" + s.replace(/\"/g, "\"\"") + "\""
-            : (s: string) => s;
-
-    (async () => await this.push(data))()
+            ? s => "\"" + s.replace(/\"/g, "\"\"") + "\""
+            : s => s;
   }
 
-  async *pushpull(data?: I, pull?: boolean, _flush?: boolean) {
+  async *pushpull(data?: PushableTypes<I>) {
     await this.push(data)
 
-    if (pull) {
-      while (this.queue.length > 0) {
-        const value = this.queue.splice(0, 1)[0]
-        const key_ = Object.keys(value as object).join(",")
+    while (this.queue.length > 0) {
+      const value = this.queue.pop() as I
+      const key_ = Object.keys(value as object).join(",")
 
-        if (!this.keys.has(key_)) {
-          const keys_: Extract<keyof I, string>[] = []
-          for (const key in value) {
-            keys_.push(key)
-          }
-          this.keys.set(key_, keys_)
+      if (!this.keys.has(key_)) {
+        const keys_: Extract<keyof I, string>[] = []
+        for (const key in value) {
+          keys_.push(key)
         }
-
-        const line = this.keys.get(key_)!
-          .map(key => (value as any)[key] as object)
-          .map(o => o?.toString() ?? "")
-          .map(this.doEscape)
-          .join(this.delimiter)
-
-        await this.push(yield line + this.newLine)
+        this.keys.set(key_, keys_)
       }
+
+      const line = this.keys.get(key_)!
+        .map(key => (value as any)[key] as object)
+        .map(o => o?.toString() ?? "")
+        .map(this.doEscape)
+        .join(this.delimiter)
+
+      await this.push(yield line + this.newLine)
     }
   }
 }

@@ -1,14 +1,12 @@
-import { JsonSerializerStream } from "../JsonSerializerStream.mjs";
+import { JsonSerializer } from "../JsonSerializer.mjs";
 (async () => {
-    const readable = (data) => new ReadableStream({
+    const source = (data) => new ReadableStream({
         start(controller) {
-            for (const chunk of data) {
-                controller.enqueue(chunk);
-            }
+            controller.enqueue(data);
             controller.close();
         }
     });
-    const logger = () => new WritableStream({
+    const logging = () => new WritableStream({
         write(chunk) {
             console.log(chunk);
         }
@@ -19,13 +17,13 @@ import { JsonSerializerStream } from "../JsonSerializerStream.mjs";
         { a: 5, b: 6 },
     ];
     console.log("=== JSON ===");
-    await readable(objs)
-        .pipeThrough(new JsonSerializerStream)
-        .pipeTo(logger());
+    await source(objs)
+        .pipeThrough(new JsonSerializer().transform())
+        .pipeTo(logging());
     console.log("=== JSON Lines ===");
-    await readable(objs)
-        .pipeThrough(new JsonSerializerStream({ lineSeparated: true }))
-        .pipeTo(logger());
+    await source(objs)
+        .pipeThrough(new JsonSerializer({ lineSeparated: true }).transform())
+        .pipeTo(logging());
     console.log("Test completed.");
 })();
 //# sourceMappingURL=test.mjs.map

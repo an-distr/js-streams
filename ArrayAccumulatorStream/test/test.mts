@@ -21,30 +21,24 @@ import { CompatiblePerformance } from "../../misc/CompatiblePerformance/Compatib
 
   const terminate = () => new WritableStream
 
-  const testConstructor = async (size: number, data: any) => {
-    const accumulator = new ArrayAccumulator(size, data)
-    for await (const value of accumulator.pushpull(undefined, true, true)) {
-      console.log(value)
-    }
-  }
-
   const testPush = async (size: number, data: any) => {
     const accumulator = new ArrayAccumulator(size)
-    accumulator.push(data)
-    for await (const value of accumulator.pushpull(undefined, true, true)) {
+    await accumulator.push(data)
+    for await (const value of accumulator.flush()) {
       console.log(value)
     }
   }
 
-  const testPushPull = async (size: number, data: any) => {
+  const testFlush = async (size: number, data: any) => {
     const accumulator = new ArrayAccumulator(size)
-    for await (const value of accumulator.pushpull(data, true, true)) {
+    for await (const value of accumulator.flush(data)) {
       console.log(value)
     }
   }
 
   const testAsyncIterator = async (size: number, data: any) => {
-    const accumulator = new ArrayAccumulator(size, data)
+    const accumulator = new ArrayAccumulator(size)
+    await accumulator.push(data)
     for await (const value of accumulator) {
       console.log(value)
     }
@@ -76,11 +70,11 @@ import { CompatiblePerformance } from "../../misc/CompatiblePerformance/Compatib
     performance.mark("start")
     const accumulator = new ArrayAccumulator(size)
     for (let i = 0; i < total; ++i) {
-      for await (const value of accumulator.pushpull(i, true)) {
+      for await (const value of accumulator.pull(i)) {
         console.assert(value.length === size, "flush= false", "value=", value, "length=", value.length, "size=", size)
       }
     }
-    for await (const value of accumulator.pushpull(undefined, true, true)) {
+    for await (const value of accumulator.flush()) {
       console.assert(value.length === total % size, "flush= true", "value=", value, "length=", value.length, "size=", total % size)
     }
     performance.mark("end")
@@ -91,9 +85,8 @@ import { CompatiblePerformance } from "../../misc/CompatiblePerformance/Compatib
   }
 
   const testList = [
-    testConstructor,
     testPush,
-    testPushPull,
+    testFlush,
     testAsyncIterator,
     testReadable,
     testTransform,

@@ -17,26 +17,35 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 import { PushPull } from "../PushPull/PushPull.mjs";
-export class ArrayAccumulator extends PushPull {
-    constructor(size) {
+export class JsonSerializer extends PushPull {
+    constructor(options) {
+        var _a;
         super();
-        this.size = size;
+        this.lineSeparated = (options === null || options === void 0 ? void 0 : options.lineSeparated) === true;
+        this.separator = this.lineSeparated ? "\n" : ",";
+        this.stringify = (_a = options === null || options === void 0 ? void 0 : options.stringify) !== null && _a !== void 0 ? _a : JSON.stringify;
+        this.isNotFirst = false;
     }
     async *pushpull(data, flush) {
         await this.push(data);
         do {
-            while (this.queue.length >= this.size) {
-                await this.push(yield this.queue.splice(0, this.size));
-            }
-            if (flush) {
-                if (this.queue.length > 0) {
-                    await this.push(yield this.queue.splice(0));
+            for (const value of this.queue.splice(0)) {
+                if (this.isNotFirst) {
+                    await this.push(yield this.separator + this.stringify(value));
+                }
+                else {
+                    if (!this.lineSeparated)
+                        await this.push(yield "[");
+                    await this.push(yield this.stringify(value));
+                    this.isNotFirst = true;
                 }
             }
-            else {
-                break;
+            if (flush) {
+                if (!this.lineSeparated)
+                    await this.push(yield "]");
+                this.isNotFirst = false;
             }
         } while (this.queue.length > 0);
     }
 }
-//# sourceMappingURL=ArrayAccumulator.mjs.map
+//# sourceMappingURL=JsonSerializer.mjs.map

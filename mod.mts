@@ -20,7 +20,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 export * from "./ArrayBufferAccumulatorStream/ArrayBufferAccumulatorStream.mjs"
 export * from "./ArrayAccumulatorStream/ArrayAccumulator.mjs"
 export * from "./JsonDeserializerStream/JsonDeserializerStream.mjs"
-export * from "./JsonSerializerStream/JsonSerializerStream.mjs"
+export * from "./JsonSerializerStream/JsonSerializer.mjs"
 export * from "./CsvLineEncoderStream/CsvLineEncoder.mjs"
 export * from "./SourceStream/SourceStream.mjs"
 export * from "./FlattenStream/FlattenStream.mjs"
