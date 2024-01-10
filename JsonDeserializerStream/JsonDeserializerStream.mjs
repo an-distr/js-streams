@@ -16,12 +16,14 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-export class JsonDeserializerStream extends TransformStream {
+import { PushPull, PushPullStringQueue } from "../PushPull/PushPull.mjs";
+export class JsonDeserializer extends PushPull {
     constructor(options) {
         var _a;
-        const lineSeparated = (options === null || options === void 0 ? void 0 : options.lineSeparated) === true;
-        const parse = (_a = options === null || options === void 0 ? void 0 : options.parse) !== null && _a !== void 0 ? _a : JSON.parse;
-        const sanitizeForJson = (value) => {
+        super(new PushPullStringQueue);
+        this.lineSeparated = (options === null || options === void 0 ? void 0 : options.lineSeparated) === true;
+        this.parse = (_a = options === null || options === void 0 ? void 0 : options.parse) !== null && _a !== void 0 ? _a : JSON.parse;
+        const sanitizeForJson = value => {
             let b = true;
             while (b) {
                 switch (value.slice(0, 1)) {
@@ -54,23 +56,20 @@ export class JsonDeserializerStream extends TransformStream {
             }
             return value;
         };
-        const sanitize = lineSeparated
-            ? (value) => {
-                value = value
-                    .split("\r\n").filter(Boolean).join("\n")
-                    .split("\n").filter(Boolean).join(",");
-                return sanitizeForJson(value);
-            }
+        this.sanitize = this.lineSeparated
+            ? value => sanitizeForJson(value
+                .split("\r\n").filter(Boolean).join("\n")
+                .split("\n").filter(Boolean).join(","))
             : sanitizeForJson;
-        const indexOfLastSeparator = lineSeparated
-            ? (value) => {
+        this.indexOfLastSeparator = this.lineSeparated
+            ? value => {
                 for (let i = value.length - 1; i >= 0; i--) {
                     if (value[i] === "\n") {
                         return i;
                     }
                 }
             }
-            : (value) => {
+            : value => {
                 let nextStart = -1;
                 let separator = -1;
                 for (let i = value.length - 1; i >= 0; i--) {
@@ -89,30 +88,26 @@ export class JsonDeserializerStream extends TransformStream {
                     }
                 }
             };
-        let buffer = "";
-        super({
-            transform(chunk, controller) {
-                buffer += chunk;
-                const lastSeparator = indexOfLastSeparator(buffer);
-                if (lastSeparator) {
-                    const json = "[" + sanitize(buffer.slice(0, lastSeparator)) + "]";
-                    const arr = parse(json);
-                    for (const a of arr) {
-                        controller.enqueue(a);
-                    }
-                    buffer = buffer.slice(lastSeparator);
-                }
-            },
-            flush(controller) {
-                if (buffer.length > 0) {
-                    const json = "[" + sanitize(buffer) + "]";
-                    const arr = parse(json);
-                    for (const a of arr) {
-                        controller.enqueue(a);
-                    }
+    }
+    async *pushpull(data, flush) {
+        await this.push(data);
+        do {
+            const lastSeparator = this.indexOfLastSeparator(this.queue.all());
+            if (lastSeparator) {
+                const json = "[" + this.sanitize(this.queue.splice(0, lastSeparator)) + "]";
+                await this.push(yield this.parse(json));
+            }
+            if (flush) {
+                if (this.queue.more()) {
+                    const json = "[" + this.sanitize(this.queue.all()) + "]";
+                    await this.push(yield this.parse(json));
+                    this.queue.empty();
                 }
             }
-        });
+            else {
+                break;
+            }
+        } while (this.queue.more());
     }
 }
 //# sourceMappingURL=JsonDeserializerStream.mjs.map

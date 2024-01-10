@@ -16,27 +16,27 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-import { PushPull } from "../PushPull/PushPull.mjs";
+import { PushPull, PushPullArrayQueue } from "../PushPull/PushPull.mjs";
 export class ArrayAccumulator extends PushPull {
     constructor(size) {
-        super();
+        super(new PushPullArrayQueue);
         this.size = size;
     }
     async *pushpull(data, flush) {
         await this.push(data);
         do {
-            while (this.queue.length >= this.size) {
+            while (this.queue.length() >= this.size) {
                 await this.push(yield this.queue.splice(0, this.size));
             }
             if (flush) {
-                if (this.queue.length > 0) {
+                if (this.queue.more()) {
                     await this.push(yield this.queue.splice(0));
                 }
             }
             else {
                 break;
             }
-        } while (this.queue.length > 0);
+        } while (this.queue.more());
     }
 }
 //# sourceMappingURL=ArrayAccumulator.mjs.map

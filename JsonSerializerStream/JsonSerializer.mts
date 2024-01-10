@@ -17,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import { PushPull, PushableTypes } from "../PushPull/PushPull.mjs"
+import { PushPull, PushPullArrayQueue, PushableTypes } from "../PushPull/PushPull.mjs"
 
 export interface JsonSerializerOptions {
   lineSeparated?: boolean
@@ -31,7 +31,7 @@ export class JsonSerializer<I = any> extends PushPull<I, string> {
   private isNotFirst: boolean
 
   constructor(options?: JsonSerializerOptions) {
-    super()
+    super(new PushPullArrayQueue)
     this.lineSeparated = options?.lineSeparated === true
     this.separator = this.lineSeparated ? "\n" : ","
     this.stringify = options?.stringify ?? JSON.stringify
@@ -57,6 +57,6 @@ export class JsonSerializer<I = any> extends PushPull<I, string> {
         if (!this.lineSeparated) await this.push(yield "]")
         this.isNotFirst = false
       }
-    } while (this.queue.length > 0)
+    } while (this.queue.more())
   }
 }

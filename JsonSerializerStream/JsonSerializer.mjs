@@ -16,11 +16,11 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-import { PushPull } from "../PushPull/PushPull.mjs";
+import { PushPull, PushPullArrayQueue } from "../PushPull/PushPull.mjs";
 export class JsonSerializer extends PushPull {
     constructor(options) {
         var _a;
-        super();
+        super(new PushPullArrayQueue);
         this.lineSeparated = (options === null || options === void 0 ? void 0 : options.lineSeparated) === true;
         this.separator = this.lineSeparated ? "\n" : ",";
         this.stringify = (_a = options === null || options === void 0 ? void 0 : options.stringify) !== null && _a !== void 0 ? _a : JSON.stringify;
@@ -45,7 +45,7 @@ export class JsonSerializer extends PushPull {
                     await this.push(yield "]");
                 this.isNotFirst = false;
             }
-        } while (this.queue.length > 0);
+        } while (this.queue.more());
     }
 }
 //# sourceMappingURL=JsonSerializer.mjs.map

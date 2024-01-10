@@ -17,17 +17,25 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export interface JsonDeserializerStreamOptions {
+import { PushPull, PushPullStringQueue, PushableTypes } from "../PushPull/PushPull.mjs"
+
+export interface JsonDeserializerOptions {
   lineSeparated?: boolean
   parse?: (text: string) => any
 }
 
-export class JsonDeserializerStream<O = any> extends TransformStream<string, O> {
-  constructor(options?: JsonDeserializerStreamOptions) {
-    const lineSeparated: boolean = options?.lineSeparated === true
-    const parse: (text: string) => any = options?.parse ?? JSON.parse
+export class JsonDeserializer<O = any> extends PushPull<string, O, PushPullStringQueue> {
+  private lineSeparated: boolean
+  private parse: (text: string) => any
+  private sanitize: (value: string) => string
+  private indexOfLastSeparator: (value: string) => number | undefined
 
-    const sanitizeForJson = (value: string) => {
+  constructor(options?: JsonDeserializerOptions) {
+    super(new PushPullStringQueue)
+    this.lineSeparated = options?.lineSeparated === true
+    this.parse = options?.parse ?? JSON.parse
+
+    const sanitizeForJson: (value: string) => string = value => {
       let b = true
       while (b) {
         switch (value.slice(0, 1)) {
@@ -61,24 +69,22 @@ export class JsonDeserializerStream<O = any> extends TransformStream<string, O> 
       return value
     }
 
-    const sanitize = lineSeparated
-      ? (value: string) => {
-        value = value
-          .split("\r\n").filter(Boolean).join("\n")
-          .split("\n").filter(Boolean).join(",")
-        return sanitizeForJson(value)
-      }
+    this.sanitize = this.lineSeparated
+      ? value => sanitizeForJson(value
+        .split("\r\n").filter(Boolean).join("\n")
+        .split("\n").filter(Boolean).join(",")
+      )
       : sanitizeForJson
 
-    const indexOfLastSeparator = lineSeparated
-      ? (value: string): number | undefined => {
+    this.indexOfLastSeparator = this.lineSeparated
+      ? value => {
         for (let i = value.length - 1; i >= 0; i--) {
           if (value[i] === "\n") {
             return i
           }
         }
       }
-      : (value: string): number | undefined => {
+      : value => {
         let nextStart = -1
         let separator = -1
         for (let i = value.length - 1; i >= 0; i--) {
@@ -97,31 +103,28 @@ export class JsonDeserializerStream<O = any> extends TransformStream<string, O> 
           }
         }
       }
+  }
 
-    let buffer = ""
+  async *pushpull(data?: PushableTypes<string>, flush?: boolean) {
+    await this.push(data)
 
-    super({
-      transform(chunk, controller) {
-        buffer += chunk
-        const lastSeparator = indexOfLastSeparator(buffer)
-        if (lastSeparator) {
-          const json = "[" + sanitize(buffer.slice(0, lastSeparator)) + "]"
-          const arr = parse(json)
-          for (const a of arr) {
-            controller.enqueue(a)
-          }
-          buffer = buffer.slice(lastSeparator)
-        }
-      },
-      flush(controller) {
-        if (buffer.length > 0) {
-          const json = "[" + sanitize(buffer) + "]"
-          const arr = parse(json)
-          for (const a of arr) {
-            controller.enqueue(a)
-          }
+    do {
+      const lastSeparator = this.indexOfLastSeparator(this.queue.all())
+      if (lastSeparator) {
+        const json = "[" + this.sanitize(this.queue.splice(0, lastSeparator)) + "]"
+        await this.push(yield this.parse(json))
+      }
+
+      if (flush) {
+        if (this.queue.more()) {
+          const json = "[" + this.sanitize(this.queue.all()) + "]"
+          await this.push(yield this.parse(json))
+          this.queue.empty()
         }
       }
-    })
+      else {
+        break
+      }
+    } while (this.queue.more())
   }
 }

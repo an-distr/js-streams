@@ -17,10 +17,102 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export type PushableTypes<I> = ArrayLike<I> | Iterable<I> | AsyncIterable<I> | I
+export type PushableTypes<T> = ArrayLike<T> | Iterable<T> | AsyncIterable<T> | T
 
-export abstract class PushPull<I = any, O = any> implements AsyncIterable<O> {
-  protected queue: I[] = []
+export interface PushPullQueue<T, All> {
+  length(): number
+  more(): boolean
+  all(): All
+  push(data: T): void
+  pop(): T | undefined
+  empty(): void
+  splice(start: number, deleteCount?: number): All
+}
+
+export class PushPullArrayQueue<T = any> implements PushPullQueue<T, ArrayLike<T>> {
+  private queue: T[] = []
+
+  length() {
+    return this.queue.length
+  }
+
+  more() {
+    return this.queue.length > 0
+  }
+
+  all() {
+    return this.queue
+  }
+
+  push(data: T) {
+    this.queue.push(data)
+  }
+
+  pop() {
+    return this.queue.pop()
+  }
+
+  empty() {
+    this.queue.splice(0)
+  }
+
+  splice(start: number, deleteCount?: number) {
+    if (deleteCount) {
+      return this.queue.splice(start, deleteCount)
+    }
+    else {
+      return this.queue.splice(start)
+    }
+  }
+}
+
+export class PushPullStringQueue implements PushPullQueue<string, string> {
+  private queue: string = ""
+
+  length() {
+    return this.queue.length
+  }
+
+  more() {
+    return this.queue.length > 0
+  }
+
+  all() {
+    return this.queue
+  }
+
+  push(data: string) {
+    this.queue += data
+  }
+
+  pop() {
+    return this.splice(-1)
+  }
+
+  empty() {
+    this.queue = ""
+  }
+
+  splice(start: number, deleteCount?: number) {
+    if (deleteCount) {
+      const value = this.queue.slice(start, start + deleteCount)
+      this.queue = this.queue.slice(0, start) + this.queue.slice(start + deleteCount)
+      return value
+    }
+    else {
+      const value = this.queue.slice(start)
+      this.queue = this.queue.slice(0, start)
+      return value
+    }
+  }
+}
+
+export abstract class PushPull<I = any, O = any, Q extends PushPullQueue<I, any> = PushPullArrayQueue<I>> implements AsyncIterable<O> {
+  protected queue: Q
+
+  constructor(queue: Q) {
+    this.queue = queue
+  }
 
   abstract pushpull(data?: PushableTypes<I>, flush?: boolean): AsyncGenerator<O>
 
@@ -32,23 +124,22 @@ export abstract class PushPull<I = any, O = any> implements AsyncIterable<O> {
       if (data === null) {
         this.queue.push(data)
       }
-      else if (Array.isArray(data)) {
-        for (const value of data) this.queue.push(value)
-      }
       else if (typeof data === "string") {
         this.queue.push(data)
       }
+      else if (Array.isArray(data)) {
+        for (const value of data) this.queue.push(value)
+      }
       else if (typeof (data as Iterable<I>)[Symbol.iterator] === "function") {
-        for (const value of (data as Iterable<I>)) this.queue.push(value)
+        for (const value of data as Iterable<I>) this.queue.push(value)
       }
       else if (typeof (data as AsyncIterable<I>)[Symbol.asyncIterator] === "function") {
-        for await (const value of (data as AsyncIterable<I>)) this.queue.push(value)
+        for await (const value of data as AsyncIterable<I>) this.queue.push(value)
       }
       else {
         this.queue.push(data as I)
       }
     }
-    return this.queue.length
   }
 
   pull(data?: PushableTypes<I>) {

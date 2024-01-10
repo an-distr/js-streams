@@ -1,26 +1,26 @@
-import { JsonDeserializerStream } from "../JsonDeserializerStream.mjs";
+import { JsonDeserializer } from "../JsonDeserializerStream.mjs";
 (async () => {
-    const readable = (s) => new ReadableStream({
+    const source = (s) => new ReadableStream({
         start(controller) {
             controller.enqueue(s);
             controller.close();
         }
     });
-    const logger = () => new WritableStream({
+    const logging = () => new WritableStream({
         write(chunk) {
             console.log(chunk);
         }
     });
     console.log("=== JSON ===");
     const json = '[{"a":1,"b":2},{"a":3,"b":4},{"a":5,"b":6}]';
-    await readable(json)
-        .pipeThrough(new JsonDeserializerStream)
-        .pipeTo(logger());
+    await source(json)
+        .pipeThrough(new JsonDeserializer().transform())
+        .pipeTo(logging());
     console.log("=== JSON Lines ===");
     const jsonl = '{"a":1,"b":2}\n{"a":3,"b":4}\n{"a":5,"b":6}';
-    await readable(jsonl)
-        .pipeThrough(new JsonDeserializerStream({ lineSeparated: true }))
-        .pipeTo(logger());
+    await source(jsonl)
+        .pipeThrough(new JsonDeserializer({ lineSeparated: true }).transform())
+        .pipeTo(logging());
     console.log("Test completed.");
 })();
 //# sourceMappingURL=test.mjs.map

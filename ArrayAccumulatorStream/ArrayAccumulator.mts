@@ -17,13 +17,13 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import { PushPull, PushableTypes } from "../PushPull/PushPull.mjs"
+import { PushPull, PushPullArrayQueue, PushableTypes } from "../PushPull/PushPull.mjs"
 
 export class ArrayAccumulator<I = any> extends PushPull<I, ArrayLike<I>> {
   private size: number
 
   constructor(size: number) {
-    super()
+    super(new PushPullArrayQueue)
     this.size = size;
   }
 
@@ -31,18 +31,18 @@ export class ArrayAccumulator<I = any> extends PushPull<I, ArrayLike<I>> {
     await this.push(data)
 
     do {
-      while (this.queue.length >= this.size) {
+      while (this.queue.length() >= this.size) {
         await this.push(yield this.queue.splice(0, this.size))
       }
 
       if (flush) {
-        if (this.queue.length > 0) {
+        if (this.queue.more()) {
           await this.push(yield this.queue.splice(0))
         }
       }
       else {
         break
       }
-    } while (this.queue.length > 0)
+    } while (this.queue.more())
   }
 }

@@ -16,9 +16,75 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-export class PushPull {
+export class PushPullArrayQueue {
     constructor() {
         this.queue = [];
+    }
+    length() {
+        return this.queue.length;
+    }
+    more() {
+        return this.queue.length > 0;
+    }
+    all() {
+        return this.queue;
+    }
+    push(data) {
+        this.queue.push(data);
+    }
+    pop() {
+        return this.queue.pop();
+    }
+    empty() {
+        this.queue.splice(0);
+    }
+    splice(start, deleteCount) {
+        if (deleteCount) {
+            return this.queue.splice(start, deleteCount);
+        }
+        else {
+            return this.queue.splice(start);
+        }
+    }
+}
+export class PushPullStringQueue {
+    constructor() {
+        this.queue = "";
+    }
+    length() {
+        return this.queue.length;
+    }
+    more() {
+        return this.queue.length > 0;
+    }
+    all() {
+        return this.queue;
+    }
+    push(data) {
+        this.queue += data;
+    }
+    pop() {
+        return this.splice(-1);
+    }
+    empty() {
+        this.queue = "";
+    }
+    splice(start, deleteCount) {
+        if (deleteCount) {
+            const value = this.queue.slice(start, start + deleteCount);
+            this.queue = this.queue.slice(0, start) + this.queue.slice(start + deleteCount);
+            return value;
+        }
+        else {
+            const value = this.queue.slice(start);
+            this.queue = this.queue.slice(0, start);
+            return value;
+        }
+    }
+}
+export class PushPull {
+    constructor(queue) {
+        this.queue = queue;
     }
     async push(data) {
         if (data !== undefined) {
@@ -28,12 +94,12 @@ export class PushPull {
             if (data === null) {
                 this.queue.push(data);
             }
+            else if (typeof data === "string") {
+                this.queue.push(data);
+            }
             else if (Array.isArray(data)) {
                 for (const value of data)
                     this.queue.push(value);
-            }
-            else if (typeof data === "string") {
-                this.queue.push(data);
             }
             else if (typeof data[Symbol.iterator] === "function") {
                 for (const value of data)
@@ -47,7 +113,6 @@ export class PushPull {
                 this.queue.push(data);
             }
         }
-        return this.queue.length;
     }
     pull(data) {
         return this.pushpull(data);

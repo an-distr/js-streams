@@ -15,8 +15,8 @@ txtFile.onchange = async () => {
         };
     }
     txtFile.files[0].stream()
-        .pipeThrough(new TextDecoderStream)
-        .pipeThrough(new streams.JsonDeserializerStream({ lineSeparated: txtFile.name.includes(".jsonl") }))
+        .pipeThrough(new streams.Utf8DecoderStream)
+        .pipeThrough(new streams.JsonDeserializer({ lineSeparated: txtFile.name.includes(".jsonl") }).transform())
         .pipeThrough(new streams.CsvLineEncoder({ withNewLine: true }).transform())
         .pipeTo(new DownloadStream("download.csv", options));
 };
