@@ -95,12 +95,12 @@ export class JsonDeserializer extends PushPull {
             const lastSeparator = this.indexOfLastSeparator(this.queue.all());
             if (lastSeparator) {
                 const json = "[" + this.sanitize(this.queue.splice(0, lastSeparator)) + "]";
-                await this.push(yield this.parse(json));
+                await this.push(yield* this.parse(json));
             }
             if (flush) {
                 if (this.queue.more()) {
                     const json = "[" + this.sanitize(this.queue.all()) + "]";
-                    await this.push(yield this.parse(json));
+                    await this.push(yield* this.parse(json));
                     this.queue.empty();
                 }
             }
