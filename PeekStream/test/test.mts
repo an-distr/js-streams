@@ -2,7 +2,7 @@ import { PeekStream } from "../PeekStream.mjs"
 
 (async () => {
 
-  const readable = (data: any[]) => new ReadableStream({
+  const source = (data: any[]) => new ReadableStream({
     start(controller) {
       for (const chunk of data) {
         controller.enqueue(chunk)
@@ -11,11 +11,11 @@ import { PeekStream } from "../PeekStream.mjs"
     }
   })
 
-  const logger = () => new PeekStream((chunk, index) => {
+  const logging = () => new PeekStream((chunk, index) => {
     console.log(index, chunk)
   })
 
-  const terminator = () => new WritableStream
+  const terminate = () => new WritableStream
 
   const data = [
     [1, 2, 3],
@@ -23,9 +23,9 @@ import { PeekStream } from "../PeekStream.mjs"
     [1, 2, 3, 4, 5, 6, 7, 8, 9],
   ]
 
-  await readable(data)
-    .pipeThrough(logger())
-    .pipeTo(terminator())
+  await source(data)
+    .pipeThrough(logging())
+    .pipeTo(terminate())
 
   console.log("Test completed.")
 

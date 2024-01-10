@@ -3,21 +3,8 @@
 ## Description
 Peeking chunk of stream.
 
-## Stream type
-* [TransformStream](https://developer.mozilla.org/en-US/docs/Web/API/TransformStream)
-
-## Input/output definition
-|Direction|Type|
-|-|-|
-|Input|any|
-|Output|any|
-
-## Compatibility
-* \>= ES6(ECMAScript 2015)
-* Engines
-  * V8(Chromium, Node.js, Deno)
-  * JavaScriptCore(Safari, Browser on iOS/iPadOS, Bun)
-  * SpiderMonkey(FireFox)
+## Example
+https://an-js-streams.pages.dev/PeekStream/test/test.html
 
 ## Usage
 ```ts

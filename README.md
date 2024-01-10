@@ -5,23 +5,31 @@ Stream utilities for JavaScript/TypeScript.
 
 * **I don't understand English very well. I use a translation tool. I'm sorry if the sentence is wrong.**
 
+## Compatibility
+* \>= ECMAScript2018
+* Engines
+  * V8(Chromium, Node.js, Deno)
+  * JavaScriptCore(Safari, Browser on iOS/iPadOS, Bun)
+  * SpiderMonkey(FireFox)
+
 ## Modules
 |Module|Description|
 |-|-|
 |[ArrayBufferAccumulatorStream](ArrayBufferAccumulatorStream/README.md)|Accumulate the ArrayBuffer stream and emit it at a constant size or condition.|
-|[ArrayAccumulatorStream](ArrayAccumulatorStream/README.md)|Accumulate the stream and emit it at a constant size array.|
-|[JsonDeserializerStream](JsonDeserializerStream/README.md)|Convert the stream to a JSON/JSON Lines array.|
-|[JsonSerializerStream](JsonSerializerStream/README.md)|Convert the stream to a JSON/JSON Lines string.|
-|[CsvLineEncoderStream](CsvLineEncoderStream/README.md)|Convert the stream to a CSV line.|
-|[SourceStream](SourceStream/README.md)|Streaming for object(s).|
-|[FlattenStream](FlattenStream/README.md)|Flatten the stream.|
-|[NullStream](NullStream/README.md)|Read through the stream and terminate it.|
-|[PeekStream](PeekStream/README.md)|Peeking chunk of stream.|
+|[ArrayAccumulator](ArrayAccumulator/README.md)|Accumulate the stream and emit it at a constant size array.|
+|[JsonDeserializer](JsonDeserializer/README.md)|Convert the string to a JSON/JSON Lines array.|
+|[JsonSerializer](JsonSerializer/README.md)|Convert the object to a JSON/JSON Lines string.|
+|[CsvLineEncoder](CsvLineEncoder/README.md)|Convert the object to a CSV line.|
+|[Flattener](Flattener/README.md)|Flatten the array.|
 |[Utf8Streams](Utf8Streams/README.md)|Convert streams and UTF-8 strings to and from each other.|
+|[PeekStream](PeekStream/README.md)|Peeking chunk of stream.|
 |[DownloadStream](DownloadStream/README.md)|Download the stream.|
 
 ## Functions
 * [Functions](./funcs/README.md)
+
+## Unrelated
+* [DomConsole](./misc/DomConsole/README.md)
 
 ## Demo / Test
 * [https://an-js-streams.pages.dev/](https://an-js-streams.pages.dev/)

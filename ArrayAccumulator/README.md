@@ -3,12 +3,8 @@
 ## Description
 Accumulate the array and emit it at a constant size array.
 
-## Compatibility
-* \>= ECMAScript2018
-* Engines
-  * V8(Chromium, Node.js, Deno)
-  * JavaScriptCore(Safari, Browser on iOS/iPadOS, Bun)
-  * SpiderMonkey(FireFox)
+## Example
+https://an-js-streams.pages.dev/ArrayAccumulator/test/test.html
 
 ## Usage
 ```ts
@@ -34,7 +30,7 @@ for await (const value of accumulator.pushpull(array)) { // pushpull function is
   // [5]
 }
 
-// Convert to streams.
+// It can also be processed as a stream.
 const readable = accumulator.readable()
 const transform = accumulator.transform()
 const writable = accumulator.writable()
