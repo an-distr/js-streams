@@ -3,6 +3,10 @@
 ## Description
 Download the stream.
 
+## Compatibility
+* \>= ECMAScript2018
+* **It only works with WebBrowser.**
+
 ## Usage
 ```ts
 import { DownloadStream } from "https://an-js-streams.pages.dev/DownloadStream/DownloadStream.mjs"
