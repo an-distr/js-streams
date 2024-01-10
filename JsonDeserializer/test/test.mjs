@@ -1,4 +1,4 @@
-import { JsonDeserializer } from "../JsonDeserializerStream.mjs";
+import { JsonDeserializer } from "../JsonDeserializer.mjs";
 (async () => {
     const source = (s) => new ReadableStream({
         start(controller) {

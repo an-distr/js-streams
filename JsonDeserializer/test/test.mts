@@ -1,4 +1,4 @@
-import { JsonDeserializer } from "../JsonDeserializerStream.mjs"
+import { JsonDeserializer } from "../JsonDeserializer.mjs"
 
 (async () => {
 
