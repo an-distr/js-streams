@@ -12,6 +12,7 @@ import { CsvLineEncoder } from "../CsvLineEncoder.mjs";
             controller.enqueue(chunk);
         }
     });
+    const terminate = () => new WritableStream;
     const data = [
         { "a": 1, "b": 2, "c": "aaa\nbbb,ccc" },
         { "a": 4, "b": 5, "c": 6 },
@@ -22,37 +23,37 @@ import { CsvLineEncoder } from "../CsvLineEncoder.mjs";
     await source(data)
         .pipeThrough(new CsvLineEncoder({ escape: "all" }).transform())
         .pipeThrough(logging())
-        .pipeTo(new WritableStream);
+        .pipeTo(terminate());
     console.groupEnd();
     console.groupCollapsed("=== escape: auto ===");
     await source(data)
         .pipeThrough(new CsvLineEncoder({ escape: "auto" }).transform())
         .pipeThrough(logging())
-        .pipeTo(new WritableStream);
+        .pipeTo(terminate());
     console.groupEnd();
     console.groupCollapsed("=== escape: none ===");
     await source(data)
         .pipeThrough(new CsvLineEncoder({ escape: "none" }).transform())
         .pipeThrough(logging())
-        .pipeTo(new WritableStream);
+        .pipeTo(terminate());
     console.groupEnd();
     console.groupCollapsed("=== escape: custom ===");
     await source(data)
         .pipeThrough(new CsvLineEncoder({ escape: s => `[${s}]` }).transform())
         .pipeThrough(logging())
-        .pipeTo(new WritableStream);
+        .pipeTo(terminate());
     console.groupEnd();
     console.groupCollapsed("=== delimiter: custom ===");
     await source(data)
         .pipeThrough(new CsvLineEncoder({ delimiter: "|" }).transform())
         .pipeThrough(logging())
-        .pipeTo(new WritableStream);
+        .pipeTo(terminate());
     console.groupEnd();
     console.groupCollapsed("=== newLine: custom ===");
     await source(data)
         .pipeThrough(new CsvLineEncoder({ newLine: "|" }).transform())
         .pipeThrough(logging())
-        .pipeTo(new WritableStream);
+        .pipeTo(terminate());
     console.groupEnd();
     console.groupCollapsed("\n=== no new line ===");
     let text = "";

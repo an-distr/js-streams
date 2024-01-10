@@ -21,9 +21,7 @@ export * from "./ArrayAccumulator/ArrayAccumulator.mjs";
 export * from "./JsonDeserializer/JsonDeserializer.mjs";
 export * from "./JsonSerializer/JsonSerializer.mjs";
 export * from "./CsvLineEncoder/CsvLineEncoder.mjs";
-export * from "./SourceStream/SourceStream.mjs";
 export * from "./Flattener/Flattener.mjs";
-export * from "./NullStream/NullStream.mjs";
 export * from "./PeekStream/PeekStream.mjs";
 export * from "./Utf8Streams/Utf8Streams.mjs";
 //# sourceMappingURL=mod.mjs.map
