@@ -22,7 +22,7 @@ export * from "./JsonDeserializerStream/JsonDeserializerStream.mjs";
 export * from "./JsonSerializerStream/JsonSerializer.mjs";
 export * from "./CsvLineEncoderStream/CsvLineEncoder.mjs";
 export * from "./SourceStream/SourceStream.mjs";
-export * from "./FlattenStream/FlattenStream.mjs";
+export * from "./FlattenStream/Flattener.mjs";
 export * from "./NullStream/NullStream.mjs";
 export * from "./PeekStream/PeekStream.mjs";
 export * from "./Utf8Streams/Utf8Streams.mjs";

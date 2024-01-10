@@ -1,4 +1,4 @@
-import { FlattenStream } from "../FlattenStream.mjs"
+import { Flattener } from "../Flattener.mjs"
 
 (async () => {
 
@@ -21,7 +21,7 @@ import { FlattenStream } from "../FlattenStream.mjs"
   const test = async (data: any, limit?: number) => {
     console.groupCollapsed(`=== data: ${JSON.stringify(data)}, limit: ${limit} ===`)
     await readable(data)
-      .pipeThrough(new FlattenStream(limit))
+      .pipeThrough(new Flattener(limit).transform())
       .pipeThrough(logging())
       .pipeTo(writable())
     console.groupEnd()

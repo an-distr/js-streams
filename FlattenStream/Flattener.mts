@@ -17,22 +17,31 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export class FlattenStream<I, O> extends TransformStream<I, O> {
+import { PushPull, PushPullArrayQueue, PushableTypes } from "../PushPull/PushPull.mjs"
+
+export class Flattener<I> extends PushPull<I, I> {
+  private limit?: number
+
   constructor(limit?: number) {
-    const flatten = (level: number, chunk: any, controller: TransformStreamDefaultController) => {
-      if (Array.isArray(chunk) && (limit ?? level) >= level) {
-        for (const obj of chunk) {
-          flatten(level + 1, obj, controller)
-        }
-      }
-      else {
-        controller.enqueue(chunk)
+    super(new PushPullArrayQueue)
+    this.limit = limit
+  }
+
+  async *pushpull(data?: PushableTypes<I>) {
+    await this.push(data)
+    while (this.queue.more()) {
+      this.push(yield* this.flatten(0, this.queue.splice(0)))
+    }
+  }
+
+  *flatten(level: number, data: any): Generator<I> {
+    if (Array.isArray(data) && (this.limit ?? level) >= level) {
+      for (const value of data) {
+        yield* this.flatten(level + 1, value)
       }
     }
-    super({
-      transform(chunk, controller) {
-        flatten(0, chunk, controller)
-      }
-    })
+    else {
+      yield data
+    }
   }
 }

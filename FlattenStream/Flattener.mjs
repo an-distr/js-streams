@@ -16,23 +16,28 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-export class FlattenStream extends TransformStream {
+import { PushPull, PushPullArrayQueue } from "../PushPull/PushPull.mjs";
+export class Flattener extends PushPull {
     constructor(limit) {
-        const flatten = (level, chunk, controller) => {
-            if (Array.isArray(chunk) && (limit !== null && limit !== void 0 ? limit : level) >= level) {
-                for (const obj of chunk) {
-                    flatten(level + 1, obj, controller);
-                }
+        super(new PushPullArrayQueue);
+        this.limit = limit;
+    }
+    async *pushpull(data) {
+        await this.push(data);
+        while (this.queue.more()) {
+            this.push(yield* this.flatten(0, this.queue.splice(0)));
+        }
+    }
+    *flatten(level, data) {
+        var _a;
+        if (Array.isArray(data) && ((_a = this.limit) !== null && _a !== void 0 ? _a : level) >= level) {
+            for (const value of data) {
+                yield* this.flatten(level + 1, value);
             }
-            else {
-                controller.enqueue(chunk);
-            }
-        };
-        super({
-            transform(chunk, controller) {
-                flatten(0, chunk, controller);
-            }
-        });
+        }
+        else {
+            yield data;
+        }
     }
 }
-//# sourceMappingURL=FlattenStream.mjs.map
+//# sourceMappingURL=Flattener.mjs.map
