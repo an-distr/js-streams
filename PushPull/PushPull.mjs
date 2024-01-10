@@ -49,14 +49,20 @@ export class PushPull {
         }
         return this.queue.length;
     }
+    pull(data) {
+        return this.pushpull(data);
+    }
+    flush(data) {
+        return this.pushpull(data, true);
+    }
     [Symbol.asyncIterator]() {
-        return this.pushpull(undefined, true, true);
+        return this.flush();
     }
     readable(data) {
         const This = this;
         return new ReadableStream({
             async start(controller) {
-                for await (const chunk of This.pushpull(data, true, true)) {
+                for await (const chunk of This.flush(data)) {
                     controller.enqueue(chunk);
                 }
                 controller.close();
@@ -67,12 +73,12 @@ export class PushPull {
         const This = this;
         return new TransformStream({
             async transform(data, controller) {
-                for await (const chunk of This.pushpull(data, true)) {
+                for await (const chunk of This.pull(data)) {
                     controller.enqueue(chunk);
                 }
             },
             async flush(controller) {
-                for await (const chunk of This.pushpull(undefined, true, true)) {
+                for await (const chunk of This.flush()) {
                     controller.enqueue(chunk);
                 }
             }
@@ -82,7 +88,7 @@ export class PushPull {
         const This = this;
         return new WritableStream({
             async write(data) {
-                for await (const _ of This.pushpull(data, false, false)) { }
+                await This.push(data);
             }
         });
     }

@@ -17,12 +17,14 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+export type PushableTypes<I> = ArrayLike<I> | Iterable<I> | AsyncIterable<I> | I
+
 export abstract class PushPull<I = any, O = any> implements AsyncIterable<O> {
   protected queue: I[] = []
 
-  abstract pushpull(data?: I, pull?: boolean, flush?: boolean): AsyncGenerator<O>
+  abstract pushpull(data?: PushableTypes<I>, flush?: boolean): AsyncGenerator<O>
 
-  async push(data?: ArrayLike<I> | Iterable<I> | AsyncIterable<I> | I) {
+  async push(data?: PushableTypes<I>) {
     if (data !== undefined) {
       if (typeof data === "function") {
         data = (await data())
@@ -49,15 +51,23 @@ export abstract class PushPull<I = any, O = any> implements AsyncIterable<O> {
     return this.queue.length
   }
 
-  [Symbol.asyncIterator]() {
-    return this.pushpull(undefined, true, true)
+  pull(data?: PushableTypes<I>) {
+    return this.pushpull(data)
   }
 
-  readable(data?: I) {
+  flush(data?: PushableTypes<I>) {
+    return this.pushpull(data, true)
+  }
+
+  [Symbol.asyncIterator]() {
+    return this.flush()
+  }
+
+  readable(data?: PushableTypes<I>) {
     const This = this
     return new ReadableStream<O>({
       async start(controller) {
-        for await (const chunk of This.pushpull(data, true, true)) {
+        for await (const chunk of This.flush(data)) {
           controller.enqueue(chunk)
         }
         controller.close()
@@ -69,12 +79,12 @@ export abstract class PushPull<I = any, O = any> implements AsyncIterable<O> {
     const This = this
     return new TransformStream<I, O>({
       async transform(data, controller) {
-        for await (const chunk of This.pushpull(data, true)) {
+        for await (const chunk of This.pull(data)) {
           controller.enqueue(chunk)
         }
       },
       async flush(controller) {
-        for await (const chunk of This.pushpull(undefined, true, true)) {
+        for await (const chunk of This.flush()) {
           controller.enqueue(chunk)
         }
       }
@@ -85,7 +95,7 @@ export abstract class PushPull<I = any, O = any> implements AsyncIterable<O> {
     const This = this
     return new WritableStream<I>({
       async write(data) {
-        for await (const _ of This.pushpull(data, false, false)) { }
+        await This.push(data)
       }
     })
   }
