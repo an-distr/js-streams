@@ -48,3 +48,23 @@
 .console-list>.console-list-item .console-list-item-table tbody td:not(:first-child) {
   color: rgb(152, 127, 253);
 }
+
+.console-menu {
+  margin: 0;
+  background-color: #fafcff;
+  list-style: none;
+  padding-left: 0;
+  border: 0.1em solid #e0e0e1;
+  border-radius: 0.5em;
+  box-shadow: 0 0 0 0.05em #e0e0e133;
+  overflow: hidden;
+}
+
+.console-menu li {
+  padding: 0.35em;
+  cursor: pointer;
+}
+
+.console-menu li:hover {
+  background-color: #edeff2;
+}

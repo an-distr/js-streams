@@ -20,16 +20,21 @@ export class DomConsole {
     constructor(owner, redirect, parent) {
         if (typeof owner === "string") {
             this.owner = document.getElementById(owner);
+            this.owner.append(this.createContextMenu(this.owner));
             const scopedStyle = document.createElement("style");
             scopedStyle.setAttribute("scoped", "");
             scopedStyle.textContent = `
-        .console-list>.console-list-item>input[type="checkbox"]:not(:checked)~.console-list {
+        .console-list>.console-list-item>label {
+          display: block;
+          cursor: pointer;
+        }
+        .console-list>.console-list-item:has(>label>input[type="checkbox"]:not(:checked))>.console-list {
           display: none;
         }
-        .console-list>.console-list-item>input[type="checkbox"]:checked~.console-list {
+        .console-list>.console-list-item:has(>label>input[type="checkbox"]:checked)>.console-list {
           display: block;
         }`;
-            this.owner.appendChild(scopedStyle);
+            this.owner.append(scopedStyle);
         }
         else {
             this.owner = owner;
@@ -84,8 +89,72 @@ export class DomConsole {
         chk.name = "table-visibility";
         chk.type = "checkbox";
         chk.checked = !collapsed;
-        current.prepend(chk);
+        const lbl = document.createElement("label");
+        lbl.append(chk);
+        lbl.append(current.innerHTML);
+        current.innerHTML = "";
+        current.append(lbl);
         this.child = new DomConsole(current, this.redirect, this);
+    }
+    createContextMenu(owner) {
+        const menu = document.createElement("ul");
+        menu.classList.add("console-menu");
+        menu.style.display = "none";
+        menu.style.position = "fixed";
+        let target;
+        owner.addEventListener("contextmenu", ev => {
+            ev.preventDefault();
+            const menu = owner.querySelector(".console-menu");
+            if (!menu)
+                return;
+            menu.style.left = ev.pageX + "px";
+            menu.style.top = ev.pageY - scrollY + "px";
+            menu.style.display = "block";
+            target = ev.target;
+        });
+        window.addEventListener("click", () => {
+            const menu = owner.querySelector(".console-menu");
+            if (!menu)
+                return;
+            menu.style.display = "none";
+        });
+        const addItem = (text, action) => {
+            const item = document.createElement("li");
+            item.textContent = text;
+            item.onclick = () => {
+                action(target);
+                menu.style.display = "none";
+            };
+            menu.append(item);
+        };
+        addItem("Expand all", target => this.expand(true, target));
+        addItem("Collapse all", target => this.expand(false, target));
+        return menu;
+    }
+    expand(expand, owner, depth) {
+        const chks = [...(owner !== null && owner !== void 0 ? owner : this.owner).querySelectorAll("input[name='table-visibility']")];
+        const ancestors = (target) => {
+            var _a;
+            const ancestors = [];
+            let current = target.parentElement;
+            while (current) {
+                if (current.tagName === "LI") {
+                    const found = (_a = current.firstElementChild) === null || _a === void 0 ? void 0 : _a.firstElementChild;
+                    if (found && found !== target) {
+                        if (found.getAttribute("type") === "checkbox") {
+                            ancestors.push(found);
+                        }
+                    }
+                }
+                current = current.parentElement;
+            }
+            return ancestors;
+        };
+        const ownerDepth = owner === undefined ? 0 : ancestors(owner).length;
+        chks.forEach(chk => {
+            let level = depth === undefined ? 0 : ancestors(chk).length - ownerDepth + depth;
+            chk.checked = level >= 0 ? expand : !expand;
+        });
     }
     group(...data) {
         var _a;

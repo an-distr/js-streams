@@ -18,25 +18,30 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 export class DomConsole implements Console {
-  owner: Node
-  redirect?: Console
-  parent: DomConsole | undefined
-  child: DomConsole | undefined
-  holder: HTMLUListElement
+  private owner: HTMLElement
+  private redirect?: Console
+  private parent: DomConsole | undefined
+  private child: DomConsole | undefined
+  private holder: HTMLUListElement
 
-  constructor(owner: Node | string, redirect?: Console, parent?: DomConsole) {
+  constructor(owner: HTMLElement | string, redirect?: Console, parent?: DomConsole) {
     if (typeof owner === "string") {
-      this.owner = document.getElementById(owner) as Node
+      this.owner = document.getElementById(owner)!
+      this.owner.append(this.createContextMenu(this.owner))
       const scopedStyle = document.createElement("style")
       scopedStyle.setAttribute("scoped", "")
       scopedStyle.textContent = `
-        .console-list>.console-list-item>input[type="checkbox"]:not(:checked)~.console-list {
+        .console-list>.console-list-item>label {
+          display: block;
+          cursor: pointer;
+        }
+        .console-list>.console-list-item:has(>label>input[type="checkbox"]:not(:checked))>.console-list {
           display: none;
         }
-        .console-list>.console-list-item>input[type="checkbox"]:checked~.console-list {
+        .console-list>.console-list-item:has(>label>input[type="checkbox"]:checked)>.console-list {
           display: block;
         }`
-      this.owner.appendChild(scopedStyle)
+      this.owner.append(scopedStyle)
     }
     else {
       this.owner = owner
@@ -94,8 +99,77 @@ export class DomConsole implements Console {
     chk.name = "table-visibility"
     chk.type = "checkbox"
     chk.checked = !collapsed
-    current.prepend(chk)
+    const lbl = document.createElement("label")
+    lbl.append(chk)
+    lbl.append(current.innerHTML)
+    current.innerHTML = ""
+    current.append(lbl)
     this.child = new DomConsole(current, this.redirect, this)
+  }
+
+  private createContextMenu(owner: HTMLElement) {
+    const menu = document.createElement("ul")
+    menu.classList.add("console-menu")
+    menu.style.display = "none"
+    menu.style.position = "fixed"
+
+    let target: EventTarget | null
+    owner.addEventListener("contextmenu", ev => {
+      ev.preventDefault()
+      const menu = owner.querySelector(".console-menu") as HTMLUListElement | null
+      if (!menu) return
+      menu.style.left = ev.pageX + "px"
+      menu.style.top = ev.pageY - scrollY + "px"
+      menu.style.display = "block"
+      target = ev.target
+    })
+    window.addEventListener("click", () => {
+      const menu = owner.querySelector(".console-menu") as HTMLUListElement | null
+      if (!menu) return
+      menu.style.display = "none"
+    })
+
+    const addItem = (text: string, action: (target: EventTarget | null) => void) => {
+      const item = document.createElement("li")
+      item.textContent = text
+      item.onclick = () => {
+        action(target)
+        menu.style.display = "none"
+      }
+      menu.append(item)
+    }
+
+    addItem("Expand all", target => this.expand(true, target as Element))
+    addItem("Collapse all", target => this.expand(false, target as Element))
+
+    return menu
+  }
+
+  expand(expand: boolean, owner?: Element | null, depth?: number) {
+    const chks = [...(owner ?? this.owner).querySelectorAll("input[name='table-visibility']")] as HTMLInputElement[]
+
+    const ancestors = (target: Element) => {
+      const ancestors: HTMLInputElement[] = []
+      let current: HTMLElement | null = target.parentElement
+      while (current) {
+        if (current.tagName === "LI") {
+          const found = current.firstElementChild?.firstElementChild
+          if (found && found !== target) {
+            if (found.getAttribute("type") === "checkbox") {
+              ancestors.push(found as HTMLInputElement)
+            }
+          }
+        }
+        current = current.parentElement
+      }
+      return ancestors
+    }
+
+    const ownerDepth = owner === undefined ? 0 : ancestors(owner!).length
+    chks.forEach(chk => {
+      let level = depth === undefined ? 0 : ancestors(chk).length - ownerDepth + depth
+      chk.checked = level >= 0 ? expand : !expand
+    })
   }
 
   group(...data: any[]): void {
