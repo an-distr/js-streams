@@ -3,7 +3,7 @@ input[name="group-visibility"] {
 }
 
 .console-list>.console-list-item>label:has(>input[name="group-visibility"])::before {
-  content: "▶ ";
+  content: "> ";
 }
 
 .console-list>.console-list-item>label:has(>input[name="group-visibility"]:checked)::before {

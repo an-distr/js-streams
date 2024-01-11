@@ -53,7 +53,7 @@ export class DomConsole implements Console {
     this.owner.appendChild(this.holder)
   }
 
-  private dataToString(...data: any[]): string {
+  private dataToString(...data: any[]) {
     let lst: string[] = []
     for (let i = 0; i < arguments.length; ++i) {
       switch (typeof data[i]) {
@@ -82,7 +82,7 @@ export class DomConsole implements Console {
     return lst.join(" ")
   }
 
-  private appendItem(classSuffix?: string, ...data: any[]): HTMLLIElement {
+  private appendItem(classSuffix?: string, ...data: any[]) {
     const li = document.createElement("li")
     li.classList.add("console-list-item")
     if (classSuffix) {
@@ -172,7 +172,7 @@ export class DomConsole implements Console {
     })
   }
 
-  group(...data: any[]): void {
+  group(...data: any[]) {
     if (this.child) {
       this.child.group(...data)
       return
@@ -181,7 +181,7 @@ export class DomConsole implements Console {
     this.redirect?.group(...data)
   }
 
-  groupCollapsed(...data: any[]): void {
+  groupCollapsed(...data: any[]) {
     if (this.child) {
       this.child.groupCollapsed(...data)
       return
@@ -190,7 +190,7 @@ export class DomConsole implements Console {
     this.redirect?.groupCollapsed(...data)
   }
 
-  groupEnd(): void {
+  groupEnd() {
     if (this.child) {
       this.child.groupEnd()
       return
@@ -201,7 +201,7 @@ export class DomConsole implements Console {
     this.redirect?.groupEnd()
   }
 
-  clear(): void {
+  clear() {
     if (this.parent) {
       this.parent.clear()
       return
@@ -214,7 +214,7 @@ export class DomConsole implements Console {
     this.redirect?.clear()
   }
 
-  assert(condition?: boolean | undefined, ...data: any[]): void {
+  assert(condition?: boolean, ...data: any[]) {
     if (this.child) {
       this.child.assert(condition, ...data)
       return
@@ -225,7 +225,7 @@ export class DomConsole implements Console {
     this.redirect?.assert(...data)
   }
 
-  log(...data: any[]): void {
+  log(...data: any[]) {
     if (this.child) {
       this.child.log(...data)
       return
@@ -234,16 +234,36 @@ export class DomConsole implements Console {
     this.redirect?.log(...data)
   }
 
-  trace(...data: any[]): void {
+  trace(...data: any[]) {
     if (this.child) {
       this.child.trace(...data)
       return
     }
-    this.appendItem("trace", ...data)
+    const item = this.appendItem("trace", ...data)
+
+    const callStack = (new Error().stack ?? "")
+      .replace("Error\n", "")
+      .split("\n")
+      .map(s => s.trim().split(/[ |@|(|)]/).filter(s2 => !["at", ""].includes(s2)).join(" @ "))
+      .map(s => s.replace(location.href.replace(location.pathname, ""), ""))
+      .filter(s => s.length > 0)
+      .filter(s => !s.includes("trace @ "))
+      .map(s => s.includes(" @ ") ? s : "(anonymous) @ " + s)
+
+    if (callStack.length > 0) {
+      const callStackItem = document.createElement("ul")
+      for (const stack of callStack) {
+        const stackItem = document.createElement("li")
+        stackItem.textContent = stack
+        callStackItem.append(stackItem)
+      }
+      item.append(callStackItem)
+    }
+
     this.redirect?.trace(...data)
   }
 
-  debug(...data: any[]): void {
+  debug(...data: any[]) {
     if (this.child) {
       this.child.debug(...data)
       return
@@ -252,7 +272,7 @@ export class DomConsole implements Console {
     this.redirect?.debug(...data)
   }
 
-  info(...data: any[]): void {
+  info(...data: any[]) {
     if (this.child) {
       this.child.info(...data)
       return
@@ -261,7 +281,7 @@ export class DomConsole implements Console {
     this.redirect?.info(...data)
   }
 
-  warn(...data: any[]): void {
+  warn(...data: any[]) {
     if (this.child) {
       this.child.warn(...data)
       return
@@ -270,7 +290,7 @@ export class DomConsole implements Console {
     this.redirect?.warn(...data)
   }
 
-  error(...data: any[]): void {
+  error(...data: any[]) {
     if (this.child) {
       this.child.error(...data)
       return
@@ -285,7 +305,7 @@ export class DomConsole implements Console {
     return headerCell
   }
 
-  table(tabularData?: any, properties?: string[] | undefined): void {
+  table(tabularData?: any, properties?: string[]) {
     if (this.child) {
       this.child.table(tabularData, properties)
       return
@@ -340,9 +360,9 @@ export class DomConsole implements Console {
     this.redirect?.table(tabularData, properties)
   }
 
-  /*! Not implemented. **/
+  /*! Redirect only. **/
 
-  count(label?: string | undefined): void {
+  count(label?: string) {
     if (this.child) {
       this.child.count(label)
       return
@@ -350,7 +370,7 @@ export class DomConsole implements Console {
     this.redirect?.count(label)
   }
 
-  countReset(label?: string | undefined): void {
+  countReset(label?: string) {
     if (this.child) {
       this.child.countReset(label)
       return
@@ -358,7 +378,7 @@ export class DomConsole implements Console {
     this.redirect?.countReset(label)
   }
 
-  dir(item?: any, options?: any): void {
+  dir(item?: any, options?: any) {
     if (this.child) {
       this.child.dir(item, options)
       return
@@ -366,7 +386,7 @@ export class DomConsole implements Console {
     this.redirect?.dir(item, options)
   }
 
-  dirxml(...data: any[]): void {
+  dirxml(...data: any[]) {
     if (this.child) {
       this.child.dirxml(...data)
       return
@@ -374,7 +394,7 @@ export class DomConsole implements Console {
     this.redirect?.dirxml(...data)
   }
 
-  time(label?: string | undefined): void {
+  time(label?: string) {
     if (this.child) {
       this.child.time(label)
       return
@@ -382,7 +402,7 @@ export class DomConsole implements Console {
     this.redirect?.time(label)
   }
 
-  timeEnd(label?: string | undefined): void {
+  timeEnd(label?: string) {
     if (this.child) {
       this.child.timeEnd(label)
       return
@@ -390,7 +410,7 @@ export class DomConsole implements Console {
     this.redirect?.timeEnd(label)
   }
 
-  timeLog(label?: string | undefined, ...data: any[]): void {
+  timeLog(label?: string, ...data: any[]) {
     if (this.child) {
       this.child.timeLog(label, ...data)
       return
@@ -398,7 +418,7 @@ export class DomConsole implements Console {
     this.redirect?.timeLog(label, ...data)
   }
 
-  timeStamp(label?: string | undefined): void {
+  timeStamp(label?: string) {
     if (this.child) {
       this.child.timeStamp(label)
       return

@@ -219,13 +219,30 @@ export class DomConsole {
         (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.log(...data);
     }
     trace(...data) {
-        var _a;
+        var _a, _b;
         if (this.child) {
             this.child.trace(...data);
             return;
         }
-        this.appendItem("trace", ...data);
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.trace(...data);
+        const item = this.appendItem("trace", ...data);
+        const callStack = ((_a = new Error().stack) !== null && _a !== void 0 ? _a : "")
+            .replace("Error\n", "")
+            .split("\n")
+            .map(s => s.trim().split(/[ |@|(|)]/).filter(s2 => !["at", ""].includes(s2)).join(" @ "))
+            .map(s => s.replace(location.href.replace(location.pathname, ""), ""))
+            .filter(s => s.length > 0)
+            .filter(s => !s.includes("trace @ "))
+            .map(s => s.includes(" @ ") ? s : "(anonymous) @ " + s);
+        if (callStack.length > 0) {
+            const callStackItem = document.createElement("ul");
+            for (const stack of callStack) {
+                const stackItem = document.createElement("li");
+                stackItem.textContent = stack;
+                callStackItem.append(stackItem);
+            }
+            item.append(callStackItem);
+        }
+        (_b = this.redirect) === null || _b === void 0 ? void 0 : _b.trace(...data);
     }
     debug(...data) {
         var _a;
