@@ -2,70 +2,85 @@ input[name="group-visibility"] {
   display: none;
 }
 
-.console-list>.console-list-item>label:has(>input[name="group-visibility"])::before {
-  content: "> ";
-}
-
-.console-list>.console-list-item>label:has(>input[name="group-visibility"]:checked)::before {
-  content: "▼ ";
-}
-
 .console-list {
   list-style: none;
   color: rgb(222, 222, 222);
   background-color: rgb(40, 40, 40);
   margin-top: 0;
   padding-left: 1.25em;
+
+  .console-list-item:has(>label:hover) {
+    padding-left: 0;
+    border-left: 3px solid #fef6d5;
+  }
+
+  .console-list-item {
+    box-sizing: border-box;
+    padding-top: -1px;
+    border-top: 1px solid rgb(71, 71, 71);
+    padding-left: 3px;
+
+    label:has(>input[name="group-visibility"])::before {
+      content: "> ";
+    }
+
+    label:has(>input[name="group-visibility"]:checked)::before {
+      content: "▼ ";
+    }
+
+    .console-list-item-group:has(>.console-list>.console-list-item>label:hover) {
+      padding-left: 2px;
+      border-left: 1px dashed rgb(71, 71, 71);
+    }
+
+    .console-list-item-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid rgb(71, 71, 71);
+      margin-top: 0.2em;
+      margin-bottom: 0.2em;
+
+      th {
+        border: 1px solid rgb(71, 71, 71);
+        padding-left: 0.25em;
+      }
+
+      td {
+        border-right: 1px solid rgb(71, 71, 71);
+        padding-left: 0.25em;
+      }
+
+      tbody tr:nth-child(even) {
+        background-color: rgb(40, 41, 42);
+      }
+
+      thead th:hover,
+      tbody tr:nth-child(odd):hover {
+        background-color: rgb(62, 62, 62);
+      }
+
+      tbody td:not(:first-child) {
+        color: rgb(152, 127, 253);
+      }
+    }
+  }
+
+  .console-list-item-warn>label,
+  .console-list-item-group:has(.console-list-item-warn)>label {
+    color: rgb(253, 243, 170);
+    background-color: rgb(65, 60, 38);
+  }
+
+  .console-list-item-error>label,
+  .console-list-item-assert>label,
+  .console-list-item-group:has(.console-list-item-error, .console-list-item-assert)>label {
+    color: rgb(231, 204, 203);
+    background-color: rgb(78, 53, 52);
+  }
 }
 
-:has(>.console-list)>.console-list:not(.console-list .console-list) {
+*:has(>.console-list)>.console-list:not(.console-list .console-list) {
   padding-left: 0;
-}
-
-.console-list>.console-list-item {
-  border-top: 1px solid rgb(71, 71, 71);
-}
-
-.console-list>.console-list-item.console-list-item-warn,
-.console-list>.console-list-item:has(.console-list-item-warn) {
-  color: rgb(253, 243, 170);
-  background-color: rgb(65, 60, 38);
-}
-
-.console-list>.console-list-item.console-list-item-error,
-.console-list>.console-list-item.console-list-item-assert,
-.console-list>.console-list-item:has(.console-list-item-error, .console-list-item-assert) {
-  color: rgb(231, 204, 203);
-  background-color: rgb(78, 53, 52);
-}
-
-.console-list>.console-list-item .console-list-item-table {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid rgb(71, 71, 71);
-}
-
-.console-list>.console-list-item .console-list-item-table th {
-  border: 1px solid rgb(71, 71, 71);
-  padding-left: 0.25em;
-}
-
-.console-list>.console-list-item .console-list-item-table td {
-  border-right: 1px solid rgb(71, 71, 71);
-  padding-left: 0.25em;
-}
-
-.console-list>.console-list-item .console-list-item-table tbody tr:nth-child(even) {
-  background-color: rgb(40, 41, 42);
-}
-
-.console-list>.console-list-item .console-list-item-table thead th:hover,
-.console-list>.console-list-item .console-list-item-table tbody tr:nth-child(odd):hover {
-  background-color: rgb(62, 62, 62);
-}
-
-.console-list>.console-list-item .console-list-item-table tbody td:not(:first-child) {
-  color: rgb(152, 127, 253);
 }
 
 .console-menu {
@@ -77,13 +92,13 @@ input[name="group-visibility"] {
   border-radius: 0.5em;
   box-shadow: 0 0 0 0.05em #e0e0e133;
   overflow: hidden;
-}
 
-.console-menu li {
-  padding: 0.35em;
-  cursor: pointer;
-}
+  li {
+    padding: 0.35em;
+    cursor: pointer;
+  }
 
-.console-menu li:hover {
-  background-color: #edeff2;
+  li:hover {
+    background-color: #edeff2;
+  }
 }

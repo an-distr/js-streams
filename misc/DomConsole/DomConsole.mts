@@ -31,14 +31,14 @@ export class DomConsole implements Console {
       const scopedStyle = document.createElement("style")
       scopedStyle.setAttribute("scoped", "")
       scopedStyle.textContent = `
-        .console-list>.console-list-item>label {
+        .console-list>.console-list-item>label:has(input[name="group-visibility"]) {
           display: block;
           cursor: pointer;
         }
-        .console-list>.console-list-item:has(>label>input[type="checkbox"]:not(:checked))>.console-list {
+        .console-list>.console-list-item:has(>label>input[name="group-visibility"]:not(:checked))>.console-list {
           display: none;
         }
-        .console-list>.console-list-item:has(>label>input[type="checkbox"]:checked)>.console-list {
+        .console-list>.console-list-item:has(>label>input[name="group-visibility"]:checked)>.console-list {
           display: block;
         }`
       this.owner.append(scopedStyle)
@@ -88,22 +88,20 @@ export class DomConsole implements Console {
     if (classSuffix) {
       li.classList.add(`console-list-item-${classSuffix}`)
     }
-    li.textContent = this.dataToString(...data)
+    const lbl = document.createElement("label")
+    lbl.textContent = this.dataToString(...data)
+    li.append(lbl)
     this.holder.append(li)
     return li
   }
 
   private toNextHolder(collapsed: boolean, ...data: any[]) {
-    const current = this.appendItem("log", ...data)
+    const current = this.appendItem("group", ...data)
     const chk = document.createElement("input")
     chk.name = "group-visibility"
     chk.type = "checkbox"
     chk.checked = !collapsed
-    const lbl = document.createElement("label")
-    lbl.append(chk)
-    lbl.append(current.innerText)
-    current.innerText = ""
-    current.append(lbl)
+    current.firstElementChild!.prepend(chk)
     this.child = new DomConsole(current, this.redirect, this)
   }
 
@@ -355,7 +353,7 @@ export class DomConsole implements Console {
       }
     }
     const li = this.appendItem()
-    li.append(table)
+    li.firstElementChild!.append(table)
     this.holder.append(li)
     this.redirect?.table(tabularData, properties)
   }
