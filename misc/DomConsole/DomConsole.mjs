@@ -91,8 +91,8 @@ export class DomConsole {
         chk.checked = !collapsed;
         const lbl = document.createElement("label");
         lbl.append(chk);
-        lbl.append(current.innerHTML);
-        current.innerHTML = "";
+        lbl.append(current.innerText);
+        current.innerText = "";
         current.append(lbl);
         this.child = new DomConsole(current, this.redirect, this);
     }
