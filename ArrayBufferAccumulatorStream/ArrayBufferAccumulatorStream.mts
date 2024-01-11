@@ -17,20 +17,28 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import { PushPull, PushPullArrayBufferQueue, PushableTypes } from "../PushPull/PushPull.mjs"
+import { PushPull, PushPullNonQueue, PushableTypes } from "../PushPull/PushPull.mjs"
 
 export interface ArrayBufferAccumulatorStreamOptions {
   forceEmit?: number[][] | ((bytes: IterableIterator<number>) => number)
   fixed?: boolean
 }
 
-export class ArrayBufferAccumulator extends PushPull<ArrayBufferLike | ArrayLike<number>, ArrayBufferLike, PushPullArrayBufferQueue> {
+export class ArrayBufferAccumulator extends PushPull<ArrayBufferLike | ArrayLike<number>, ArrayBufferLike, PushPullNonQueue<ArrayBufferLike | ArrayLike<number>, ArrayBufferLike>> {
+  private size: number
   private forceEmit: ((bytes: IterableIterator<number>) => number) | undefined
   private fixed: boolean
+  private buffer: ArrayBuffer | null
+  private bufferView: Uint8Array
+  private pos: number
 
   constructor(size: number, options?: ArrayBufferAccumulatorStreamOptions) {
-    super(new PushPullArrayBufferQueue(size))
+    super(new PushPullNonQueue())
+    this.size = size
     this.fixed = options?.forceEmit ? false : options?.fixed ?? false
+    this.buffer = new ArrayBuffer(size)
+    this.bufferView = new Uint8Array(this.buffer)
+    this.pos = 0
 
     if (options?.forceEmit) {
       if (Array.isArray(options.forceEmit)) {
@@ -66,8 +74,64 @@ export class ArrayBufferAccumulator extends PushPull<ArrayBufferLike | ArrayLike
     }
   }
 
-  pushpull(data?: PushableTypes<ArrayBufferLike | ArrayLike<number>> | undefined, flush?: boolean | undefined): AsyncGenerator<ArrayBufferLike, any, unknown> {
-    throw new Error("Method not implemented.")
+  async *pushpull(data?: PushableTypes<ArrayBufferLike | ArrayLike<number>>, flush?: boolean) {
+    if (data) {
+      let chunkView: Uint8Array
+      let chunkSize: number
+      if (Array.isArray(data)) {
+        chunkView = new Uint8Array(data)
+        chunkSize = data.length
+      }
+      else {
+        const buffer = data as ArrayBufferLike
+        chunkView = new Uint8Array(buffer)
+        chunkSize = buffer.byteLength
+      }
+      let chunkPos = 0
+      let copySize
+
+      while (chunkSize > 0) {
+        if (this.pos === this.size) {
+          yield this.bufferView.slice()
+          this.pos = 0
+        }
+
+        copySize = Math.min(this.size - this.pos, chunkSize)
+        this.bufferView.set(chunkView.slice(chunkPos, chunkPos + copySize), this.pos)
+        this.pos += copySize
+        chunkPos += copySize
+        chunkSize -= copySize
+
+        if (this.forceEmit && this.pos > 0) {
+          let forceEmitPos = this.forceEmit(this.bufferView.slice(0, this.pos).values())
+          while (forceEmitPos > 0) {
+            yield this.bufferView.slice(0, forceEmitPos)
+            this.bufferView.copyWithin(0, forceEmitPos, this.size)
+            this.pos -= forceEmitPos
+            forceEmitPos = this.forceEmit(this.bufferView.slice(0, this.pos).values())
+          }
+        }
+      }
+    }
+
+    if (flush && this.pos > 0) {
+      if (this.forceEmit) {
+        let forceEmitPos = this.forceEmit(this.bufferView.slice(0, this.pos).values())
+        while (forceEmitPos > 0) {
+          yield this.bufferView.slice(0, forceEmitPos)
+          this.bufferView.copyWithin(0, forceEmitPos, this.size)
+          this.pos -= forceEmitPos
+          forceEmitPos = this.forceEmit(this.bufferView.slice(0, this.pos).values())
+        }
+      }
+      if (this.fixed) {
+        this.bufferView.fill(0, this.pos)
+        this.pos = this.size
+      }
+      if (this.pos > 0) {
+        yield this.bufferView.slice(0, this.pos)
+      }
+    }
   }
 }
 

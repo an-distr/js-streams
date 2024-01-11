@@ -16,6 +16,27 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+export class PushPullNonQueue {
+    length() {
+        return 0;
+    }
+    more() {
+        return true;
+    }
+    all() {
+        throw new Error("Method not implemented.");
+    }
+    push(_data) {
+    }
+    pop() {
+        return undefined;
+    }
+    empty() {
+    }
+    splice(start, deleteCount) {
+        throw new Error("Method not implemented.");
+    }
+}
 export class PushPullArrayBufferQueue {
     constructor(size) {
         this.size = size;
@@ -55,7 +76,7 @@ export class PushPullArrayBufferQueue {
         const view = new Uint8Array(this.queue);
         const shiftSize = deleteCount === undefined ? this.size : start + deleteCount;
         const data = view.slice(start, shiftSize);
-        view.set(view.slice(shiftSize), start);
+        view.copyWithin(start, shiftSize);
         this.pos -= shiftSize;
         return data;
     }

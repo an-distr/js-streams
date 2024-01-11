@@ -1,24 +1,12 @@
-import { ArrayBufferAccumulatorStream } from "../ArrayBufferAccumulatorStream.mjs"
+import { ArrayBufferAccumulator } from "../ArrayBufferAccumulatorStream.mjs"
 import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.mjs"
 import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Streams.mjs"
 
-if (
-  !("now" in performance) ||
-  !("mark" in performance) ||
-  !("measure" in performance) ||
-  !("getEntries" in performance) ||
-  !("getEntriesByType" in performance) ||
-  !("getEntriesByName" in performance) ||
-  !("clearMeasures" in performance) ||
-  !("clearMarks" in performance)
-) {
-  console.warn("globalThis.performance switch to CompatiblePerformance")
-  performance = new CompatiblePerformance
-}
-
 (async () => {
 
-  function readable(totalSize: number, chunkSize: number, isArray: boolean) {
+  CompatiblePerformance.replaceIfUnsupported()
+
+  function source(totalSize: number, chunkSize: number, isArray: boolean) {
     return new ReadableStream<Uint8Array | Array<number>>({
       start(controller) {
         const bytes = new ArrayBuffer(totalSize)
@@ -42,7 +30,7 @@ if (
     sizeOfWritten: number
   }
 
-  function writable<T extends ArrayBufferLike | ArrayLike<any>>(result: WritableResult) {
+  function results<T extends ArrayBufferLike | ArrayLike<any>>(result: WritableResult) {
     return new WritableStream<T>({
       write(chunk) {
         if (Array.isArray(chunk)) {
@@ -104,14 +92,14 @@ if (
 
     const result: WritableResult = { sizeOfWritten: 0 }
 
-    await readable(totalSize, readableChunkSize, isArray)
+    await source(totalSize, readableChunkSize, isArray)
       .pipeThrough(mark("start"))
-      .pipeThrough(new ArrayBufferAccumulatorStream(chunkSize, { fixed }))
+      .pipeThrough(new ArrayBufferAccumulator(chunkSize, { fixed }).transform())
       .pipeThrough(mark("end"))
       .pipeThrough(assertChunkSize(totalSize, chunkSize))
       .pipeThrough(measure("ArrayBufferAccumulatorStream.transform", "start", "end"))
       .pipeThrough(mark("start"))
-      .pipeTo(writable(result))
+      .pipeTo(results(result))
 
     const entries = performance.getEntriesByName("ArrayBufferAccumulatorStream.transform")
     const durations = entries.map(e => e.duration)
@@ -173,14 +161,14 @@ if (
 
     await readable
       .pipeThrough(new Utf8EncoderStream)
-      .pipeThrough(new ArrayBufferAccumulatorStream(chunkSize, { forceEmit: [[10, 13], [13], [10]] }))
+      .pipeThrough(new ArrayBufferAccumulator(chunkSize, { forceEmit: [[10, 13], [13], [10]] }).transform())
       .pipeThrough(new Utf8DecoderStream)
       .pipeTo(writable)
   }
 
   // warmup
-  await readable(1, 1, false)
-    .pipeThrough(new ArrayBufferAccumulatorStream(1))
+  await source(1, 1, false)
+    .pipeThrough(new ArrayBufferAccumulator(1).transform())
     .pipeTo(new WritableStream)
 
   const totalSizes = [

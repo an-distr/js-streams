@@ -29,6 +29,34 @@ export interface PushPullQueue<T, All> {
   splice(start: number, deleteCount?: number): All
 }
 
+export class PushPullNonQueue<I, O> implements PushPullQueue<I, O> {
+  length() {
+    return 0
+  }
+
+  more() {
+    return true
+  }
+
+  all(): O {
+    throw new Error("Method not implemented.")
+  }
+
+  push(_data: I) {
+  }
+  
+  pop() {
+    return undefined
+  }
+  
+  empty() {
+  }
+
+  splice(start: number, deleteCount?: number | undefined): O {
+    throw new Error("Method not implemented.")
+  }
+}
+
 export class PushPullArrayBufferQueue implements PushPullQueue<ArrayBufferLike, ArrayBufferLike> {
   private queue: ArrayBuffer
   private size: number
@@ -79,7 +107,7 @@ export class PushPullArrayBufferQueue implements PushPullQueue<ArrayBufferLike, 
     const view = new Uint8Array(this.queue)
     const shiftSize = deleteCount === undefined ? this.size : start + deleteCount
     const data = view.slice(start, shiftSize)
-    view.set(view.slice(shiftSize), start)
+    view.copyWithin(start, shiftSize)
     this.pos -= shiftSize
     return data
   }

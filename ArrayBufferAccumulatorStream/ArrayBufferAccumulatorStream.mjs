@@ -16,12 +16,16 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-import { PushPull, PushPullArrayBufferQueue } from "../PushPull/PushPull.mjs";
+import { PushPull, PushPullNonQueue } from "../PushPull/PushPull.mjs";
 export class ArrayBufferAccumulator extends PushPull {
     constructor(size, options) {
         var _a;
-        super(new PushPullArrayBufferQueue(size));
+        super(new PushPullNonQueue());
+        this.size = size;
         this.fixed = (options === null || options === void 0 ? void 0 : options.forceEmit) ? false : (_a = options === null || options === void 0 ? void 0 : options.fixed) !== null && _a !== void 0 ? _a : false;
+        this.buffer = new ArrayBuffer(size);
+        this.bufferView = new Uint8Array(this.buffer);
+        this.pos = 0;
         if (options === null || options === void 0 ? void 0 : options.forceEmit) {
             if (Array.isArray(options.forceEmit)) {
                 this.forceEmit = (bytes) => {
@@ -55,8 +59,60 @@ export class ArrayBufferAccumulator extends PushPull {
             }
         }
     }
-    pushpull(data, flush) {
-        throw new Error("Method not implemented.");
+    async *pushpull(data, flush) {
+        if (data) {
+            let chunkView;
+            let chunkSize;
+            if (Array.isArray(data)) {
+                chunkView = new Uint8Array(data);
+                chunkSize = data.length;
+            }
+            else {
+                const buffer = data;
+                chunkView = new Uint8Array(buffer);
+                chunkSize = buffer.byteLength;
+            }
+            let chunkPos = 0;
+            let copySize;
+            while (chunkSize > 0) {
+                if (this.pos === this.size) {
+                    yield this.bufferView.slice();
+                    this.pos = 0;
+                }
+                copySize = Math.min(this.size - this.pos, chunkSize);
+                this.bufferView.set(chunkView.slice(chunkPos, chunkPos + copySize), this.pos);
+                this.pos += copySize;
+                chunkPos += copySize;
+                chunkSize -= copySize;
+                if (this.forceEmit && this.pos > 0) {
+                    let forceEmitPos = this.forceEmit(this.bufferView.slice(0, this.pos).values());
+                    while (forceEmitPos > 0) {
+                        yield this.bufferView.slice(0, forceEmitPos);
+                        this.bufferView.copyWithin(0, forceEmitPos, this.size);
+                        this.pos -= forceEmitPos;
+                        forceEmitPos = this.forceEmit(this.bufferView.slice(0, this.pos).values());
+                    }
+                }
+            }
+        }
+        if (flush && this.pos > 0) {
+            if (this.forceEmit) {
+                let forceEmitPos = this.forceEmit(this.bufferView.slice(0, this.pos).values());
+                while (forceEmitPos > 0) {
+                    yield this.bufferView.slice(0, forceEmitPos);
+                    this.bufferView.copyWithin(0, forceEmitPos, this.size);
+                    this.pos -= forceEmitPos;
+                    forceEmitPos = this.forceEmit(this.bufferView.slice(0, this.pos).values());
+                }
+            }
+            if (this.fixed) {
+                this.bufferView.fill(0, this.pos);
+                this.pos = this.size;
+            }
+            if (this.pos > 0) {
+                yield this.bufferView.slice(0, this.pos);
+            }
+        }
     }
 }
 export class ArrayBufferAccumulatorStream extends TransformStream {
