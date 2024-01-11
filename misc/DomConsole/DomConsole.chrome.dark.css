@@ -15,6 +15,7 @@ input[name="group-visibility"] {
   color: rgb(222, 222, 222);
   background-color: rgb(40, 40, 40);
   margin-top: 0;
+  padding-left: 1.25em;
 }
 
 :has(>.console-list)>.console-list:not(.console-list .console-list) {
