@@ -18,12 +18,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 export class CompatiblePerformance {
     constructor() {
+        var _a;
         this.navigation = {};
         this.timeOrigin = 0;
         this.timing = {};
         this.eventCounts = {};
         this.onresourcetimingbufferfull = () => null;
         this.entries = new Map;
+        this.now_impl = (_a = globalThis.performance.now) !== null && _a !== void 0 ? _a : (() => Date.now());
     }
     static replaceIfUnsupported() {
         if (!("now" in globalThis.performance) ||
@@ -45,7 +47,7 @@ export class CompatiblePerformance {
     dispatchEvent(event) { return true; }
     toJSON() { return { navigation: this.navigation, timeOrigin: this.timeOrigin, timing: this.timing, }; }
     now() {
-        return Date.now();
+        return this.now_impl();
     }
     mark(markName, markOptions) {
         var _a;
@@ -107,7 +109,6 @@ export class CompatiblePerformance {
             }
         }
         if (!lastStartMark || !lastEndMark) {
-            const marks = this.getEntriesByType("mark");
             if (!lastStartMark && startMark) {
                 lastStartMark = this.getEntriesByName(startMark, "mark").slice(-1)[0];
             }

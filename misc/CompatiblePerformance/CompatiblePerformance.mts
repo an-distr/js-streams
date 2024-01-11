@@ -18,6 +18,13 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 export class CompatiblePerformance {
+  private entries: Map<string, PerformanceEntryList>
+  private now_impl: () => number
+
+  constructor() {
+    this.entries = new Map<string, PerformanceEntryList>
+    this.now_impl = globalThis.performance.now ?? (() => Date.now())
+  }
 
   static replaceIfUnsupported() {
     if (
@@ -58,13 +65,11 @@ export class CompatiblePerformance {
   /*! Not implemented */
   toJSON(): any { return { navigation: this.navigation, timeOrigin: this.timeOrigin, timing: this.timing, } }
 
-  entries: Map<string, PerformanceEntryList> = new Map<string, PerformanceEntryList>
-
-  now(): number {
-    return Date.now()
+  now() {
+    return this.now_impl()
   }
 
-  mark(markName: string, markOptions?: PerformanceMarkOptions | undefined): PerformanceMark {
+  mark(markName: string, markOptions?: PerformanceMarkOptions) {
     const entry: PerformanceMark = {
       entryType: "mark",
       name: markName,
@@ -83,7 +88,7 @@ export class CompatiblePerformance {
     return entry
   }
 
-  measure(measureName: string, startOrMeasureOptions?: string | PerformanceMeasureOptions | undefined, endMark?: string | undefined): PerformanceMeasure {
+  measure(measureName: string, startOrMeasureOptions?: string | PerformanceMeasureOptions, endMark?: string) {
     let startMark: string | undefined
     let options: PerformanceMeasureOptions | undefined
     if (startOrMeasureOptions) {
@@ -124,7 +129,6 @@ export class CompatiblePerformance {
       }
     }
     if (!lastStartMark || !lastEndMark) {
-      const marks = this.getEntriesByType("mark")
       if (!lastStartMark && startMark) {
         lastStartMark = this.getEntriesByName(startMark, "mark").slice(-1)[0]
       }
@@ -151,15 +155,15 @@ export class CompatiblePerformance {
     return entry
   }
 
-  getEntries(): PerformanceEntryList {
+  getEntries() {
     return ([] as PerformanceEntryList).concat(...this.entries.values())
   }
 
-  getEntriesByType(type: string): PerformanceEntryList {
+  getEntriesByType(type: string) {
     return this.entries.get(type) ?? [] as PerformanceEntryList
   }
 
-  getEntriesByName(name: string, type?: string | undefined): PerformanceEntryList {
+  getEntriesByName(name: string, type?: string) {
     if (type) {
       return this.getEntriesByType(type).filter(e => e.name === name)
     }
@@ -168,7 +172,7 @@ export class CompatiblePerformance {
     }
   }
 
-  clearMeasures(measureName?: string | undefined): void {
+  clearMeasures(measureName?: string) {
     if (measureName) {
       this.entries.set("measure", this.getEntriesByType("measure").filter(e => e.name !== measureName))
     }
@@ -177,7 +181,7 @@ export class CompatiblePerformance {
     }
   }
 
-  clearMarks(markName?: string | undefined): void {
+  clearMarks(markName?: string) {
     if (markName) {
       this.entries.set("mark", this.getEntriesByType("mark").filter(e => e.name !== markName))
     }
