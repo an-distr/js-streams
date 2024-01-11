@@ -96,7 +96,7 @@ export class DomConsole implements Console {
   private toNextHolder(collapsed: boolean, ...data: any[]) {
     const current = this.appendItem("log", ...data)
     const chk = document.createElement("input")
-    chk.name = "table-visibility"
+    chk.name = "group-visibility"
     chk.type = "checkbox"
     chk.checked = !collapsed
     const lbl = document.createElement("label")
@@ -146,7 +146,7 @@ export class DomConsole implements Console {
   }
 
   expand(expand: boolean, owner?: Element | null, depth?: number) {
-    const chks = [...(owner ?? this.owner).querySelectorAll("input[name='table-visibility']")] as HTMLInputElement[]
+    const chks = [...(owner ?? this.owner).querySelectorAll("input[name='group-visibility']")] as HTMLInputElement[]
 
     const ancestors = (target: Element) => {
       const ancestors: HTMLInputElement[] = []

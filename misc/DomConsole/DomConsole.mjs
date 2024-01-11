@@ -86,7 +86,7 @@ export class DomConsole {
     toNextHolder(collapsed, ...data) {
         const current = this.appendItem("log", ...data);
         const chk = document.createElement("input");
-        chk.name = "table-visibility";
+        chk.name = "group-visibility";
         chk.type = "checkbox";
         chk.checked = !collapsed;
         const lbl = document.createElement("label");
@@ -132,7 +132,7 @@ export class DomConsole {
         return menu;
     }
     expand(expand, owner, depth) {
-        const chks = [...(owner !== null && owner !== void 0 ? owner : this.owner).querySelectorAll("input[name='table-visibility']")];
+        const chks = [...(owner !== null && owner !== void 0 ? owner : this.owner).querySelectorAll("input[name='group-visibility']")];
         const ancestors = (target) => {
             var _a;
             const ancestors = [];

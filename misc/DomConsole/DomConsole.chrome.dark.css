@@ -1,21 +1,39 @@
+input[name="group-visibility"] {
+  display: none;
+}
+
+.console-list>.console-list-item>label:has(>input[name="group-visibility"])::before {
+  content: "▶ ";
+}
+
+.console-list>.console-list-item>label:has(>input[name="group-visibility"]:checked)::before {
+  content: "▼ ";
+}
+
 .console-list {
   list-style: none;
   color: rgb(222, 222, 222);
   background-color: rgb(40, 40, 40);
+  margin-top: 0;
+}
+
+:has(>.console-list)>.console-list:not(.console-list .console-list) {
+  padding-left: 0;
 }
 
 .console-list>.console-list-item {
   border-top: 1px solid rgb(71, 71, 71);
-  margin: 0.25em;
 }
 
-.console-list>.console-list-item.console-list-item-warn {
+.console-list>.console-list-item.console-list-item-warn,
+.console-list>.console-list-item:has(.console-list-item-warn) {
   color: rgb(253, 243, 170);
   background-color: rgb(65, 60, 38);
 }
 
 .console-list>.console-list-item.console-list-item-error,
-.console-list>.console-list-item.console-list-item-assert {
+.console-list>.console-list-item.console-list-item-assert,
+.console-list>.console-list-item:has(.console-list-item-error, .console-list-item-assert) {
   color: rgb(231, 204, 203);
   background-color: rgb(78, 53, 52);
 }
