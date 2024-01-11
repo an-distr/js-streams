@@ -31,15 +31,19 @@ export class DomConsole implements Console {
       const scopedStyle = document.createElement("style")
       scopedStyle.setAttribute("scoped", "")
       scopedStyle.textContent = `
-        .console-list>.console-list-item>label:has(input[name="group-visibility"]) {
-          display: block;
-          cursor: pointer;
-        }
-        .console-list>.console-list-item:has(>label>input[name="group-visibility"]:not(:checked))>.console-list {
-          display: none;
-        }
-        .console-list>.console-list-item:has(>label>input[name="group-visibility"]:checked)>.console-list {
-          display: block;
+        .console-list {
+          >.console-list-item>label {
+            display: block;
+          }
+          >.console-list-item>label:has(input[name="group-visibility"]) {
+            cursor: pointer;
+          }
+          >.console-list-item:has(>label>input[name="group-visibility"]:not(:checked))>.console-list {
+            display: none;
+          }
+          >.console-list-item:has(>label>input[name="group-visibility"]:checked)>.console-list {
+            display: block;
+          }
         }`
       this.owner.append(scopedStyle)
     }

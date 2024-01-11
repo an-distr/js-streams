@@ -1,8 +1,8 @@
 @import url("DomConsole.chrome.template.css");
 
 :root {
-  --fore-color: rgb(222, 222, 222);
-  --back-color: rgb(40, 40, 40);
+  --fore-color: #474747;
+  --back-color: #ffffff;
   --current-selected-anchor-color: #fef6d5;
   --standard-border-color: rgb(71, 71, 71);
   --table-row-even-back-color: rgb(40, 41, 42);
