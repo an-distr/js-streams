@@ -9,7 +9,8 @@ https://an-js-streams.pages.dev/misc/DomConsole/test/test.html
 ## Usage
 ```html
 <!-- Applies a style for the output of the DomConsole. -->
-<link rel="stylesheet" src="https://an-js-streams.pages.dev/misc/DomConsole/DomConsole.chrome.auto.css">
+<link rel="stylesheet" href="https://an-js-streams.pages.dev/misc/DomConsole/DomConsole.css">
+<link rel="stylesheet" href="https://an-js-streams.pages.dev/misc/DomConsole/DomConsole.theme.chrome.css">
 
 <!-- Initializing the DomConsole -->
 <script type="module">

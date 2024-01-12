@@ -1,0 +1,41 @@
+:root {
+  --dc-fore-color: rgb(42, 42, 42);
+  --dc-back-color: rgb(255, 255, 255);
+  --dc-current-selected-anchor-color: #fef6d5;
+  --dc-standard-border-color: rgb(211, 227, 253);
+  --dc-table-header-back-color: rgb(247, 249, 253);
+  --dc-table-header-hover-back-color: rgb(227, 227, 227);
+  --dc-table-row-even-back-color: rgb(247, 249, 253);
+  --dc-table-row-hover-back-color: rgb(242, 242, 242);
+  --dc-table-row-fore-color: rgb(21, 76, 165);
+  --dc-warn-fore-color: rgb(100, 86, 42);
+  --dc-warn-back-color: rgb(254, 246, 213);
+  --dc-error-fore-color: rgb(101, 57, 55);
+  --dc-error-back-color: rgb(252, 235, 235);
+  --dc-menu-back-color: #fafcff;
+  --dc-menu-border-color: #e0e0e1;
+  --dc-menu-shadow-color: #e0e0e133;
+  --dc-menu-hover-back-color: #edeff2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --dc-fore-color: rgb(222, 222, 222);
+    --dc-back-color: rgb(40, 40, 40);
+    --dc-current-selected-anchor-color: #fef6d5;
+    --dc-standard-border-color: rgb(71, 71, 71);
+    --dc-table-header-back-color: rgb(40, 41, 42);
+    --dc-table-header-hover-back-color: rgb(71, 71, 71);
+    --dc-table-row-even-back-color: rgb(40, 41, 42);
+    --dc-table-row-hover-back-color: rgb(62, 62, 62);
+    --dc-table-row-fore-color: rgb(152, 127, 253);
+    --dc-warn-fore-color: rgb(253, 243, 170);
+    --dc-warn-back-color: rgb(65, 60, 38);
+    --dc-error-fore-color: rgb(231, 204, 203);
+    --dc-error-back-color: rgb(78, 53, 52);
+    --dc-menu-back-color: #fafcff;
+    --dc-menu-border-color: #e0e0e1;
+    --dc-menu-shadow-color: #e0e0e133;
+    --dc-menu-hover-back-color: #edeff2;
+  }
+}

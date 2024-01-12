@@ -1,3 +1,10 @@
+:root {
+  --dc-menu-back-color: white;
+  --dc-menu-border-color: black;
+  --dc-standard-border-color: black;
+  --dc-current-selected-anchor-color: black;
+}
+
 input[name="group-visibility"] {
   display: none;
 }
@@ -10,7 +17,6 @@ input[name="group-visibility"] {
   padding-left: 1.25em;
 
   .console-list-item:has(>label:hover) {
-    padding-left: 0;
     border-left: 3px solid var(--dc-current-selected-anchor-color);
   }
 
@@ -18,7 +24,7 @@ input[name="group-visibility"] {
     box-sizing: border-box;
     margin-top: 0.25em;
     padding-top: -1px;
-    padding-left: 3px;
+    border-left: 3px solid transparent;
     overflow: hidden;
 
     label:has(>input[name="group-visibility"])::before {
