@@ -154,6 +154,18 @@ export class DomConsole {
             parent.append(callStackItem);
         }
     }
+    createHeaderCell(textContent) {
+        const headerCell = document.createElement("th");
+        headerCell.textContent = textContent;
+        return headerCell;
+    }
+    getThis() {
+        let self = this;
+        while (self.child) {
+            self = self.child;
+        }
+        return self;
+    }
     expand(expand, owner, depth) {
         const chks = [...(owner !== null && owner !== void 0 ? owner : this.owner).querySelectorAll("input[name='group-visibility']")];
         const ancestors = (target) => {
@@ -181,39 +193,26 @@ export class DomConsole {
     }
     group(...data) {
         var _a;
-        if (this.child) {
-            this.child.group(...data);
-            return;
-        }
-        this.toNextHolder(false, ...data);
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.group(...data);
+        const This = this.getThis();
+        This.toNextHolder(false, ...data);
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.group(...data);
     }
     groupCollapsed(...data) {
         var _a;
-        if (this.child) {
-            this.child.groupCollapsed(...data);
-            return;
-        }
-        this.toNextHolder(true, ...data);
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.groupCollapsed(...data);
+        const This = this.getThis();
+        This.toNextHolder(true, ...data);
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.groupCollapsed(...data);
     }
     groupEnd() {
         var _a;
-        if (this.child) {
-            this.child.groupEnd();
-            return;
+        const This = this.getThis();
+        if (This.parent) {
+            This.parent.child = undefined;
         }
-        if (this.parent) {
-            this.parent.child = undefined;
-        }
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.groupEnd();
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.groupEnd();
     }
     clear() {
         var _a;
-        if (this.parent) {
-            this.parent.clear();
-            return;
-        }
         const oldHolder = this.holder;
         const newHolder = oldHolder.cloneNode(false);
         this.owner.replaceChild(newHolder, oldHolder);
@@ -223,89 +222,60 @@ export class DomConsole {
     }
     assert(condition, ...data) {
         var _a;
-        if (this.child) {
-            this.child.assert(condition, ...data);
-            return;
-        }
+        const This = this.getThis();
         if (condition !== undefined && !condition) {
-            const item = this.appendItem("assert", "Assertion failed:", ...data);
-            this.withTrace(item.firstElementChild, new Error());
+            const item = This.appendItem("assert", "Assertion failed:", ...data);
+            This.withTrace(item.firstElementChild, new Error());
         }
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.assert(...data);
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.assert(...data);
     }
     log(...data) {
         var _a;
-        if (this.child) {
-            this.child.log(...data);
-            return;
-        }
-        this.appendItem("log", ...data);
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.log(...data);
+        const This = this.getThis();
+        This.appendItem("log", ...data);
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.log(...data);
     }
     trace(...data) {
         var _a;
-        if (this.child) {
-            this.child.trace(...data);
-            return;
-        }
-        const item = this.appendItem("trace", ...data);
-        this.withTrace(item.firstElementChild, new Error());
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.trace(...data);
+        const This = this.getThis();
+        const item = This.appendItem("trace", ...data);
+        This.withTrace(item.firstElementChild, new Error());
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.trace(...data);
     }
     debug(...data) {
         var _a;
-        if (this.child) {
-            this.child.debug(...data);
-            return;
-        }
-        this.appendItem("debug", ...data);
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.debug(...data);
+        const This = this.getThis();
+        This.appendItem("debug", ...data);
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.debug(...data);
     }
     info(...data) {
         var _a;
-        if (this.child) {
-            this.child.info(...data);
-            return;
-        }
-        this.appendItem("info", ...data);
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.info(...data);
+        const This = this.getThis();
+        This.appendItem("info", ...data);
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.info(...data);
     }
     warn(...data) {
         var _a;
-        if (this.child) {
-            this.child.warn(...data);
-            return;
-        }
-        const item = this.appendItem("warn", ...data);
-        this.withTrace(item.firstElementChild, new Error());
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.warn(...data);
+        const This = this.getThis();
+        const item = This.appendItem("warn", ...data);
+        This.withTrace(item.firstElementChild, new Error());
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.warn(...data);
     }
     error(...data) {
         var _a;
-        if (this.child) {
-            this.child.error(...data);
-            return;
-        }
-        const item = this.appendItem("error", ...data);
-        this.withTrace(item.firstElementChild, new Error());
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.error(...data);
-    }
-    createHeaderCell(textContent) {
-        const headerCell = document.createElement("th");
-        headerCell.textContent = textContent;
-        return headerCell;
+        const This = this.getThis();
+        const item = This.appendItem("error", ...data);
+        This.withTrace(item.firstElementChild, new Error());
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.error(...data);
     }
     table(tabularData, properties) {
         var _a;
-        if (this.child) {
-            this.child.table(tabularData, properties);
-            return;
-        }
+        const This = this.getThis();
         const table = document.createElement("table");
         table.classList.add("console-list-item-table");
         const header = table.createTHead();
         const headerRow = header.insertRow(-1);
-        headerRow.append(this.createHeaderCell("(index)"));
+        headerRow.append(This.createHeaderCell("(index)"));
         if (Array.isArray(tabularData)) {
             for (const key in tabularData[0]) {
                 if (properties) {
@@ -313,11 +283,11 @@ export class DomConsole {
                         continue;
                     }
                 }
-                headerRow.append(this.createHeaderCell(key));
+                headerRow.append(This.createHeaderCell(key));
             }
         }
         else {
-            headerRow.append(this.createHeaderCell("Value"));
+            headerRow.append(This.createHeaderCell("Value"));
         }
         const body = table.createTBody();
         if (tabularData) {
@@ -345,74 +315,50 @@ export class DomConsole {
                 }
             }
         }
-        const li = this.appendItem();
+        const li = This.appendItem();
         li.firstElementChild.append(table);
-        this.holder.append(li);
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.table(tabularData, properties);
+        This.holder.append(li);
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.table(tabularData, properties);
     }
     count(label) {
         var _a;
-        if (this.child) {
-            this.child.count(label);
-            return;
-        }
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.count(label);
+        const This = this.getThis();
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.count(label);
     }
     countReset(label) {
         var _a;
-        if (this.child) {
-            this.child.countReset(label);
-            return;
-        }
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.countReset(label);
+        const This = this.getThis();
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.countReset(label);
     }
     dir(item, options) {
         var _a;
-        if (this.child) {
-            this.child.dir(item, options);
-            return;
-        }
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.dir(item, options);
+        const This = this.getThis();
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.dir(item, options);
     }
     dirxml(...data) {
         var _a;
-        if (this.child) {
-            this.child.dirxml(...data);
-            return;
-        }
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.dirxml(...data);
+        const This = this.getThis();
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.dirxml(...data);
     }
     time(label) {
         var _a;
-        if (this.child) {
-            this.child.time(label);
-            return;
-        }
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.time(label);
+        const This = this.getThis();
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.time(label);
     }
     timeEnd(label) {
         var _a;
-        if (this.child) {
-            this.child.timeEnd(label);
-            return;
-        }
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.timeEnd(label);
+        const This = this.getThis();
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.timeEnd(label);
     }
     timeLog(label, ...data) {
         var _a;
-        if (this.child) {
-            this.child.timeLog(label, ...data);
-            return;
-        }
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.timeLog(label, ...data);
+        const This = this.getThis();
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.timeLog(label, ...data);
     }
     timeStamp(label) {
         var _a;
-        if (this.child) {
-            this.child.timeStamp(label);
-            return;
-        }
-        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.timeStamp(label);
+        const This = this.getThis();
+        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.timeStamp(label);
     }
 }
 //# sourceMappingURL=DomConsole.mjs.map

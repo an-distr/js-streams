@@ -20,8 +20,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 export class DomConsole implements Console {
   private owner: HTMLElement
   private redirect?: Console
-  private parent: DomConsole | undefined
-  private child: DomConsole | undefined
+  private parent?: DomConsole
+  private child?: DomConsole
   private holder: HTMLUListElement
 
   constructor(owner: HTMLElement | string, redirect?: Console, parent?: DomConsole) {
@@ -169,6 +169,20 @@ export class DomConsole implements Console {
     }
   }
 
+  private createHeaderCell(textContent: string) {
+    const headerCell = document.createElement("th")
+    headerCell.textContent = textContent
+    return headerCell
+  }
+
+  private getThis() {
+    let self: DomConsole | undefined = this
+    while (self.child) {
+      self = self.child
+    }
+    return self
+  }
+
   expand(expand: boolean, owner?: Element | null, depth?: number) {
     const chks = [...(owner ?? this.owner).querySelectorAll("input[name='group-visibility']")] as HTMLInputElement[]
 
@@ -197,39 +211,26 @@ export class DomConsole implements Console {
   }
 
   group(...data: any[]) {
-    if (this.child) {
-      this.child.group(...data)
-      return
-    }
-    this.toNextHolder(false, ...data)
-    this.redirect?.group(...data)
+    const This = this.getThis()
+    This.toNextHolder(false, ...data)
+    This.redirect?.group(...data)
   }
 
   groupCollapsed(...data: any[]) {
-    if (this.child) {
-      this.child.groupCollapsed(...data)
-      return
-    }
-    this.toNextHolder(true, ...data)
-    this.redirect?.groupCollapsed(...data)
+    const This = this.getThis()
+    This.toNextHolder(true, ...data)
+    This.redirect?.groupCollapsed(...data)
   }
 
   groupEnd() {
-    if (this.child) {
-      this.child.groupEnd()
-      return
+    const This = this.getThis()
+    if (This.parent) {
+      This.parent.child = undefined
     }
-    if (this.parent) {
-      this.parent.child = undefined
-    }
-    this.redirect?.groupEnd()
+    This.redirect?.groupEnd()
   }
 
   clear() {
-    if (this.parent) {
-      this.parent.clear()
-      return
-    }
     const oldHolder = this.holder
     const newHolder = oldHolder.cloneNode(false)
     this.owner.replaceChild(newHolder, oldHolder)
@@ -239,90 +240,60 @@ export class DomConsole implements Console {
   }
 
   assert(condition?: boolean, ...data: any[]) {
-    if (this.child) {
-      this.child.assert(condition, ...data)
-      return
-    }
+    const This = this.getThis()
     if (condition !== undefined && !condition) {
-      const item = this.appendItem("assert", "Assertion failed:", ...data)
-      this.withTrace(item.firstElementChild!, new Error())
+      const item = This.appendItem("assert", "Assertion failed:", ...data)
+      This.withTrace(item.firstElementChild!, new Error())
     }
-    this.redirect?.assert(...data)
+    This.redirect?.assert(...data)
   }
 
   log(...data: any[]) {
-    if (this.child) {
-      this.child.log(...data)
-      return
-    }
-    this.appendItem("log", ...data)
-    this.redirect?.log(...data)
+    const This = this.getThis()
+    This.appendItem("log", ...data)
+    This.redirect?.log(...data)
   }
 
   trace(...data: any[]) {
-    if (this.child) {
-      this.child.trace(...data)
-      return
-    }
-    const item = this.appendItem("trace", ...data)
-    this.withTrace(item.firstElementChild!, new Error())
-    this.redirect?.trace(...data)
+    const This = this.getThis()
+    const item = This.appendItem("trace", ...data)
+    This.withTrace(item.firstElementChild!, new Error())
+    This.redirect?.trace(...data)
   }
 
   debug(...data: any[]) {
-    if (this.child) {
-      this.child.debug(...data)
-      return
-    }
-    this.appendItem("debug", ...data)
-    this.redirect?.debug(...data)
+    const This = this.getThis()
+    This.appendItem("debug", ...data)
+    This.redirect?.debug(...data)
   }
 
   info(...data: any[]) {
-    if (this.child) {
-      this.child.info(...data)
-      return
-    }
-    this.appendItem("info", ...data)
-    this.redirect?.info(...data)
+    const This = this.getThis()
+    This.appendItem("info", ...data)
+    This.redirect?.info(...data)
   }
 
   warn(...data: any[]) {
-    if (this.child) {
-      this.child.warn(...data)
-      return
-    }
-    const item = this.appendItem("warn", ...data)
-    this.withTrace(item.firstElementChild!, new Error())
-    this.redirect?.warn(...data)
+    const This = this.getThis()
+    const item = This.appendItem("warn", ...data)
+    This.withTrace(item.firstElementChild!, new Error())
+    This.redirect?.warn(...data)
   }
 
   error(...data: any[]) {
-    if (this.child) {
-      this.child.error(...data)
-      return
-    }
-    const item = this.appendItem("error", ...data)
-    this.withTrace(item.firstElementChild!, new Error())
-    this.redirect?.error(...data)
-  }
-
-  private createHeaderCell(textContent: string) {
-    const headerCell = document.createElement("th")
-    headerCell.textContent = textContent
-    return headerCell
+    const This = this.getThis()
+    const item = This.appendItem("error", ...data)
+    This.withTrace(item.firstElementChild!, new Error())
+    This.redirect?.error(...data)
   }
 
   table(tabularData?: any, properties?: string[]) {
-    if (this.child) {
-      this.child.table(tabularData, properties)
-      return
-    }
+    const This = this.getThis()
     const table = document.createElement("table")
     table.classList.add("console-list-item-table")
     const header = table.createTHead()
     const headerRow = header.insertRow(-1)
-    headerRow.append(this.createHeaderCell("(index)"))
+    headerRow.append(This.createHeaderCell("(index)"))
     if (Array.isArray(tabularData)) {
       for (const key in tabularData[0]) {
         if (properties) {
@@ -330,11 +301,11 @@ export class DomConsole implements Console {
             continue
           }
         }
-        headerRow.append(this.createHeaderCell(key))
+        headerRow.append(This.createHeaderCell(key))
       }
     }
     else {
-      headerRow.append(this.createHeaderCell("Value"))
+      headerRow.append(This.createHeaderCell("Value"))
     }
     const body = table.createTBody()
     if (tabularData) {
@@ -362,75 +333,51 @@ export class DomConsole implements Console {
         }
       }
     }
-    const li = this.appendItem()
+    const li = This.appendItem()
     li.firstElementChild!.append(table)
-    this.holder.append(li)
-    this.redirect?.table(tabularData, properties)
+    This.holder.append(li)
+    This.redirect?.table(tabularData, properties)
   }
 
   /*! Redirect only. **/
 
   count(label?: string) {
-    if (this.child) {
-      this.child.count(label)
-      return
-    }
-    this.redirect?.count(label)
+    const This = this.getThis()
+    This.redirect?.count(label)
   }
 
   countReset(label?: string) {
-    if (this.child) {
-      this.child.countReset(label)
-      return
-    }
-    this.redirect?.countReset(label)
+    const This = this.getThis()
+    This.redirect?.countReset(label)
   }
 
   dir(item?: any, options?: any) {
-    if (this.child) {
-      this.child.dir(item, options)
-      return
-    }
-    this.redirect?.dir(item, options)
+    const This = this.getThis()
+    This.redirect?.dir(item, options)
   }
 
   dirxml(...data: any[]) {
-    if (this.child) {
-      this.child.dirxml(...data)
-      return
-    }
-    this.redirect?.dirxml(...data)
+    const This = this.getThis()
+    This.redirect?.dirxml(...data)
   }
 
   time(label?: string) {
-    if (this.child) {
-      this.child.time(label)
-      return
-    }
-    this.redirect?.time(label)
+    const This = this.getThis()
+    This.redirect?.time(label)
   }
 
   timeEnd(label?: string) {
-    if (this.child) {
-      this.child.timeEnd(label)
-      return
-    }
-    this.redirect?.timeEnd(label)
+    const This = this.getThis()
+    This.redirect?.timeEnd(label)
   }
 
   timeLog(label?: string, ...data: any[]) {
-    if (this.child) {
-      this.child.timeLog(label, ...data)
-      return
-    }
-    this.redirect?.timeLog(label, ...data)
+    const This = this.getThis()
+    This.redirect?.timeLog(label, ...data)
   }
 
   timeStamp(label?: string) {
-    if (this.child) {
-      this.child.timeStamp(label)
-      return
-    }
-    this.redirect?.timeStamp(label)
+    const This = this.getThis()
+    This.redirect?.timeStamp(label)
   }
 }
