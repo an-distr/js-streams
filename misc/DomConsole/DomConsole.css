@@ -49,7 +49,7 @@ input[name="group-visibility"] {
     }
 
     >label::before {
-      content: "⚠️ ";
+      content: "⚠︎ ";
     }
 
     >label:has(>input[name="group-visibility"])::before {
@@ -57,7 +57,7 @@ input[name="group-visibility"] {
     }
 
     >label:has(>input[name="group-visibility"]:checked)::before {
-      content: "▼ ⚠️ ";
+      content: "▼ ⚠︎ ";
     }
   }
 
