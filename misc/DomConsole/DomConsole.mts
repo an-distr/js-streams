@@ -147,6 +147,28 @@ export class DomConsole implements Console {
     return menu
   }
 
+  private withTrace(parent: Element, error: Error) {
+    const callStack = (error.stack ?? "")
+      .replace("Error\n", "")
+      .split("\n")
+      .map(s => s.trim().split(/[ |@|(|)]/).filter(s2 => !["at", ""].includes(s2)).join(" @ "))
+      .map(s => s.replace(location.href.replace(location.pathname, ""), ""))
+      .filter(s => s.length > 0)
+      .filter(s => !s.includes("trace @ "))
+      .filter(s => !s.includes("/DomConsole/DomConsole.mjs"))
+      .map(s => s.includes(" @ ") ? s : "(anonymous) @ " + s)
+
+    if (callStack.length > 0) {
+      const callStackItem = document.createElement("ul")
+      for (const stack of callStack) {
+        const stackItem = document.createElement("li")
+        stackItem.textContent = stack
+        callStackItem.append(stackItem)
+      }
+      parent.append(callStackItem)
+    }
+  }
+
   expand(expand: boolean, owner?: Element | null, depth?: number) {
     const chks = [...(owner ?? this.owner).querySelectorAll("input[name='group-visibility']")] as HTMLInputElement[]
 
@@ -222,7 +244,8 @@ export class DomConsole implements Console {
       return
     }
     if (condition !== undefined && !condition) {
-      this.appendItem("assert", "Assertion failed:", ...data)
+      const item = this.appendItem("assert", "Assertion failed:", ...data)
+      this.withTrace(item.firstElementChild!, new Error())
     }
     this.redirect?.assert(...data)
   }
@@ -242,26 +265,7 @@ export class DomConsole implements Console {
       return
     }
     const item = this.appendItem("trace", ...data)
-
-    const callStack = (new Error().stack ?? "")
-      .replace("Error\n", "")
-      .split("\n")
-      .map(s => s.trim().split(/[ |@|(|)]/).filter(s2 => !["at", ""].includes(s2)).join(" @ "))
-      .map(s => s.replace(location.href.replace(location.pathname, ""), ""))
-      .filter(s => s.length > 0)
-      .filter(s => !s.includes("trace @ "))
-      .map(s => s.includes(" @ ") ? s : "(anonymous) @ " + s)
-
-    if (callStack.length > 0) {
-      const callStackItem = document.createElement("ul")
-      for (const stack of callStack) {
-        const stackItem = document.createElement("li")
-        stackItem.textContent = stack
-        callStackItem.append(stackItem)
-      }
-      item.append(callStackItem)
-    }
-
+    this.withTrace(item.firstElementChild!, new Error())
     this.redirect?.trace(...data)
   }
 
@@ -288,7 +292,8 @@ export class DomConsole implements Console {
       this.child.warn(...data)
       return
     }
-    this.appendItem("warn", ...data)
+    const item = this.appendItem("warn", ...data)
+    this.withTrace(item.firstElementChild!, new Error())
     this.redirect?.warn(...data)
   }
 
@@ -297,7 +302,8 @@ export class DomConsole implements Console {
       this.child.error(...data)
       return
     }
-    this.appendItem("error", ...data)
+    const item = this.appendItem("error", ...data)
+    this.withTrace(item.firstElementChild!, new Error())
     this.redirect?.error(...data)
   }
 

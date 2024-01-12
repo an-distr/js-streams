@@ -133,6 +133,27 @@ export class DomConsole {
         addItem("Collapse all", target => this.expand(false, target));
         return menu;
     }
+    withTrace(parent, error) {
+        var _a;
+        const callStack = ((_a = error.stack) !== null && _a !== void 0 ? _a : "")
+            .replace("Error\n", "")
+            .split("\n")
+            .map(s => s.trim().split(/[ |@|(|)]/).filter(s2 => !["at", ""].includes(s2)).join(" @ "))
+            .map(s => s.replace(location.href.replace(location.pathname, ""), ""))
+            .filter(s => s.length > 0)
+            .filter(s => !s.includes("trace @ "))
+            .filter(s => !s.includes("/DomConsole/DomConsole.mjs"))
+            .map(s => s.includes(" @ ") ? s : "(anonymous) @ " + s);
+        if (callStack.length > 0) {
+            const callStackItem = document.createElement("ul");
+            for (const stack of callStack) {
+                const stackItem = document.createElement("li");
+                stackItem.textContent = stack;
+                callStackItem.append(stackItem);
+            }
+            parent.append(callStackItem);
+        }
+    }
     expand(expand, owner, depth) {
         const chks = [...(owner !== null && owner !== void 0 ? owner : this.owner).querySelectorAll("input[name='group-visibility']")];
         const ancestors = (target) => {
@@ -207,7 +228,8 @@ export class DomConsole {
             return;
         }
         if (condition !== undefined && !condition) {
-            this.appendItem("assert", "Assertion failed:", ...data);
+            const item = this.appendItem("assert", "Assertion failed:", ...data);
+            this.withTrace(item.firstElementChild, new Error());
         }
         (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.assert(...data);
     }
@@ -221,30 +243,14 @@ export class DomConsole {
         (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.log(...data);
     }
     trace(...data) {
-        var _a, _b;
+        var _a;
         if (this.child) {
             this.child.trace(...data);
             return;
         }
         const item = this.appendItem("trace", ...data);
-        const callStack = ((_a = new Error().stack) !== null && _a !== void 0 ? _a : "")
-            .replace("Error\n", "")
-            .split("\n")
-            .map(s => s.trim().split(/[ |@|(|)]/).filter(s2 => !["at", ""].includes(s2)).join(" @ "))
-            .map(s => s.replace(location.href.replace(location.pathname, ""), ""))
-            .filter(s => s.length > 0)
-            .filter(s => !s.includes("trace @ "))
-            .map(s => s.includes(" @ ") ? s : "(anonymous) @ " + s);
-        if (callStack.length > 0) {
-            const callStackItem = document.createElement("ul");
-            for (const stack of callStack) {
-                const stackItem = document.createElement("li");
-                stackItem.textContent = stack;
-                callStackItem.append(stackItem);
-            }
-            item.append(callStackItem);
-        }
-        (_b = this.redirect) === null || _b === void 0 ? void 0 : _b.trace(...data);
+        this.withTrace(item.firstElementChild, new Error());
+        (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.trace(...data);
     }
     debug(...data) {
         var _a;
@@ -270,7 +276,8 @@ export class DomConsole {
             this.child.warn(...data);
             return;
         }
-        this.appendItem("warn", ...data);
+        const item = this.appendItem("warn", ...data);
+        this.withTrace(item.firstElementChild, new Error());
         (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.warn(...data);
     }
     error(...data) {
@@ -279,7 +286,8 @@ export class DomConsole {
             this.child.error(...data);
             return;
         }
-        this.appendItem("error", ...data);
+        const item = this.appendItem("error", ...data);
+        this.withTrace(item.firstElementChild, new Error());
         (_a = this.redirect) === null || _a === void 0 ? void 0 : _a.error(...data);
     }
     createHeaderCell(textContent) {
