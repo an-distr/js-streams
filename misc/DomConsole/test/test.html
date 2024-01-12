@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="stylesheet" href="../DomConsole.chrome.dark.css">
+<link id="theme" rel="stylesheet" href="../DomConsole.chrome.auto.css">
 <title>Testing DomConsole</title>
 <div style="position: sticky; top: 0; background-color: white;">
   <h4>Testing DomConsole</h4>
+  <fieldset>
+    <legend>Theme</legend>
+    <select id="themes">
+      <option value="../DomConsole.chrome.auto.css" selected>Auto</option>
+      <option value="../DomConsole.chrome.light.css">Light</option>
+      <option value="../DomConsole.chrome.dark.css">Dark</option>
+    </select>
+  </fieldset>
   <fieldset>
     <legend>Logging</legend>
     <button id="log">log</button>
@@ -33,6 +41,10 @@
 <script type="module">
   import { DomConsole } from "../DomConsole.mjs"
   const console = new DomConsole("console", globalThis.console)
+
+  document.getElementById("themes").onchange = e => {
+    document.getElementById("theme").href = e.target.value
+  }
 
   document.getElementById("log").onclick = () => {
     console.log("invoke log.")

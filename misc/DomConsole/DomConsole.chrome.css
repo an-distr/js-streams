@@ -1,0 +1,148 @@
+input[name="group-visibility"] {
+  display: none;
+}
+
+.console-list {
+  list-style: none;
+  color: var(--dc-fore-color);
+  background-color: var(--dc-back-color);
+  margin-top: 0;
+  padding-left: 1.25em;
+
+  .console-list-item:has(>label:hover) {
+    padding-left: 0;
+    border-left: 3px solid var(--dc-current-selected-anchor-color);
+  }
+
+  .console-list-item {
+    box-sizing: border-box;
+    margin-top: 0.25em;
+    padding-top: -1px;
+    padding-left: 3px;
+    overflow: hidden;
+
+    label:has(>input[name="group-visibility"])::before {
+      content: "▶︎ ";
+    }
+
+    label:has(>input[name="group-visibility"]:checked)::before {
+      content: "▼ ";
+    }
+  }
+
+  .console-list-item>label {
+    border-radius: 0.5em;
+    padding-left: 0.25em;
+  }
+
+  .console-list-item-warn,
+  .console-list-item-group:has(.console-list-item-warn) {
+    >label {
+      color: var(--dc-warn-fore-color);
+      background-color: var(--dc-warn-back-color);
+    }
+
+    >label::before {
+      content: "⚠️ ";
+    }
+
+    >label:has(>input[name="group-visibility"])::before {
+      content: "▶︎ ⚠︎ ";
+    }
+
+    >label:has(>input[name="group-visibility"]:checked)::before {
+      content: "▼ ⚠️ ";
+    }
+  }
+
+  .console-list-item-error,
+  .console-list-item-assert,
+  .console-list-item-group:has(.console-list-item-error, .console-list-item-assert) {
+    >label {
+      color: var(--dc-error-fore-color);
+      background-color: var(--dc-error-back-color);
+    }
+
+    >label::before {
+      content: "✖︎ ";
+    }
+
+    >label:has(>input[name="group-visibility"])::before {
+      content: "▶︎ ✖︎ ";
+    }
+
+    >label:has(>input[name="group-visibility"]:checked)::before {
+      content: "▼ ✖︎ ";
+    }
+  }
+
+  .console-list-item-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--dc-standard-border-color);
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+
+    th {
+      background-color: var(--dc-table-header-back-color);
+      border: 1px solid var(--dc-standard-border-color);
+      padding-left: 0.25em;
+    }
+
+    th:hover {
+      background-color: var(--dc-table-header-hover-back-color);
+    }
+
+    td {
+      border-right: 1px solid var(--dc-standard-border-color);
+      padding-left: 0.25em;
+    }
+
+    td:not(:first-child) {
+      color: var(--dc-table-row-fore-color);
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: var(--dc-table-row-even-back-color);
+    }
+
+    tbody tr:nth-child(odd):hover {
+      background-color: var(--dc-table-row-hover-back-color);
+    }
+  }
+
+  .console-list-item-group>label {
+    margin-bottom: 0.25em;
+    border-radius: 0.5em;
+    padding-left: 0.25em;
+  }
+
+  .console-list-item-group:has(>.console-list>.console-list-item>label:hover) {
+    padding-left: 2px;
+    border-left: 1px dashed var(--dc-standard-border-color);
+  }
+}
+
+*:has(>.console-list)>.console-list:not(.console-list .console-list) {
+  padding-left: 0;
+}
+
+.console-menu {
+  margin: 0;
+  background-color: var(--dc-menu-back-color);
+  list-style: none;
+  padding-left: 0;
+  border: 0.1em solid var(--dc-menu-border-color);
+  border-radius: 0.5em;
+  box-shadow: 0 0 0 0.05em var(--dc-menu-shadow-color);
+  overflow: hidden;
+
+  li {
+    padding: 0.35em;
+    cursor: pointer;
+  }
+
+  li:hover {
+    background-color: var(--dc-menu-hover-back-color);
+  }
+}

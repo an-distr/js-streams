@@ -1,0 +1,5 @@
+@import url("DomConsole.chrome.light.css");
+
+@media (prefers-color-scheme: dark) {
+  @import url("DomConsole.chrome.dark.css");
+}
