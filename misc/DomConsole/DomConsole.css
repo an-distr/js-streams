@@ -42,7 +42,6 @@ input[name="group-visibility"] {
   .console-list-item {
     box-sizing: border-box;
     margin-top: 0.25em;
-    padding-top: -1px;
     border-left: 3px solid transparent;
     overflow: hidden;
 
@@ -164,7 +163,6 @@ input[name="group-visibility"] {
 
   li {
     padding: 0.35em;
-    cursor: pointer;
   }
 
   li:hover {

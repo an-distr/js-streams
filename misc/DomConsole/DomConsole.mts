@@ -35,9 +35,6 @@ export class DomConsole implements Console {
           >.console-list-item>label {
             display: block;
           }
-          >.console-list-item>label:has(input[name="group-visibility"]) {
-            cursor: pointer;
-          }
           >.console-list-item:has(>label>input[name="group-visibility"]:not(:checked))>.console-list {
             display: none;
           }
@@ -176,11 +173,11 @@ export class DomConsole implements Console {
   }
 
   private getThis() {
-    let self: DomConsole | undefined = this
-    while (self.child) {
-      self = self.child
+    let This: DomConsole | undefined = this
+    while (This.child) {
+      This = This.child
     }
-    return self
+    return This
   }
 
   expand(expand: boolean, owner?: Element | null, depth?: number) {
@@ -205,7 +202,7 @@ export class DomConsole implements Console {
 
     const ownerDepth = owner === undefined ? 0 : ancestors(owner!).length
     chks.forEach(chk => {
-      let level = depth === undefined ? 0 : ancestors(chk).length - ownerDepth + depth
+      const level = depth === undefined ? 0 : ancestors(chk).length - ownerDepth + depth
       chk.checked = level >= 0 ? expand : !expand
     })
   }
