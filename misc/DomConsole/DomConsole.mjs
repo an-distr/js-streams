@@ -114,7 +114,7 @@ export class DomConsole {
             menu.style.display = "block";
             target = ev.target;
         });
-        window.addEventListener("mouseup", () => {
+        window.addEventListener("click", () => {
             const menu = owner.querySelector(".console-menu");
             if (!menu)
                 return;
