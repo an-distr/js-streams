@@ -22,6 +22,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   --dc-menu-border-color: black;
   --dc-standard-border-color: black;
   --dc-current-selected-anchor-color: black;
+  --dc-mark-expand: "▼";
+  --dc-mark-collapsed: "▶︎";
+  --dc-mark-warning: "⚠︎";
+  --dc-mark-error: "✖︎";
 }
 
 input[name="group-visibility"] {
@@ -46,11 +50,11 @@ input[name="group-visibility"] {
     overflow: hidden;
 
     label:has(>input[name="group-visibility"])::before {
-      content: "▶︎ ";
+      content: var(--dc-mark-collapsed)" ";
     }
 
     label:has(>input[name="group-visibility"]:checked)::before {
-      content: "▼ ";
+      content: var(--dc-mark-expand)" ";
     }
   }
 
@@ -67,15 +71,15 @@ input[name="group-visibility"] {
     }
 
     >label::before {
-      content: "⚠︎ ";
+      content: var(--dc-mark-warning)" ";
     }
 
     >label:has(>input[name="group-visibility"])::before {
-      content: "▶︎ ⚠︎ ";
+      content: var(--dc-mark-collapsed)" " var(--dc-mark-warning)" ";
     }
 
     >label:has(>input[name="group-visibility"]:checked)::before {
-      content: "▼ ⚠︎ ";
+      content: var(--dc-mark-expand)" " var(--dc-mark-warning)" ";
     }
   }
 
@@ -88,15 +92,15 @@ input[name="group-visibility"] {
     }
 
     >label::before {
-      content: "✖︎ ";
+      content: var(--dc-mark-error)" ";
     }
 
     >label:has(>input[name="group-visibility"])::before {
-      content: "▶︎ ✖︎ ";
+      content: var(--dc-mark-collapsed)" " var(--dc-mark-error)" ";
     }
 
     >label:has(>input[name="group-visibility"]:checked)::before {
-      content: "▼ ✖︎ ";
+      content: var(--dc-mark-expand)" " var(--dc-mark-error)" ";
     }
   }
 
