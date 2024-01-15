@@ -47,7 +47,7 @@ export class DomConsole {
         this.owner.appendChild(this.holder);
     }
     dataToString(...data) {
-        let lst = [];
+        const lst = [];
         for (let i = 0; i < arguments.length; ++i) {
             switch (typeof data[i]) {
                 case "string":
@@ -102,6 +102,9 @@ export class DomConsole {
         menu.style.position = "fixed";
         let target;
         owner.addEventListener("contextmenu", ev => {
+            var _a, _b;
+            if (!((_b = (_a = ev.target) === null || _a === void 0 ? void 0 : _a.parentElement) === null || _b === void 0 ? void 0 : _b.classList.contains("console-list-item-group")))
+                return;
             ev.preventDefault();
             const menu = owner.querySelector(".console-menu");
             if (!menu)
@@ -111,7 +114,7 @@ export class DomConsole {
             menu.style.display = "block";
             target = ev.target;
         });
-        window.addEventListener("click", () => {
+        window.addEventListener("mouseup", () => {
             const menu = owner.querySelector(".console-menu");
             if (!menu)
                 return;
@@ -126,8 +129,8 @@ export class DomConsole {
             };
             menu.append(item);
         };
-        addItem("Expand all", target => this.expand(true, target));
-        addItem("Collapse all", target => this.expand(false, target));
+        addItem("Expand all", target => this.expand(true, target === null || target === void 0 ? void 0 : target.parentElement));
+        addItem("Collapse all", target => this.expand(false, target === null || target === void 0 ? void 0 : target.parentElement));
         return menu;
     }
     withTrace(parent, error) {
@@ -203,9 +206,8 @@ export class DomConsole {
     groupEnd() {
         var _a;
         const This = this.getThis();
-        if (This.parent) {
+        if (This.parent)
             This.parent.child = undefined;
-        }
         (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.groupEnd();
     }
     clear() {

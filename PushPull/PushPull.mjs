@@ -33,7 +33,7 @@ export class PushPullNonQueue {
     }
     empty() {
     }
-    splice(start, deleteCount) {
+    splice(_start, _deleteCount) {
         throw new Error("Method not implemented.");
     }
 }

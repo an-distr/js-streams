@@ -55,7 +55,7 @@ export class DomConsole implements Console {
   }
 
   private dataToString(...data: any[]) {
-    let lst: string[] = []
+    const lst: string[] = []
     for (let i = 0; i < arguments.length; ++i) {
       switch (typeof data[i]) {
         case "string":
@@ -114,6 +114,7 @@ export class DomConsole implements Console {
 
     let target: EventTarget | null
     owner.addEventListener("contextmenu", ev => {
+      if (!(ev.target as HTMLElement)?.parentElement?.classList.contains("console-list-item-group")) return
       ev.preventDefault()
       const menu = owner.querySelector(".console-menu") as HTMLUListElement | null
       if (!menu) return
@@ -122,7 +123,7 @@ export class DomConsole implements Console {
       menu.style.display = "block"
       target = ev.target
     })
-    window.addEventListener("click", () => {
+    window.addEventListener("mouseup", () => {
       const menu = owner.querySelector(".console-menu") as HTMLUListElement | null
       if (!menu) return
       menu.style.display = "none"
@@ -138,8 +139,8 @@ export class DomConsole implements Console {
       menu.append(item)
     }
 
-    addItem("Expand all", target => this.expand(true, target as Element))
-    addItem("Collapse all", target => this.expand(false, target as Element))
+    addItem("Expand all", target => this.expand(true, (target as Element)?.parentElement))
+    addItem("Collapse all", target => this.expand(false, (target as Element)?.parentElement))
 
     return menu
   }
@@ -221,9 +222,7 @@ export class DomConsole implements Console {
 
   groupEnd() {
     const This = this.getThis()
-    if (This.parent) {
-      This.parent.child = undefined
-    }
+    if (This.parent) This.parent.child = undefined
     This.redirect?.groupEnd()
   }
 

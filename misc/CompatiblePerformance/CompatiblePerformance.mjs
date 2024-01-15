@@ -41,10 +41,10 @@ export class CompatiblePerformance {
         }
     }
     clearResourceTimings() { }
-    setResourceTimingBufferSize(maxSize) { }
-    addEventListener(type, callback, options) { }
-    removeEventListener(type, callback, options) { }
-    dispatchEvent(event) { return true; }
+    setResourceTimingBufferSize(_maxSize) { }
+    addEventListener(_type, _callback, _options) { }
+    removeEventListener(_type, _callback, _options) { }
+    dispatchEvent(_event) { return true; }
     toJSON() { return { navigation: this.navigation, timeOrigin: this.timeOrigin, timing: this.timing, }; }
     now() {
         return this.now_impl();

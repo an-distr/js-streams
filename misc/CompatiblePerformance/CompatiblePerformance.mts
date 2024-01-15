@@ -53,17 +53,17 @@ export class CompatiblePerformance {
   /*! Not implemented */
   onresourcetimingbufferfull: ((this: Performance, ev: Event) => any) | null = () => null
   /*! Not implemented */
-  clearResourceTimings(): void { }
+  clearResourceTimings() { }
   /*! Not implemented */
-  setResourceTimingBufferSize(maxSize: number): void { }
+  setResourceTimingBufferSize(_maxSize: number) { }
   /*! Not implemented */
-  addEventListener(type: string, callback: EventListenerOrEventListenerObject | null, options?: boolean | AddEventListenerOptions | undefined): void { }
+  addEventListener(_type: string, _callback: EventListenerOrEventListenerObject | null, _options?: boolean | AddEventListenerOptions) { }
   /*! Not implemented */
-  removeEventListener(type: string, callback: EventListenerOrEventListenerObject | null, options?: boolean | EventListenerOptions | undefined): void { }
+  removeEventListener(_type: string, _callback: EventListenerOrEventListenerObject | null, _options?: boolean | EventListenerOptions) { }
   /*! Not implemented */
-  dispatchEvent(event: Event): boolean { return true }
+  dispatchEvent(_event: Event) { return true }
   /*! Not implemented */
-  toJSON(): any { return { navigation: this.navigation, timeOrigin: this.timeOrigin, timing: this.timing, } }
+  toJSON() { return { navigation: this.navigation, timeOrigin: this.timeOrigin, timing: this.timing, } }
 
   now() {
     return this.now_impl()

@@ -139,6 +139,7 @@ input[name="group-visibility"] {
     margin-bottom: 0.25em;
     border-radius: 0.5em;
     padding-left: 0.25em;
+    cursor: pointer;
   }
 
   .console-list-item-group:has(>.console-list>.console-list-item>label:hover) {
@@ -162,7 +163,10 @@ input[name="group-visibility"] {
   overflow: hidden;
 
   li {
+    text-align: center;
+    user-select: none;
     padding: 0.35em;
+    cursor: pointer;
   }
 
   li:hover {

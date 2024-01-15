@@ -44,15 +44,15 @@ export class PushPullNonQueue<I, O> implements PushPullQueue<I, O> {
 
   push(_data: I) {
   }
-  
+
   pop() {
     return undefined
   }
-  
+
   empty() {
   }
 
-  splice(start: number, deleteCount?: number | undefined): O {
+  splice(_start: number, _deleteCount?: number): O {
     throw new Error("Method not implemented.")
   }
 }
