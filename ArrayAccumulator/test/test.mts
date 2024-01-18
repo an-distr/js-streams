@@ -1,5 +1,5 @@
-import { ArrayAccumulator } from "../ArrayAccumulator.mjs"
-import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.mjs"
+import { ArrayAccumulator } from "../ArrayAccumulator.mts"
+import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.mts"
 
 (async () => {
 

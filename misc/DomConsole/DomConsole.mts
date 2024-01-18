@@ -153,7 +153,7 @@ export class DomConsole implements Console {
       .map(s => s.replace(location.href.replace(location.pathname, ""), ""))
       .filter(s => s.length > 0)
       .filter(s => !s.includes("trace @ "))
-      .filter(s => !s.includes("/DomConsole/DomConsole.mjs"))
+      .filter(s => !s.includes("/DomConsole/DomConsole"))
       .map(s => s.includes(" @ ") ? s : "(anonymous) @ " + s)
 
     if (callStack.length > 0) {

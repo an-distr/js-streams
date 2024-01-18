@@ -17,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import { PushPull, PushPullArrayQueue, PushableTypes } from "../PushPull/PushPull.mjs"
+import { PushPull, PushPullArrayQueue, PushableTypes } from "../PushPull/PushPull.mts"
 
 export class Flattener<I> extends PushPull<I, I> {
   private limit?: number

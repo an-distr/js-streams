@@ -1,6 +1,6 @@
-import { ArrayBufferAccumulator } from "../ArrayBufferAccumulatorStream.mjs"
-import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.mjs"
-import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Streams.mjs"
+import { ArrayBufferAccumulator } from "../ArrayBufferAccumulatorStream.mts"
+import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.mts"
+import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Streams.mts"
 
 (async () => {
 

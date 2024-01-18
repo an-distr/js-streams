@@ -1,4 +1,4 @@
-import { CsvLineEncoder } from "../CsvLineEncoder.mjs"
+import { CsvLineEncoder } from "../CsvLineEncoder.mts"
 
 (async () => {
 

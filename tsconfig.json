@@ -5,6 +5,7 @@
     "strict": true,
     "removeComments": true,
     "newLine": "lf",
-    "sourceMap": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true
   }
 }

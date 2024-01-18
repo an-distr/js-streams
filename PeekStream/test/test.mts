@@ -1,4 +1,4 @@
-import { PeekStream } from "../PeekStream.mjs"
+import { PeekStream } from "../PeekStream.mts"
 
 (async () => {
 

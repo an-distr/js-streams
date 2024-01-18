@@ -1,4 +1,4 @@
-import { Flattener } from "../Flattener.mjs"
+import { Flattener } from "../Flattener.mts"
 
 (async () => {
 

@@ -1,5 +1,5 @@
-import * as streams from "../mod.mjs"
-import { DownloadStream, DownloadStreamOptions } from "../DownloadStream/DownloadStream.mjs"
+import * as streams from "../mod.mts"
+import { DownloadStream, DownloadStreamOptions } from "../DownloadStream/DownloadStream.mts"
 
 const chkDirect = document.getElementById("chkDirect") as HTMLInputElement
 const txtFile = document.getElementById("txtFile") as HTMLInputElement

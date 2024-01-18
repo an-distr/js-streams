@@ -17,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import { PushPull, PushPullStringQueue, PushableTypes } from "../PushPull/PushPull.mjs"
+import { PushPull, PushPullStringQueue, PushableTypes } from "../PushPull/PushPull.mts"
 
 export interface JsonDeserializerOptions {
   lineSeparated?: boolean

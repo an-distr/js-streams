@@ -1,4 +1,4 @@
-import { JsonSerializer } from "../JsonSerializer.mjs"
+import { JsonSerializer } from "../JsonSerializer.mts"
 
 (async () => {
 
