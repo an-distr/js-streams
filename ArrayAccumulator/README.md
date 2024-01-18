@@ -8,7 +8,7 @@ https://an-js-streams.pages.dev/ArrayAccumulator/test/test.html
 
 ## Usage
 ```ts
-import { ArrayAccumulator } from "https://an-js-streams.pages.dev/mod.mjs"
+import { ArrayAccumulator } from "https://an-js-streams.pages.dev/mod.js"
 
 const array = [1, 2, 3, 4, 5]
 

@@ -9,7 +9,7 @@
 <input id="url" type="url" size="100" value="https://jsonplaceholder.typicode.com/photos">
 <button id="download">Download</button>
 <script type="module">
-  import { DownloadStream } from "../DownloadStream.mjs"
+  import { DownloadStream } from "../DownloadStream.js"
 
   document.getElementById("download").onclick = async () => {
     const url = document.getElementById("url")

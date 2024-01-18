@@ -8,7 +8,7 @@ https://an-js-streams.pages.dev/PeekStream/test/test.html
 
 ## Usage
 ```ts
-import { PeekStream } from "https://an-js-streams.pages.dev/mod.mjs"
+import { PeekStream } from "https://an-js-streams.pages.dev/mod.js"
 
 await readable
   // Peeking chunk.

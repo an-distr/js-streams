@@ -6,7 +6,7 @@ It is an alternative in environments where [TextDecoderStream](https://developer
 
 ## Usage
 ```ts
-import { Utf8EncoderStream, Utf8DecoderStream } from "https://an-js-streams.pages.dev/mod.mjs"
+import { Utf8EncoderStream, Utf8DecoderStream } from "https://an-js-streams.pages.dev/mod.js"
 
 await readable
   .pipeThrough(new Utf8DecoderStream()) // Instead of "new TextDecoderStream("utf-8")"

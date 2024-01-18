@@ -5,7 +5,7 @@ if not exist ".result" (
 )
 
 echo Run node
-node test.mjs > .result/node.txt
+node --experimental-default-type=module test.js > .result/node.txt
 
 echo Run deno
-deno run --allow-hrtime test.mts > .result/deno.txt
+deno run --allow-hrtime test.ts > .result/deno.txt

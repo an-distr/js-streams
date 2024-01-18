@@ -5,10 +5,10 @@ if [ ! -e .result ]; then
 fi
 
 echo Run node
-node test.mjs > .result/node.txt
+node --experimental-default-type=module test.js > .result/node.txt
 
 echo Run deno
-deno run --allow-hrtime test.mts > .result/deno.txt
+deno run --allow-hrtime test.ts > .result/deno.txt
 
 echo Run bun
-bun test.mts > .result/bun.txt
+bun test.ts > .result/bun.txt

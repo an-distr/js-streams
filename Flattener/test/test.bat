@@ -1,7 +1,7 @@
 @echo off
 
 echo Run node
-node test.mjs
+node --experimental-default-type=module test.js
 
 echo Run deno
-deno run --allow-hrtime test.mts
+deno run --allow-hrtime test.ts

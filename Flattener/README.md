@@ -8,7 +8,7 @@ https://an-js-streams.pages.dev/Flattener/test/test.html
 
 ## Usage
 ```ts
-import { Flattener } from "https://an-js-streams.pages.dev/mod.mjs"
+import { Flattener } from "https://an-js-streams.pages.dev/mod.js"
 
 const array = [
   1,

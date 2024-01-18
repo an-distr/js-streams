@@ -43,7 +43,7 @@
 </div>
 <div id="console"></div>
 <script type="module">
-  import { DomConsole } from "../DomConsole.mjs"
+  import { DomConsole } from "../DomConsole.js"
   const console = new DomConsole("console", globalThis.console)
 
   document.getElementById("themes").onchange = e => {

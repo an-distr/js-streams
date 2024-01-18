@@ -14,7 +14,7 @@ https://an-js-streams.pages.dev/misc/DomConsole/test/test.html
 
 <!-- Initializing the DomConsole -->
 <script type="module">
-  import { DomConsole } from "https://an-js-streams.pages.dev/misc/DomConsole/DomConsole.mjs"
+  import { DomConsole } from "https://an-js-streams.pages.dev/misc/DomConsole/DomConsole.js"
 
   // All you need to do is initialize it by specifying the ID of the DomConsole output destination or the reference of the element.
   const myConsole = new DomConsole("myconsole")

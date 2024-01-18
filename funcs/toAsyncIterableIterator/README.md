@@ -5,7 +5,7 @@ ReadableStream to AsyncIterableIterator.
 
 ## Usage
 ```ts
-import * as funcs from "https://an-js-streams.pages.dev/funcs/mod.mjs"
+import * as funcs from "https://an-js-streams.pages.dev/funcs/mod.js"
 
 const stream = readable.pipeThrough(...)...
 

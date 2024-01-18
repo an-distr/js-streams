@@ -1,10 +1,11 @@
 {
+  "exclude": [
+    ".build"
+  ],
   "compilerOptions": {
     "target": "ES2018",
     "module": "ESNext",
     "strict": true,
-    "removeComments": true,
-    "newLine": "lf",
     "noEmit": true,
     "allowImportingTsExtensions": true
   }

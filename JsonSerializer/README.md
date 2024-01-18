@@ -8,7 +8,7 @@ https://an-js-streams.pages.dev/JsonSerializer/test/test.html
 
 ## Usage
 ```ts
-import { JsonSerializer } from "https://an-js-streams.pages.dev/mod.mjs"
+import { JsonSerializer } from "https://an-js-streams.pages.dev/mod.js"
 
 const serializer = new JsonSerializer({
   // Specify true if the JSON data is separated by line breaks (e.g., JSON Lines). The initial value is false.

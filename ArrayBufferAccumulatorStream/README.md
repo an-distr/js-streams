@@ -7,7 +7,7 @@ Accumulate the ArrayBuffer stream and emit it at a constant size or condition.
 
 ## Usage
 ```ts
-import { ArrayBufferAccumulatorStream } from "https://an-js-streams.pages.dev/mod.mjs"
+import { ArrayBufferAccumulatorStream } from "https://an-js-streams.pages.dev/mod.js"
 
 const accumulator = new ArrayBufferAccumulatorStream(
   // Specify emit size.
