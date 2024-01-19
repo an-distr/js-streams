@@ -1,5 +1,6 @@
 import { ArrayBufferAccumulator } from "../ArrayBufferAccumulator.js";
 import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.js";
+import * as perf from "../../misc/PerformanceStream/PerformanceStream.js";
 import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Streams.js";
 (async () => {
     CompatiblePerformance.replaceIfUnsupported();
@@ -34,22 +35,6 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
             }
         });
     }
-    function mark(markName) {
-        return new TransformStream({
-            transform(chunk, controller) {
-                performance.mark(markName);
-                controller.enqueue(chunk);
-            }
-        });
-    }
-    function measure(measureName, startMark, endMark) {
-        return new TransformStream({
-            transform(chunk, controller) {
-                performance.measure(measureName, startMark, endMark);
-                controller.enqueue(chunk);
-            }
-        });
-    }
     function assertChunkSize(totalSize, chunkSize) {
         return new TransformStream({
             transform(chunk, controller) {
@@ -73,35 +58,21 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
     }
     const test = async (totalSize, readableChunkSize, chunkSize, fixed, isArray) => {
         readableChunkSize = readableChunkSize === 0 ? totalSize : readableChunkSize;
-        performance.clearMeasures("ArrayBufferAccumulator.transform");
-        performance.clearMarks("start");
-        performance.clearMarks("end");
+        const ps = new perf.PerformanceStream("ArrayBufferAccumulator", "start", "end");
         const result = { sizeOfWritten: 0 };
         await source(totalSize, readableChunkSize, isArray)
-            .pipeThrough(mark("start"))
-            .pipeThrough(new ArrayBufferAccumulator(chunkSize, { fixed }).transform())
-            .pipeThrough(mark("end"))
-            .pipeThrough(assertChunkSize(totalSize, chunkSize))
-            .pipeThrough(measure("ArrayBufferAccumulator.transform", "start", "end"))
-            .pipeThrough(mark("start"))
+            .pipeThrough(ps
+            .pipe(new ArrayBufferAccumulator(chunkSize, { fixed }).transform())
+            .pipe(assertChunkSize(totalSize, chunkSize))
+            .build())
             .pipeTo(results(result));
-        const entries = performance.getEntriesByName("ArrayBufferAccumulator.transform");
-        const durations = entries.map(e => e.duration);
-        const totalDuration = durations.reduce((s, d) => s += d, 0.0);
-        const minDuration = durations.reduce((l, r) => Math.min(l, r));
-        const maxDuration = durations.reduce((l, r) => Math.max(l, r));
-        const sortedDurations = [...new Set(durations.sort((l, r) => l - r))];
-        const medianDurationIndex = sortedDurations.length / 2 | 0;
-        const medianDuration = sortedDurations.length === 0
-            ? 0
-            : sortedDurations.length % 2
-                ? sortedDurations[medianDurationIndex]
-                : sortedDurations[medianDurationIndex - 1] + sortedDurations[medianDurationIndex];
+        const psResult = ps.result();
+        console.assert(psResult !== undefined);
         console.groupCollapsed([
             `ReadableStream(${totalSize.toLocaleString()}, { isArray: ${isArray} }) =>`,
             `chunk(${readableChunkSize.toLocaleString()}) =>`,
             `ArrayBufferAccumulator(${chunkSize.toLocaleString()}, { fixed: ${fixed} })`,
-            `durationOfOccupancy: ${totalDuration}`,
+            `durationOfOccupancy: ${psResult.total}`,
         ].join(" "));
         console.assert((fixed
             ? chunkSize * Math.ceil(totalSize / chunkSize)
@@ -113,12 +84,12 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
             readableChunkSize,
             chunkSize,
             sizeOfWritten: result.sizeOfWritten,
-            transforming: entries.length,
-            durationOfOccupancy: totalDuration,
-            durationMinimum: minDuration,
-            durationMaximum: maxDuration,
-            durationAverage: totalDuration / entries.length,
-            durationMedian: medianDuration,
+            transforming: psResult.processing,
+            durationOfOccupancy: psResult.total,
+            durationMinimum: psResult.min,
+            durationMaximum: psResult.max,
+            durationAverage: psResult.average,
+            durationMedian: psResult.median,
         });
         console.groupEnd();
     };
