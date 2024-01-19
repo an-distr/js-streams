@@ -5,7 +5,7 @@ import { expandGlob } from "https://deno.land/std@0.212.0/fs/expand_glob.ts"
 // Transpiling.
 console.log("Transpiling.")
 try {
-  await $`tsc --project tsconfig.json`
+  await $`tsc --project tsconfig.build.json`
 }
 catch { }
 
