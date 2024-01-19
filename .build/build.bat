@@ -1,4 +1,3 @@
 @echo off
 
-tsc --project tsconfig.json
-deno run --allow-read --allow-write build.ts
+deno run --allow-env --allow-run --allow-read --allow-write build.ts
