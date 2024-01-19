@@ -44,8 +44,7 @@ export class PerformanceStreamBuilder {
         const last = new TransformStream({
             transform(chunk, controller) {
                 performance.mark(`${This.measureName}.${This.endMark}`);
-                performance.measure(This.measureName);
-                performance.mark(`${This.measureName}.${This.startMark}`);
+                performance.measure(This.measureName, `${This.measureName}.${This.startMark}`, `${This.measureName}.${This.endMark}`);
                 controller.enqueue(chunk);
             },
             flush() {
@@ -57,8 +56,8 @@ export class PerformanceStreamBuilder {
         });
         const combined = new CombinedTransformStream(this.transforms, options);
         this.transforms.splice(0);
-        first.readable.pipeTo(combined.writable);
-        combined.readable.pipeTo(last.writable);
+        first.readable.pipeTo(combined.writable, options);
+        combined.readable.pipeTo(last.writable, options);
         return {
             writable: first.writable,
             readable: last.readable,
@@ -78,23 +77,23 @@ export class PerformanceStreamBuilder {
                 median: 0,
             };
         }
-        const totalDuration = durations.reduce((s, d) => s += d, 0.0);
-        const minDuration = durations.reduce((l, r) => Math.min(l, r));
-        const maxDuration = durations.reduce((l, r) => Math.max(l, r));
-        const sortedDurations = [...new Set(durations.sort((l, r) => l - r))];
-        const medianDurationIndex = sortedDurations.length / 2 | 0;
-        const medianDuration = sortedDurations.length === 0
+        const total = durations.reduce((s, d) => s += d, 0.0);
+        const min = durations.reduce((l, r) => Math.min(l, r));
+        const max = durations.reduce((l, r) => Math.max(l, r));
+        const sorted = [...new Set(durations.sort((l, r) => l - r))];
+        const medianIndex = sorted.length / 2 | 0;
+        const median = sorted.length === 0
             ? 0
-            : sortedDurations.length % 2
-                ? sortedDurations[medianDurationIndex]
-                : sortedDurations[medianDurationIndex - 1] + sortedDurations[medianDurationIndex];
+            : sorted.length % 2
+                ? sorted[medianIndex]
+                : sorted[medianIndex - 1] + sorted[medianIndex];
         return {
             transforming: durations.length,
-            occupancy: totalDuration,
-            min: minDuration,
-            max: maxDuration,
-            average: totalDuration / durations.length,
-            median: medianDuration,
+            occupancy: total,
+            min: min,
+            max: max,
+            average: total / durations.length,
+            median: median,
         };
     }
 }

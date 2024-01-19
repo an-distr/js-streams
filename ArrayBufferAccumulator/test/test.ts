@@ -69,17 +69,17 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
   const test = async (totalSize: number, readableChunkSize: number, chunkSize: number, fixed: boolean, isArray: boolean) => {
     readableChunkSize = readableChunkSize === 0 ? totalSize : readableChunkSize
 
-    const ps = new PerformanceStreamBuilder<Uint8Array | number[], Uint8Array | number[]>("ArrayBufferAccumulator", "start", "end")
+    const builder = new PerformanceStreamBuilder<Uint8Array | number[], Uint8Array | number[]>("ArrayBufferAccumulator", "start", "end")
     const result: WritableResult = { sizeOfWritten: 0 }
 
     await source(totalSize, readableChunkSize, isArray)
-      .pipeThrough(ps
+      .pipeThrough(builder
         .pipe(new ArrayBufferAccumulator(chunkSize, { fixed }).transform())
-        .pipe(assertChunkSize(totalSize, chunkSize))
         .build())
+      .pipeThrough(assertChunkSize(totalSize, chunkSize))
       .pipeTo(results(result))
 
-    const psResult = ps.result()
+    const psResult = builder.result()
     console.assert(psResult !== undefined)
 
     console.groupCollapsed([

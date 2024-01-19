@@ -58,15 +58,15 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
     }
     const test = async (totalSize, readableChunkSize, chunkSize, fixed, isArray) => {
         readableChunkSize = readableChunkSize === 0 ? totalSize : readableChunkSize;
-        const ps = new PerformanceStreamBuilder("ArrayBufferAccumulator", "start", "end");
+        const builder = new PerformanceStreamBuilder("ArrayBufferAccumulator", "start", "end");
         const result = { sizeOfWritten: 0 };
         await source(totalSize, readableChunkSize, isArray)
-            .pipeThrough(ps
+            .pipeThrough(builder
             .pipe(new ArrayBufferAccumulator(chunkSize, { fixed }).transform())
-            .pipe(assertChunkSize(totalSize, chunkSize))
             .build())
+            .pipeThrough(assertChunkSize(totalSize, chunkSize))
             .pipeTo(results(result));
-        const psResult = ps.result();
+        const psResult = builder.result();
         console.assert(psResult !== undefined);
         console.groupCollapsed([
             `ReadableStream(${totalSize.toLocaleString()}, { isArray: ${isArray} }) =>`,

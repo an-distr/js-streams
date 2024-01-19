@@ -51,15 +51,4 @@ import { CompatiblePerformance } from "../../misc/CompatiblePerformance/Compatib
 
   console.table(builder.result())
 
-  await source()
-    .pipeThrough(grouping())
-    .pipeThrough(builder
-      .pipe(transform("transform 4"))
-      .pipe(transform("transform 5"))
-      .pipe(transform("transform 6"))
-      .build())
-    .pipeTo(terminate())
-
-  console.table(builder.result())
-
 })()

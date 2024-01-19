@@ -64,8 +64,7 @@ export class PerformanceStreamBuilder<I = any, O = any> {
     const last = new TransformStream<O, O>({
       transform(chunk, controller) {
         performance.mark(`${This.measureName}.${This.endMark}`)
-        performance.measure(This.measureName)
-        performance.mark(`${This.measureName}.${This.startMark}`)
+        performance.measure(This.measureName, `${This.measureName}.${This.startMark}`, `${This.measureName}.${This.endMark}`)
         controller.enqueue(chunk)
       },
       flush() {

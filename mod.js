@@ -23,5 +23,7 @@ export * from "./JsonSerializer/JsonSerializer.js";
 export * from "./CsvLineEncoder/CsvLineEncoder.js";
 export * from "./Flattener/Flattener.js";
 export * from "./PeekStream/PeekStream.js";
+export * from "./CombinedTransformStream/CombinedTransformStream.js";
+export * from "./PerformanceStream/PerformanceStream.js";
 export * from "./Utf8Streams/Utf8Streams.js";
 //# sourceMappingURL=mod.js.map
