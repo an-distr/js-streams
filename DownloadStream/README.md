@@ -3,6 +3,9 @@
 ## Description
 Download the stream.
 
+## Example
+https://an-js-streams.pages.dev/DownloadStream/test/test.html
+
 ## Compatibility
 * \>= ECMAScript2018
 * **It only works with WebBrowser.**

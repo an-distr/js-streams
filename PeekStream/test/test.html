@@ -2,24 +2,29 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@primer/css@21.1.1/dist/primer.min.css">
 <link rel="stylesheet" href="../../misc/DomConsole/DomConsole.css">
 <link rel="stylesheet" href="../../misc/DomConsole/DomConsole.theme.chrome.css">
-<title>Testing PeekStream</title>
-<h4>Testing PeekStream</h4>
-<button id="run">Run</button>
-<fieldset style="max-height: 25em; overflow-y: scroll;">
-  <legend>Test Code</legend>
-  <pre><code id="source"></code></pre>
-</fieldset>
-<fieldset>
-  <legend>Result</legend>
-  <div id="console"></div>
-</fieldset>
+<title>ArrayAccumulator</title>
+<h2 class="my-2">ArrayAccumulator</h2>
+<button id="run" class="btn">Run</button>
+<hr>
+<pre style="max-height: 25em; overflow-y: scroll;"><code id="source"></code></pre>
+<hr>
+<div id="console"></div>
 <script type="module">
+  import highlightJs from "https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/+esm"
   import { DomConsole } from "../../misc/DomConsole/DomConsole.js"
+
   globalThis.console = new DomConsole("console", globalThis.console)
 
-  fetch("./test.ts").then(resp => resp.text().then(text => document.getElementById("source").textContent = text))
+  document.title = location.pathname.split("/").slice(-3)[0]
+  document.getElementsByTagName("h2")[0].textContent = document.title
+
+  fetch("./test.ts")
+    .then(resp => resp.text()
+      .then(text => document.getElementById("source").innerHTML = highlightJs.highlight(text, { language: "typescript" }).value))
 
   document.getElementById("run").onclick = e => {
     e.target.disabled = "disabled"
