@@ -45,6 +45,7 @@ export class PerformanceStreamBuilder {
             transform(chunk, controller) {
                 performance.mark(`${This.measureName}.${This.endMark}`);
                 performance.measure(This.measureName, `${This.measureName}.${This.startMark}`, `${This.measureName}.${This.endMark}`);
+                performance.mark(`${This.measureName}.${This.startMark}`);
                 controller.enqueue(chunk);
             },
             flush() {
