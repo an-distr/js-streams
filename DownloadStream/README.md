@@ -9,7 +9,7 @@ Download the stream.
 
 ## Usage
 ```ts
-import { DownloadStream } from "https://an-js-streams.pages.dev/DownloadStream/DownloadStream.js"
+import { DownloadStream } from "https://an-js-streams.pages.dev/DownloadStream/DownloadStream.js" // or .ts
 
 const download = new DownloaderStream(
   // Specify save name.

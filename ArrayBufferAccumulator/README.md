@@ -1,4 +1,4 @@
-# ArrayBufferAccumulatorStream
+# ArrayBufferAccumulator
 
 ## Description
 Accumulate the ArrayBuffer stream and emit it at a constant size or condition.
@@ -7,9 +7,9 @@ Accumulate the ArrayBuffer stream and emit it at a constant size or condition.
 
 ## Usage
 ```ts
-import { ArrayBufferAccumulatorStream } from "https://an-js-streams.pages.dev/mod.js"
+import { ArrayBufferAccumulator } from "https://an-js-streams.pages.dev/mod.js" // or .ts
 
-const accumulator = new ArrayBufferAccumulatorStream(
+const accumulator = new ArrayBufferAccumulator(
   // Specify emit size.
   512,
   // The options.
@@ -22,7 +22,7 @@ const accumulator = new ArrayBufferAccumulatorStream(
   })
 
 await readable
-  .pipeThrough(accumulator)
+  .pipeThrough(accumulator.transform())
   .pipeTo(writable)
 ```
 **Sequence**

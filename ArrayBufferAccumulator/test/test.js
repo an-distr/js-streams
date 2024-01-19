@@ -1,4 +1,4 @@
-import { ArrayBufferAccumulator } from "../ArrayBufferAccumulatorStream.js";
+import { ArrayBufferAccumulator } from "../ArrayBufferAccumulator.js";
 import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.js";
 import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Streams.js";
 (async () => {

@@ -15,7 +15,7 @@ Stream utilities for JavaScript/TypeScript.
 ## Modules
 |Module|Description|
 |-|-|
-|[ArrayBufferAccumulatorStream](ArrayBufferAccumulatorStream/README.md)|Accumulate the ArrayBuffer stream and emit it at a constant size or condition.|
+|[ArrayBufferAccumulator](ArrayBufferAccumulator/README.md)|Accumulate the ArrayBuffer stream and emit it at a constant size or condition.|
 |[ArrayAccumulator](ArrayAccumulator/README.md)|Accumulate the stream and emit it at a constant size array.|
 |[JsonDeserializer](JsonDeserializer/README.md)|Convert the string to a JSON/JSON Lines array.|
 |[JsonSerializer](JsonSerializer/README.md)|Convert the object to a JSON/JSON Lines string.|

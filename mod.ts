@@ -17,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export * from "./ArrayBufferAccumulatorStream/ArrayBufferAccumulatorStream.ts"
+export * from "./ArrayBufferAccumulator/ArrayBufferAccumulator.ts"
 export * from "./ArrayAccumulator/ArrayAccumulator.ts"
 export * from "./JsonDeserializer/JsonDeserializer.ts"
 export * from "./JsonSerializer/JsonSerializer.ts"

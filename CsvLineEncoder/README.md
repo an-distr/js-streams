@@ -8,7 +8,7 @@ https://an-js-streams.pages.dev/CsvLineEncoder/test/test.html
 
 ## Usage
 ```ts
-import { CsvLineEncoder } from "https://an-js-streams.pages.dev/mod.js"
+import { CsvLineEncoder } from "https://an-js-streams.pages.dev/mod.js" // or .ts
 
 const encoder = new CsvLineEncoder({
   // Specifies the delimiter. The default value is ",".

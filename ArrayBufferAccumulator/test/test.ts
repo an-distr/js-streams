@@ -1,4 +1,4 @@
-import { ArrayBufferAccumulator } from "../ArrayBufferAccumulatorStream.ts"
+import { ArrayBufferAccumulator } from "../ArrayBufferAccumulator.ts"
 import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.ts"
 import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Streams.ts"
 
@@ -86,7 +86,7 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
   const test = async (totalSize: number, readableChunkSize: number, chunkSize: number, fixed: boolean, isArray: boolean) => {
     readableChunkSize = readableChunkSize === 0 ? totalSize : readableChunkSize
 
-    performance.clearMeasures("ArrayBufferAccumulatorStream.transform")
+    performance.clearMeasures("ArrayBufferAccumulator.transform")
     performance.clearMarks("start")
     performance.clearMarks("end")
 
@@ -97,11 +97,11 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
       .pipeThrough(new ArrayBufferAccumulator(chunkSize, { fixed }).transform())
       .pipeThrough(mark("end"))
       .pipeThrough(assertChunkSize(totalSize, chunkSize))
-      .pipeThrough(measure("ArrayBufferAccumulatorStream.transform", "start", "end"))
+      .pipeThrough(measure("ArrayBufferAccumulator.transform", "start", "end"))
       .pipeThrough(mark("start"))
       .pipeTo(results(result))
 
-    const entries = performance.getEntriesByName("ArrayBufferAccumulatorStream.transform")
+    const entries = performance.getEntriesByName("ArrayBufferAccumulator.transform")
     const durations = entries.map(e => e.duration)
     const totalDuration = durations.reduce((s, d) => s += d, 0.0)
     const minDuration = durations.reduce((l, r) => Math.min(l, r))
@@ -117,7 +117,7 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
     console.groupCollapsed([
       `ReadableStream(${totalSize.toLocaleString()}, { isArray: ${isArray} }) =>`,
       `chunk(${readableChunkSize.toLocaleString()}) =>`,
-      `ArrayBufferAccumulatorStream(${chunkSize.toLocaleString()}, { fixed: ${fixed} })`,
+      `ArrayBufferAccumulator(${chunkSize.toLocaleString()}, { fixed: ${fixed} })`,
       `durationOfOccupancy: ${totalDuration}`,
     ].join(" "))
   
