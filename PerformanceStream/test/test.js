@@ -1,5 +1,8 @@
-import { PerformanceStream } from "../PerformanceStream.js";
+import { PerformanceStreamBuilder } from "../PerformanceStream.js";
+import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.js";
 (async () => {
+    CompatiblePerformance.replaceIfUnsupported();
+    const sleep = (msec) => new Promise(resolve => setTimeout(resolve, msec));
     const source = () => new ReadableStream({
         start(controller) {
             for (const n of [1, 2, 3, 4, 5]) {
@@ -23,19 +26,28 @@ import { PerformanceStream } from "../PerformanceStream.js";
     const transform = (name) => new TransformStream({
         async transform(chunk, controller) {
             console.log(`chunk=${chunk}, name=${name}`);
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await sleep(100);
             controller.enqueue(chunk);
         }
     });
-    const ps = new PerformanceStream("perf", "start", "end");
+    const builder = new PerformanceStreamBuilder("perf", "start", "end");
     await source()
         .pipeThrough(grouping())
-        .pipeThrough(ps
+        .pipeThrough(builder
         .pipe(transform("transform 1"))
         .pipe(transform("transform 2"))
         .pipe(transform("transform 3"))
         .build())
         .pipeTo(terminate());
-    console.table(ps.result());
+    console.table(builder.result());
+    await source()
+        .pipeThrough(grouping())
+        .pipeThrough(builder
+        .pipe(transform("transform 4"))
+        .pipe(transform("transform 5"))
+        .pipe(transform("transform 6"))
+        .build())
+        .pipeTo(terminate());
+    console.table(builder.result());
 })();
 //# sourceMappingURL=test.js.map

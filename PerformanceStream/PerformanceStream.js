@@ -16,8 +16,8 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-import { CombinedTransformStream } from "../../CombinedTransformStream/CombinedTransformStream.js";
-export class PerformanceStream {
+import { CombinedTransformStream } from "../CombinedTransformStream/CombinedTransformStream.js";
+export class PerformanceStreamBuilder {
     constructor(measureName, startMark, endMark) {
         this.transforms = [];
         this.measureName = measureName;
@@ -30,7 +30,7 @@ export class PerformanceStream {
     }
     build(options) {
         const This = this;
-        return new CombinedTransformStream(this.transforms, options, {
+        const first = new TransformStream({
             start() {
                 performance.clearMeasures(This.measureName);
                 performance.clearMarks(`${This.measureName}.${This.startMark}`);
@@ -39,20 +39,39 @@ export class PerformanceStream {
             transform(chunk, controller) {
                 performance.mark(`${This.measureName}.${This.startMark}`);
                 controller.enqueue(chunk);
-                performance.mark(`${This.measureName}.${This.endMark}`);
-                performance.measure(This.measureName, `${This.measureName}.${This.startMark}`, `${This.measureName}.${This.endMark}`);
             }
         });
+        const last = new TransformStream({
+            transform(chunk, controller) {
+                performance.mark(`${This.measureName}.${This.endMark}`);
+                performance.measure(This.measureName);
+                performance.mark(`${This.measureName}.${This.startMark}`);
+                controller.enqueue(chunk);
+            },
+            flush() {
+                This.entries = performance.getEntriesByName(This.measureName);
+                performance.clearMeasures(This.measureName);
+                performance.clearMarks(`${This.measureName}.${This.startMark}`);
+                performance.clearMarks(`${This.measureName}.${This.endMark}`);
+            }
+        });
+        const combined = new CombinedTransformStream(this.transforms, options);
+        this.transforms.splice(0);
+        first.readable.pipeTo(combined.writable);
+        combined.readable.pipeTo(last.writable);
+        return {
+            writable: first.writable,
+            readable: last.readable,
+        };
     }
     result() {
-        const entries = performance.getEntriesByName(this.measureName);
-        if (entries.length === 0)
+        if (!this.entries || this.entries.length === 0)
             return undefined;
-        const durations = entries.map(e => e.duration);
+        const durations = this.entries.map(e => e.duration);
         if (durations.length === 0) {
             return {
-                processing: 0,
-                total: 0,
+                transforming: 0,
+                occupancy: 0,
                 min: 0,
                 max: 0,
                 average: 0,
@@ -70,8 +89,8 @@ export class PerformanceStream {
                 ? sortedDurations[medianDurationIndex]
                 : sortedDurations[medianDurationIndex - 1] + sortedDurations[medianDurationIndex];
         return {
-            processing: durations.length,
-            total: totalDuration,
+            transforming: durations.length,
+            occupancy: totalDuration,
             min: minDuration,
             max: maxDuration,
             average: totalDuration / durations.length,

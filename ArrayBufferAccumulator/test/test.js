@@ -1,6 +1,6 @@
 import { ArrayBufferAccumulator } from "../ArrayBufferAccumulator.js";
 import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.js";
-import * as perf from "../../misc/PerformanceStream/PerformanceStream.js";
+import { PerformanceStreamBuilder } from "../../PerformanceStream/PerformanceStream.js";
 import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Streams.js";
 (async () => {
     CompatiblePerformance.replaceIfUnsupported();
@@ -58,7 +58,7 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
     }
     const test = async (totalSize, readableChunkSize, chunkSize, fixed, isArray) => {
         readableChunkSize = readableChunkSize === 0 ? totalSize : readableChunkSize;
-        const ps = new perf.PerformanceStream("ArrayBufferAccumulator", "start", "end");
+        const ps = new PerformanceStreamBuilder("ArrayBufferAccumulator", "start", "end");
         const result = { sizeOfWritten: 0 };
         await source(totalSize, readableChunkSize, isArray)
             .pipeThrough(ps
@@ -72,7 +72,7 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
             `ReadableStream(${totalSize.toLocaleString()}, { isArray: ${isArray} }) =>`,
             `chunk(${readableChunkSize.toLocaleString()}) =>`,
             `ArrayBufferAccumulator(${chunkSize.toLocaleString()}, { fixed: ${fixed} })`,
-            `durationOfOccupancy: ${psResult.total}`,
+            `durationOfOccupancy: ${psResult.occupancy}`,
         ].join(" "));
         console.assert((fixed
             ? chunkSize * Math.ceil(totalSize / chunkSize)
@@ -84,8 +84,8 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
             readableChunkSize,
             chunkSize,
             sizeOfWritten: result.sizeOfWritten,
-            transforming: psResult.processing,
-            durationOfOccupancy: psResult.total,
+            transforming: psResult.transforming,
+            durationOfOccupancy: psResult.occupancy,
             durationMinimum: psResult.min,
             durationMaximum: psResult.max,
             durationAverage: psResult.average,

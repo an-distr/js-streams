@@ -23,6 +23,8 @@ Stream utilities for JavaScript/TypeScript.
 |[Flattener](Flattener/README.md)|Flatten the array.|
 |[Utf8Streams](Utf8Streams/README.md)|Convert streams and UTF-8 strings to and from each other.|
 |[PeekStream](PeekStream/README.md)|Peeking chunk of stream.|
+|[CombinedTransformStream](CombinedTransformStream/README.md)|Combine multiple TransfromStreams.|
+|[PerformanceStream](PerformanceStream/README.md)|Measure the processing time of the Stream.|
 |[DownloadStream](DownloadStream/README.md)|Download the stream.|
 
 ## Functions

@@ -17,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 export class CombinedTransformStream {
-    constructor(transforms, options, transformer) {
+    constructor(transforms, options) {
         let first = transforms.slice(0)[0];
         let last = transforms.slice(-1)[0];
         let previous = undefined;

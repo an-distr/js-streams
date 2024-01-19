@@ -1,6 +1,6 @@
 import { ArrayBufferAccumulator } from "../ArrayBufferAccumulator.ts"
 import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.ts"
-import * as perf from "../../misc/PerformanceStream/PerformanceStream.ts"
+import { PerformanceStreamBuilder } from "../../PerformanceStream/PerformanceStream.ts"
 import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Streams.ts"
 
 (async () => {
@@ -69,7 +69,7 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
   const test = async (totalSize: number, readableChunkSize: number, chunkSize: number, fixed: boolean, isArray: boolean) => {
     readableChunkSize = readableChunkSize === 0 ? totalSize : readableChunkSize
 
-    const ps = new perf.PerformanceStream<Uint8Array | number[], Uint8Array | number[]>("ArrayBufferAccumulator", "start", "end")
+    const ps = new PerformanceStreamBuilder<Uint8Array | number[], Uint8Array | number[]>("ArrayBufferAccumulator", "start", "end")
     const result: WritableResult = { sizeOfWritten: 0 }
 
     await source(totalSize, readableChunkSize, isArray)
@@ -86,7 +86,7 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
       `ReadableStream(${totalSize.toLocaleString()}, { isArray: ${isArray} }) =>`,
       `chunk(${readableChunkSize.toLocaleString()}) =>`,
       `ArrayBufferAccumulator(${chunkSize.toLocaleString()}, { fixed: ${fixed} })`,
-      `durationOfOccupancy: ${psResult!.total}`,
+      `durationOfOccupancy: ${psResult!.occupancy}`,
     ].join(" "))
 
     console.assert((fixed
@@ -100,8 +100,8 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
       readableChunkSize,
       chunkSize,
       sizeOfWritten: result.sizeOfWritten,
-      transforming: psResult!.processing,
-      durationOfOccupancy: psResult!.total,
+      transforming: psResult!.transforming,
+      durationOfOccupancy: psResult!.occupancy,
       durationMinimum: psResult!.min,
       durationMaximum: psResult!.max,
       durationAverage: psResult!.average,

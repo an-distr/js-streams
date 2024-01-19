@@ -21,7 +21,7 @@ export class CombinedTransformStream<I = any, O = any> {
   readonly readable: ReadableStream<O>
   readonly writable: WritableStream<I>
 
-  constructor(transforms: TransformStream[], options?: StreamPipeOptions, transformer?: Transformer<I, O>) {
+  constructor(transforms: TransformStream[], options?: StreamPipeOptions) {
     let first = transforms.slice(0)[0]
     let last = transforms.slice(-1)[0]
     let previous: TransformStream | undefined = undefined
