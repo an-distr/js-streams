@@ -11,11 +11,10 @@ catch { }
 
 // Replace import file extension.
 console.log("Replace import file extension.")
-const jsFiles = expandGlob("../**/*.js")
-for await (const jsFile of jsFiles) {
-  let text = await Deno.readTextFile(jsFile.path)
+for await (const file of expandGlob("../**/*.js")) {
+  let text = await Deno.readTextFile(file.path)
   if (!text.includes(".ts\"")) continue
   text = text.replaceAll(".ts\"", ".js\"")
-  await Deno.writeTextFile(jsFile.path, text)
-  console.log(jsFile.path)
+  await Deno.writeTextFile(file.path, text)
+  console.log(file.path)
 }
