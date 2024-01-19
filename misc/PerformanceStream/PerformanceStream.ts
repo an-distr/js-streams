@@ -33,7 +33,6 @@ export class PerformanceStream<I = any, O = any> {
   private measureName: string
   private startMark: string
   private endMark: string
-  private entries?: PerformanceEntryList
 
   constructor(measureName: string, startMark: string, endMark: string) {
     this.measureName = measureName
@@ -59,20 +58,15 @@ export class PerformanceStream<I = any, O = any> {
         controller.enqueue(chunk as unknown as O)
         performance.mark(`${This.measureName}.${This.endMark}`)
         performance.measure(This.measureName, `${This.measureName}.${This.startMark}`, `${This.measureName}.${This.endMark}`)
-      },
-      flush() {
-        This.entries = performance.getEntriesByName(This.measureName)
-        performance.clearMeasures(This.measureName)
-        performance.clearMarks(`${This.measureName}.${This.startMark}`)
-        performance.clearMarks(`${This.measureName}.${This.endMark}`)
       }
     })
   }
 
   result(): PerformanceStreamResult | undefined {
-    if (!this.entries) return undefined
+    const entries = performance.getEntriesByName(this.measureName)
+    if (entries.length === 0) return undefined
 
-    const durations = this.entries.map(e => e.duration)
+    const durations = entries.map(e => e.duration)
     if (durations.length === 0) {
       return {
         processing: 0,
