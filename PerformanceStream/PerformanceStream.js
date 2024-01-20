@@ -72,15 +72,15 @@ export class PerformanceStreamBuilder {
             return {
                 transforming: 0,
                 occupancy: 0,
-                min: 0,
-                max: 0,
+                minimum: 0,
+                maximum: 0,
                 average: 0,
                 median: 0,
             };
         }
-        const total = durations.reduce((s, d) => s += d, 0.0);
-        const min = durations.reduce((l, r) => Math.min(l, r));
-        const max = durations.reduce((l, r) => Math.max(l, r));
+        const occupancy = durations.reduce((s, d) => s += d, 0.0);
+        const minimum = durations.reduce((l, r) => Math.min(l, r));
+        const maximum = durations.reduce((l, r) => Math.max(l, r));
         const sorted = [...new Set(durations.sort((l, r) => l - r))];
         const medianIndex = sorted.length / 2 | 0;
         const median = sorted.length === 0
@@ -90,10 +90,10 @@ export class PerformanceStreamBuilder {
                 : sorted[medianIndex - 1] + sorted[medianIndex];
         return {
             transforming: durations.length,
-            occupancy: total,
-            min: min,
-            max: max,
-            average: total / durations.length,
+            occupancy: occupancy,
+            minimum: minimum,
+            maximum: maximum,
+            average: occupancy / durations.length,
             median: median,
         };
     }

@@ -86,8 +86,8 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
             sizeOfWritten: result.sizeOfWritten,
             transforming: psResult.transforming,
             durationOfOccupancy: psResult.occupancy,
-            durationMinimum: psResult.min,
-            durationMaximum: psResult.max,
+            durationMinimum: psResult.maximum,
+            durationMaximum: psResult.maximum,
             durationAverage: psResult.average,
             durationMedian: psResult.median,
         });
