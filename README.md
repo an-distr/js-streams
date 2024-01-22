@@ -25,6 +25,7 @@ Stream utilities for JavaScript/TypeScript.
 |[PeekStream](PeekStream/README.md)|Peeking chunk of stream.|
 |[CombinedTransformStream](CombinedTransformStream/README.md)|Combine multiple TransfromStreams.|
 |[PerformanceStream](PerformanceStream/README.md)|Measure the processing time of the Stream.|
+|[AssertStream](AssertStream/README.md)|Assert for Stream.|
 |[DownloadStream](DownloadStream/README.md)|Download the stream.|
 
 ## Functions
