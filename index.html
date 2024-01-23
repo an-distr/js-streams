@@ -1,33 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@primer/css@21.1.1/dist/primer.min.css">
 <title>Streams Demo/Test</title>
-<h4>Project</h4>
-<ul>
-  <li><a href="https://github.com/an-dist/js-streams">GitHub</a></li>
-</ul>
-<h4>Demo</h4>
-<ul>
-  <li><a href="demo/demo.html">Demo</a></li>
-</ul>
-<h4>Test</h4>
-<ul>
-  <li><a href="ArrayBufferAccumulator/test/test.html">ArrayBufferAccumulator</a></li>
-  <li><a href="ArrayAccumulator/test/test.html">ArrayAccumulator</a></li>
-  <li><a href="CsvLineEncoder/test/test.html">CsvLineEncoder</a></li>
-  <li><a href="Flattener/test/test.html">Flattener</a></li>
-  <li><a href="JsonDeserializer/test/test.html">JsonDeserializer</a></li>
-  <li><a href="JsonSerializer/test/test.html">JsonSerializer</a></li>
-  <li><a href="PeekStream/test/test.html">PeekStream</a></li>
-  <li><a href="CombinedTransformStream/test/test.html">CombinedTransformStream</a></li>
-  <li><a href="PerformanceStream/test/test.html">PerformanceStream</a></li>
-  <li><a href="DownloadStream/test/test.html">DownloadStream</a></li>
-</ul>
-<h4>Unrelated</h4>
-<ul>
-  <li><a href="misc/DomConsole/test/test.html">DomConsole</a></li>
-</ul>
-<script>
-  [...document.querySelectorAll('a')].forEach(a => a.target = "_blank")
-</script>
+<style>
+  ul {
+    list-style: none;
+  }
+</style>
+<header class="Header">
+  <div class="Header-item">
+    <h3>Streams Demo/Test</h3>
+  </div>
+</header>
+<main class="container-md mt-2">
+  <div class="form-group">
+    <div class="form-group-header">
+      <h4>Project</h4>
+    </div>
+    <ul>
+      <li><a href="https://github.com/an-dist/js-streams">GitHub</a></li>
+    </ul>
+  </div>
+  <hr>
+  <div class="form-group">
+    <div class="form-group-header">
+      <h4>Demo</h4>
+    </div>
+    <ul>
+      <li><a href="demo/demo.html">Demo</a></li>
+    </ul>
+  </div>
+  <hr>
+  <div class="form-group">
+    <div class="form-group-header">
+      <h4>Test</h4>
+    </div>
+    <ul>
+      <li><a href="ArrayBufferAccumulator/test/test.html">ArrayBufferAccumulator</a></li>
+      <li><a href="ArrayAccumulator/test/test.html">ArrayAccumulator</a></li>
+      <li><a href="CsvLineEncoder/test/test.html">CsvLineEncoder</a></li>
+      <li><a href="Flattener/test/test.html">Flattener</a></li>
+      <li><a href="JsonDeserializer/test/test.html">JsonDeserializer</a></li>
+      <li><a href="JsonSerializer/test/test.html">JsonSerializer</a></li>
+      <li><a href="PeekStream/test/test.html">PeekStream</a></li>
+      <li><a href="CombinedTransformStream/test/test.html">CombinedTransformStream</a></li>
+      <li><a href="PerformanceStream/test/test.html">PerformanceStream</a></li>
+      <li><a href="DownloadStream/test/test.html">DownloadStream</a></li>
+    </ul>
+  </div>
+  <hr>
+  <div class="form-group">
+    <div class="form-group-header">
+      <h4>Unrelated</h4>
+    </div>
+    <ul>
+      <li><a href="misc/DomConsole/test/test.html">DomConsole</a></li>
+    </ul>
+  </div>
+  <hr>
+</main>

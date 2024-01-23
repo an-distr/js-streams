@@ -1,35 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<style>
-  .control fieldset {
-    display: flex;
-  }
-
-  .control input {
-    width: 100%;
-  }
-</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@primer/css@21.1.1/dist/primer.min.css">
 <title>Json to CSV</title>
-
-<fieldset>
-  <legend>Options</legend>
-  <input id="chkDirect" type="checkbox">
-  <label for="chkDirect">Direct download</label>
-</fieldset>
-
-<fieldset class="control">
-  <legend>JSON to CSV (Download)</legend>
-  <script type="module" src="JsonToCsv.download.js"></script>
-  <input id="txtUrl" type="url" value="https://jsonplaceholder.typicode.com/posts">
-  <button id="btnConvertUrl">Convert</button>
-  <div></div>
-</fieldset>
-
-<fieldset class="control">
-  <legend>JSON to CSV (Upload)</legend>
-  <script type="module" src="JsonToCsv.upload.js"></script>
-  <input id="txtFile" type="file" accept=".json,.jsonl">
-  <div></div>
-</fieldset>
+<header class="Header">
+  <div class="Header-item">
+    <a href="/">◀︎ </a>
+  </div>
+  <div class="Header-item">
+    <h3>Json to CSV</h3>
+  </div>
+</header>
+<main class="container-md mt-2">
+  <div class="form-group">
+    <div class="form-group-header">
+      <h4>Options</h4>
+    </div>
+    <input id="chkDirect" type="checkbox">
+    <label for="chkDirect">Direct download</label>
+  </div>
+  <hr>
+  <div class="form-group">
+    <div class="form-group-header">
+      <h4>JSON to CSV (Download)</h4>
+    </div>
+    <script type="module" src="JsonToCsv.download.js"></script>
+    <input id="txtUrl" type="url" class="form-control input-block mb-2" value="https://jsonplaceholder.typicode.com/posts">
+    <button id="btnConvertUrl" class="btn">Convert</button>
+    <div></div>
+  </div>
+  <hr>
+  <div class="form-group">
+    <div class="form-group-header">
+      <h4>JSON to CSV (Upload)</h4>
+    </div>
+    <script type="module" src="JsonToCsv.upload.js"></script>
+    <input id="txtFile" type="file" class="form-control input-block" accept=".json,.jsonl">
+    <div></div>
+  </div>
+</main>

@@ -1,13 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@primer/css@21.1.1/dist/primer.min.css">
 <link rel="stylesheet" href="../../misc/DomConsole/DomConsole.css">
 <link rel="stylesheet" href="../../misc/DomConsole/DomConsole.theme.chrome.css">
 <title>Testing DownloadStream</title>
-<h4>Testing DownloadStream</h4>
-<input id="url" type="url" size="100" value="https://jsonplaceholder.typicode.com/photos">
-<button id="download">Download</button>
+<header class="Header">
+  <div class="Header-item">
+    <a href="/">◀︎ </a>
+  </div>
+  <div class="Header-item">
+    <h3>Testing DownloadStream</h3>
+  </div>
+</header>
+<main class="container-md mt-2">
+  <input id="url" class="form-control input-block mb-2" type="url" value="https://jsonplaceholder.typicode.com/photos">
+  <button id="download" class="btn">Download</button>
+</main>
 <script type="module">
   import { DownloadStream } from "../DownloadStream.js"
 
