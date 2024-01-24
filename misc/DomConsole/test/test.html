@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="../DomConsole.css">
 <link id="theme" rel="stylesheet" href="../DomConsole.theme.chrome.css">
 <title>Testing DomConsole</title>
+
 <header class="Header">
   <div class="Header-item">
     <a href="/">◀︎ </a>
@@ -14,8 +15,11 @@
     <h3>Testing DomConsole</h3>
   </div>
 </header>
+
 <main class="container-md mt-2">
+
   <div style="position: sticky; top: 0; background-color: var(--color-canvas-default);">
+
     <div class="form-group">
       <div class="form-group-header">
         <h4>Theme</h4>
@@ -27,6 +31,7 @@
         <option value="../DomConsole.theme.chrome.dark.css">Chrome(Dark)</option>
       </select>
     </div>
+
     <div class="form-group">
       <div class="form-group-header">
         <h4>Logging</h4>
@@ -39,12 +44,14 @@
       <button id="error" class="btn">error</button>
       <button id="assert" class="btn">assert</button>
     </div>
+
     <div class="form-group">
       <div class="form-group-header">
         <h4>Table</h4>
       </div>
       <button id="table" class="btn">table</button>
     </div>
+
     <div class="form-group">
       <div class="form-group-header">
         <h4>Grouping</h4>
@@ -53,16 +60,21 @@
       <button id="groupCollapsed" class="btn">groupCollapsed</button>
       <button id="groupEnd" class="btn">groupEnd</button>
     </div>
+
     <div class="form-group">
       <div class="form-group-header">
         <h4>Clear</h4>
       </div>
       <button id="clear" class="btn">clear</button>
     </div>
+    
     <hr>
   </div>
+
   <div id="console"></div>
+
 </main>
+
 <script type="module">
   import { DomConsole } from "../DomConsole.js"
   const console = new DomConsole("console", globalThis.console)
