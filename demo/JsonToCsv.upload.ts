@@ -3,10 +3,9 @@ import { DownloadStream, DownloadStreamOptions } from "../DownloadStream/Downloa
 
 const chkDirect = document.getElementById("chkDirect") as HTMLInputElement
 const txtFile = document.getElementById("txtFile") as HTMLInputElement
-const linkHolder = txtFile.parentElement!.querySelector("div") as HTMLDivElement
+const linkHolder = txtFile.parentElement!.lastElementChild as HTMLDivElement
 
 txtFile.onchange = async () => {
-  linkHolder.innerHTML = ""
   if (!txtFile.files) {
     return
   }

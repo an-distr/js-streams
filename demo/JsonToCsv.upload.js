@@ -2,9 +2,8 @@ import * as streams from "../mod.js";
 import { DownloadStream } from "../DownloadStream/DownloadStream.js";
 const chkDirect = document.getElementById("chkDirect");
 const txtFile = document.getElementById("txtFile");
-const linkHolder = txtFile.parentElement.querySelector("div");
+const linkHolder = txtFile.parentElement.lastElementChild;
 txtFile.onchange = async () => {
-    linkHolder.innerHTML = "";
     if (!txtFile.files) {
         return;
     }

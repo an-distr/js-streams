@@ -3,9 +3,8 @@ import { DownloadStream } from "../DownloadStream/DownloadStream.js";
 const chkDirect = document.getElementById("chkDirect");
 const txtUrl = document.getElementById("txtUrl");
 const btnConvertUrl = document.getElementById("btnConvertUrl");
-const linkHolder = txtUrl.parentElement.querySelector("div");
+const linkHolder = btnConvertUrl.parentElement.lastElementChild;
 btnConvertUrl.onclick = async () => {
-    linkHolder.innerHTML = "";
     fetch(txtUrl.value, { credentials: "include" }).then(response => {
         var _a;
         if (!response.body) {

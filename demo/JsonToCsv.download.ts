@@ -4,10 +4,9 @@ import { DownloadStream, DownloadStreamOptions } from "../DownloadStream/Downloa
 const chkDirect = document.getElementById("chkDirect") as HTMLInputElement
 const txtUrl = document.getElementById("txtUrl") as HTMLInputElement
 const btnConvertUrl = document.getElementById("btnConvertUrl") as HTMLButtonElement
-const linkHolder = txtUrl.parentElement!.querySelector("div") as HTMLDivElement
+const linkHolder = btnConvertUrl.parentElement!.lastElementChild as HTMLDivElement
 
 btnConvertUrl.onclick = async () => {
-  linkHolder.innerHTML = ""
   fetch(txtUrl.value, { credentials: "include" }).then(response => {
     if (!response.body) {
       return
