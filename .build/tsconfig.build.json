@@ -10,6 +10,7 @@
     "module": "ESNext",
     "strict": true,
     "sourceMap": true,
-    "removeComments": true
+    "removeComments": true,
+    "newLine": "lf"
   }
 }
