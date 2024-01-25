@@ -22,8 +22,8 @@ export class CombinedTransformStream<I = any, O = any> {
   readonly writable: WritableStream<I>
 
   constructor(transforms: TransformStream[], options?: StreamPipeOptions) {
-    let first = transforms.slice(0)[0]
-    let last = transforms.slice(-1)[0]
+    const first = transforms.slice(0)[0]
+    const last = transforms.slice(-1)[0]
     let previous: TransformStream | undefined = undefined
     for (const transform of transforms) {
       if (previous) previous.readable.pipeTo(transform.writable, options)

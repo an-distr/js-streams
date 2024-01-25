@@ -16,7 +16,7 @@ import { CsvLineEncoder } from "../CsvLineEncoder.ts"
     }
   })
 
-  const terminate = () => new WritableStream
+  const terminate = () => new WritableStream()
 
   const data = [
     { "a": 1, "b": 2, "c": "aaa\nbbb,ccc" },

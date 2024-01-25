@@ -18,8 +18,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 export class CombinedTransformStream {
     constructor(transforms, options) {
-        let first = transforms.slice(0)[0];
-        let last = transforms.slice(-1)[0];
+        const first = transforms.slice(0)[0];
+        const last = transforms.slice(-1)[0];
         let previous = undefined;
         for (const transform of transforms) {
             if (previous)

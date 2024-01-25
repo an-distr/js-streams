@@ -16,7 +16,7 @@ import { Flattener } from "../Flattener.ts"
     }
   })
 
-  const writable = () => new WritableStream
+  const writable = () => new WritableStream()
 
   const test = async (data: any, limit?: number) => {
     console.groupCollapsed(`=== data: ${JSON.stringify(data)}, limit: ${limit} ===`)
