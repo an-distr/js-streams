@@ -12,7 +12,7 @@ import { CsvLineEncoder } from "../CsvLineEncoder.js";
             controller.enqueue(chunk);
         }
     });
-    const terminate = () => new WritableStream;
+    const terminate = () => new WritableStream();
     const data = [
         { "a": 1, "b": 2, "c": "aaa\nbbb,ccc" },
         { "a": 4, "b": 5, "c": 6 },

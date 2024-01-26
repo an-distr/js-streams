@@ -12,7 +12,7 @@ import { Flattener } from "../Flattener.js";
             controller.enqueue(chunk);
         }
     });
-    const writable = () => new WritableStream;
+    const writable = () => new WritableStream();
     const test = async (data, limit) => {
         console.groupCollapsed(`=== data: ${JSON.stringify(data)}, limit: ${limit} ===`);
         await readable(data)

@@ -14,7 +14,7 @@ import { CompatiblePerformance } from "../../misc/CompatiblePerformance/Compatib
             controller.enqueue(chunk);
         }
     });
-    const terminate = () => new WritableStream;
+    const terminate = () => new WritableStream();
     const testPush = async (size, data) => {
         const accumulator = new ArrayAccumulator(size);
         await accumulator.push(data);

@@ -19,7 +19,7 @@ import { CompatiblePerformance } from "../../misc/CompatiblePerformance/Compatib
     }
   })
 
-  const terminate = () => new WritableStream
+  const terminate = () => new WritableStream()
 
   const testPush = async (size: number, data: any) => {
     const accumulator = new ArrayAccumulator(size)
