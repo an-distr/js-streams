@@ -18,9 +18,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 :root {
+  --dc-mark-expand: "\25BC\FE0E";
+  --dc-mark-collapsed: "\25B6\FE0E";
+  --dc-mark-warning: "\26A0\FE0E";
+  --dc-mark-error: "\2716\FE0E";
+  
   --dc-fore-color: rgb(42, 42, 42);
   --dc-back-color: rgb(255, 255, 255);
-  --dc-current-selected-anchor-color: #fef6d5;
+  --dc-current-selected-anchor-color: rgb(254, 246, 213);
   --dc-standard-border-color: rgb(211, 227, 253);
   --dc-table-header-back-color: rgb(247, 249, 253);
   --dc-table-header-hover-back-color: rgb(227, 227, 227);
@@ -31,17 +36,17 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   --dc-warn-back-color: rgb(254, 246, 213);
   --dc-error-fore-color: rgb(101, 57, 55);
   --dc-error-back-color: rgb(252, 235, 235);
-  --dc-menu-back-color: #fafcff;
-  --dc-menu-border-color: #e0e0e1;
-  --dc-menu-shadow-color: #e0e0e133;
-  --dc-menu-hover-back-color: #edeff2;
+  --dc-menu-back-color: rgb(250, 252, 255);
+  --dc-menu-border-color: rgb(224, 224, 225);
+  --dc-menu-shadow-color: rgba(224, 224, 225, 50);
+  --dc-menu-hover-back-color: rgb(237, 239, 242);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --dc-fore-color: rgb(222, 222, 222);
     --dc-back-color: rgb(40, 40, 40);
-    --dc-current-selected-anchor-color: #fef6d5;
+    --dc-current-selected-anchor-color: rgb(254, 246, 213);
     --dc-standard-border-color: rgb(71, 71, 71);
     --dc-table-header-back-color: rgb(40, 41, 42);
     --dc-table-header-hover-back-color: rgb(71, 71, 71);
@@ -52,9 +57,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     --dc-warn-back-color: rgb(65, 60, 38);
     --dc-error-fore-color: rgb(231, 204, 203);
     --dc-error-back-color: rgb(78, 53, 52);
-    --dc-menu-back-color: #fafcff;
-    --dc-menu-border-color: #e0e0e1;
-    --dc-menu-shadow-color: #e0e0e133;
-    --dc-menu-hover-back-color: #edeff2;
+    --dc-menu-back-color: rgb(250, 252, 255);
+    --dc-menu-border-color: rgb(224, 224, 225);
+    --dc-menu-shadow-color: rgba(224, 224, 225, 50);
+    --dc-menu-hover-back-color: rgb(237, 239, 242);
   }
 }

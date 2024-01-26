@@ -18,15 +18,16 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 :root {
+  --dc-mark-expand: "-";
+  --dc-mark-collapsed: "+";
+  --dc-mark-warning: "!";
+  --dc-mark-error: "x";
+
   --dc-menu-fore-color: black;
   --dc-menu-back-color: white;
   --dc-menu-border-color: black;
   --dc-standard-border-color: black;
   --dc-current-selected-anchor-color: black;
-  --dc-mark-expand: "▼";
-  --dc-mark-collapsed: "▶︎";
-  --dc-mark-warning: "⚠︎";
-  --dc-mark-error: "✖︎";
 }
 
 input[name="group-visibility"] {
