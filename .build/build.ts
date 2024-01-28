@@ -1,6 +1,6 @@
 /// <reference lib="deno.ns" />
-import { $ } from "https://deno.land/x/dax@0.37.1/mod.ts"
-import { expandGlob } from "https://deno.land/std@0.213.0/fs/expand_glob.ts"
+import { $ } from "https://deno.land/x/dax/mod.ts"
+import { expandGlob } from "https://deno.land/std/fs/expand_glob.ts"
 
 // Transpiling.
 console.log("Transpiling.")
