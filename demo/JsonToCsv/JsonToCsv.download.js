@@ -1,5 +1,4 @@
-import * as streams from "../../mod.js";
-import { DownloadStream } from "../../DownloadStream/DownloadStream.js";
+import * as streams from "../../web.js";
 const chkDirect = document.getElementById("chkDirect");
 const txtUrl = document.getElementById("txtUrl");
 const btnConvertUrl = document.getElementById("btnConvertUrl");
@@ -17,10 +16,10 @@ btnConvertUrl.onclick = async () => {
             };
         }
         response.body
-            .pipeThrough(new streams.Utf8DecoderStream)
+            .pipeThrough(new streams.Utf8DecoderStream())
             .pipeThrough(new streams.JsonDeserializer({ lineSeparated: (_a = response.headers.get("content-type")) === null || _a === void 0 ? void 0 : _a.includes("jsonl") }).transform())
             .pipeThrough(new streams.CsvLineEncoder({ withNewLine: true }).transform())
-            .pipeTo(new DownloadStream("download.csv", options));
+            .pipeTo(new streams.DownloadStream("download.csv", options));
     });
 };
 //# sourceMappingURL=JsonToCsv.download.js.map

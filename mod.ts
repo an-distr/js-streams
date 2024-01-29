@@ -28,3 +28,5 @@ export * from "./JsonSerializer/JsonSerializer.ts"
 export * from "./PeekStream/PeekStream.ts"
 export * from "./PerformanceStream/PerformanceStream.ts"
 export * from "./Utf8Streams/Utf8Streams.ts"
+
+export * from "./funcs/mod.ts"

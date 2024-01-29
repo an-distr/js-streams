@@ -1,5 +1,4 @@
-import * as streams from "../../mod.ts"
-import { DownloadStream, DownloadStreamOptions } from "../../DownloadStream/DownloadStream.ts"
+import * as streams from "../../web.ts"
 
 const chkDirect = document.getElementById("chkDirect") as HTMLInputElement
 const txtUrl = document.getElementById("txtUrl") as HTMLInputElement
@@ -12,7 +11,7 @@ btnConvertUrl.onclick = async () => {
       return
     }
 
-    let options: DownloadStreamOptions | undefined
+    let options: streams.DownloadStreamOptions | undefined
     if (!chkDirect.checked) {
       options = {
         linkHolder
@@ -20,9 +19,9 @@ btnConvertUrl.onclick = async () => {
     }
 
     response.body
-      .pipeThrough(new streams.Utf8DecoderStream)
+      .pipeThrough(new streams.Utf8DecoderStream())
       .pipeThrough(new streams.JsonDeserializer({ lineSeparated: response.headers.get("content-type")?.includes("jsonl") }).transform())
       .pipeThrough(new streams.CsvLineEncoder({ withNewLine: true }).transform())
-      .pipeTo(new DownloadStream("download.csv", options))
+      .pipeTo(new streams.DownloadStream("download.csv", options))
   })
 }
