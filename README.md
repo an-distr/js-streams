@@ -15,18 +15,18 @@ Stream utilities for JavaScript/TypeScript.
 ## Modules
 |Module|Description|
 |-|-|
-|[ArrayBufferAccumulator](ArrayBufferAccumulator/README.md)|Accumulate the ArrayBuffer stream and emit it at a constant size or condition.|
 |[ArrayAccumulator](ArrayAccumulator/README.md)|Accumulate the stream and emit it at a constant size array.|
+|[ArrayBufferAccumulator](ArrayBufferAccumulator/README.md)|Accumulate the ArrayBuffer stream and emit it at a constant size or condition.|
+|[AssertStream](AssertStream/README.md)|Assert for Stream.|
+|[CombinedTransformStream](CombinedTransformStream/README.md)|Combine multiple TransfromStreams.|
+|[CsvLineEncoder](CsvLineEncoder/README.md)|Convert the object to a CSV line.|
+|[DownloadStream](DownloadStream/README.md)|Download the stream.|
+|[Flattener](Flattener/README.md)|Flatten the array.|
 |[JsonDeserializer](JsonDeserializer/README.md)|Convert the string to a JSON/JSON Lines array.|
 |[JsonSerializer](JsonSerializer/README.md)|Convert the object to a JSON/JSON Lines string.|
-|[CsvLineEncoder](CsvLineEncoder/README.md)|Convert the object to a CSV line.|
-|[Flattener](Flattener/README.md)|Flatten the array.|
-|[Utf8Streams](Utf8Streams/README.md)|Convert streams and UTF-8 strings to and from each other.|
 |[PeekStream](PeekStream/README.md)|Peeking chunk of stream.|
-|[CombinedTransformStream](CombinedTransformStream/README.md)|Combine multiple TransfromStreams.|
 |[PerformanceStream](PerformanceStream/README.md)|Measure the processing time of the Stream.|
-|[AssertStream](AssertStream/README.md)|Assert for Stream.|
-|[DownloadStream](DownloadStream/README.md)|Download the stream.|
+|[Utf8Streams](Utf8Streams/README.md)|Convert streams and UTF-8 strings to and from each other.|
 
 ## Functions
 * [Functions](./funcs/README.md)
@@ -34,7 +34,7 @@ Stream utilities for JavaScript/TypeScript.
 ## Unrelated
 * [DomConsole](./misc/DomConsole/README.md)
 
-## Demo / Test
+## Demos and Examples
 * [https://an-js-streams.pages.dev/](https://an-js-streams.pages.dev/)
 
 ## License
