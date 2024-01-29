@@ -17,13 +17,14 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export * from "./ArrayBufferAccumulator/ArrayBufferAccumulator.ts"
 export * from "./ArrayAccumulator/ArrayAccumulator.ts"
-export * from "./JsonDeserializer/JsonDeserializer.ts"
-export * from "./JsonSerializer/JsonSerializer.ts"
+export * from "./ArrayBufferAccumulator/ArrayBufferAccumulator.ts"
+export * from "./AssertStream/AssertStream.ts"
+export * from "./CombinedTransformStream/CombinedTransformStream.ts"
 export * from "./CsvLineEncoder/CsvLineEncoder.ts"
 export * from "./Flattener/Flattener.ts"
+export * from "./JsonDeserializer/JsonDeserializer.ts"
+export * from "./JsonSerializer/JsonSerializer.ts"
 export * from "./PeekStream/PeekStream.ts"
-export * from "./CombinedTransformStream/CombinedTransformStream.ts"
 export * from "./PerformanceStream/PerformanceStream.ts"
 export * from "./Utf8Streams/Utf8Streams.ts"

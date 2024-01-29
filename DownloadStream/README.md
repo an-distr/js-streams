@@ -12,7 +12,7 @@ https://an-js-streams.pages.dev/DownloadStream/test/test.html
 
 ## Usage
 ```ts
-import { DownloadStream } from "https://an-js-streams.pages.dev/DownloadStream/DownloadStream.js" // or .ts
+import { DownloadStream } from "https://an-js-streams.pages.dev/web.js" // or .ts
 
 const download = new DownloaderStream(
   // Specify save name.
@@ -26,7 +26,5 @@ const download = new DownloaderStream(
   }
 )
 
-await readable
-  .pipeThrough(download)
-  .pipeTo(writable)
+await readable.pipeTo(download)
 ```
