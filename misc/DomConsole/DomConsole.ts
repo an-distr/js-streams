@@ -240,8 +240,8 @@ export class DomConsole implements Console {
     if (condition !== undefined && !condition) {
       const item = This.appendItem("assert", "Assertion failed:", ...data)
       This.withTrace(item.firstElementChild!, new Error())
+      This.redirect?.assert(...data)
     }
-    This.redirect?.assert(...data)
   }
 
   log(...data: any[]) {

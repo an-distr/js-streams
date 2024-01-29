@@ -225,8 +225,8 @@ export class DomConsole {
         if (condition !== undefined && !condition) {
             const item = This.appendItem("assert", "Assertion failed:", ...data);
             This.withTrace(item.firstElementChild, new Error());
+            (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.assert(...data);
         }
-        (_a = This.redirect) === null || _a === void 0 ? void 0 : _a.assert(...data);
     }
     log(...data) {
         var _a;
