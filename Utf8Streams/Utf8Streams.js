@@ -24,6 +24,9 @@ export class Utf8DecoderStream extends TransformStream {
                 controller.enqueue(decoder.decode(chunk, { stream: true }));
             }
         });
+        this.encoding = decoder.encoding;
+        this.fatal = decoder.fatal;
+        this.ignoreBOM = decoder.ignoreBOM;
     }
 }
 export class Utf8EncoderStream extends TransformStream {
@@ -34,6 +37,7 @@ export class Utf8EncoderStream extends TransformStream {
                 controller.enqueue(encoder.encode(chunk));
             }
         });
+        this.encoding = encoder.encoding;
     }
 }
 //# sourceMappingURL=Utf8Streams.js.map
