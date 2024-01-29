@@ -1,5 +1,5 @@
-import * as streams from "../mod.js";
-import { DownloadStream } from "../DownloadStream/DownloadStream.js";
+import * as streams from "../../mod.js";
+import { DownloadStream } from "../../DownloadStream/DownloadStream.js";
 const chkDirect = document.getElementById("chkDirect");
 const txtUrl = document.getElementById("txtUrl");
 const btnConvertUrl = document.getElementById("btnConvertUrl");
