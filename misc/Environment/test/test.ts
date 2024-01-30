@@ -11,7 +11,7 @@ import { Environment } from "../Environment.ts"
   console.group("Debug info")
   console.table({
     ua: (typeof window !== "undefined") ? window.navigator.userAgent : "",
-    brands: (typeof window !== "undefined" && typeof (window.navigator as any).userAgentData !== "undefined") ? (window.navigator as any).userAgentData.brands : "",
+    brands: (typeof window !== "undefined" && typeof (window.navigator as any).userAgentData !== "undefined") ? JSON.stringify((window.navigator as any).userAgentData.brands) : "",
     hasBunApi: Environment.hasBunApi(),
     hasDenoApi: Environment.hasDenoApi(),
     hasNodeApi: Environment.hasNodeApi(),
