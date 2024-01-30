@@ -90,12 +90,9 @@ export class Environment {
             .split(" ")
             .filter(x => x.includes("/"))
             .filter(x => !x.includes("Mozilla"))
+            .filter(x => !x.includes("Gecko"))
+            .filter(x => !x.includes("WebKit"))
             .filter(x => !x.includes("Mobile"));
-        if (pairs.length >= 2) {
-            pairs = pairs
-                .filter(x => !x.includes("Gecko"))
-                .filter(x => !x.includes("WebKit"));
-        }
         const versionIndex = pairs.findIndex(x => x.includes("Version"));
         if (versionIndex >= 0) {
             pairs = pairs
