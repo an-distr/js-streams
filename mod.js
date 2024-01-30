@@ -27,5 +27,6 @@ export * from "./JsonSerializer/JsonSerializer.js";
 export * from "./PeekStream/PeekStream.js";
 export * from "./PerformanceStream/PerformanceStream.js";
 export * from "./Utf8Streams/Utf8Streams.js";
+export * from "./misc/Environment/Environment.js";
 export * from "./funcs/mod.js";
 //# sourceMappingURL=mod.js.map

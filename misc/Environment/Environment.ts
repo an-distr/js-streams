@@ -113,11 +113,24 @@ export class Environment {
       .split(" ")
       .filter(x => x.includes("/"))
       .filter(x => !x.includes("Mozilla"))
+      .filter(x => !x.includes("Mobile"))
 
     if (pairs.length >= 2) {
       pairs = pairs
         .filter(x => !x.includes("Gecko"))
         .filter(x => !x.includes("WebKit"))
+    }
+
+    const versionIndex = pairs.findIndex(x => x.includes("Version"))
+    if (versionIndex >= 0) {
+      pairs = pairs
+        .filter(x => !x.includes("Safari"))
+      pairs[versionIndex] = pairs[versionIndex].replace("Version", "Safari")
+    }
+
+    const criOsIndex = pairs.findIndex(x => x.includes("CriOS"))
+    if (criOsIndex >= 0) {
+      pairs[versionIndex] = pairs[versionIndex].replace("CriOS", "Chrome")
     }
 
     if (pairs.some(x => x.includes("Edg"))) {
