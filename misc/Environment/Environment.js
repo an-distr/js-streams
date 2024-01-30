@@ -69,7 +69,7 @@ export class Environment {
             const hevs = await this.getHighEntropyValues(["fullVersionList"]);
             if (hevs === null || hevs === void 0 ? void 0 : hevs.fullVersionList) {
                 brands = hevs.fullVersionList
-                    .filter(x => !x.brand.startsWith("Not"));
+                    .filter(x => !x.brand.includes("Not"));
                 if (brands.length >= 2) {
                     brands = brands.filter(x => x.brand !== "Chromium");
                 }
@@ -78,7 +78,7 @@ export class Environment {
                 const uad = this.getUserAgentData();
                 if (uad && uad.brands) {
                     brands = uad.brands
-                        .filter(x => !x.brand.startsWith("Not"));
+                        .filter(x => !x.brand.includes("Not"));
                 }
             }
         }
