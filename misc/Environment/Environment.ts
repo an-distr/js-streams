@@ -17,37 +17,144 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export enum EnvironmentNames {
-  Unknown,
-  Browser,
-  Node,
-  Deno,
-  Bun,
+export type RuntimeNames = "Unknown" | "Server" | "Browser"
+
+type Brand = {
+  brand: string
+  version: string
 }
 
 export class Environment {
 
-  static env() {
-    // @ts-ignore
-    if (typeof Bun !== "undefined") return EnvironmentNames.Bun
-    // @ts-ignore
-    if (typeof Deno !== "undefined") return EnvironmentNames.Deno
-    // @ts-ignore
-    if (typeof process !== "undefined" && process.versions && process.versions.node) return EnvironmentNames.Node
-    if (typeof window !== "undefined" && window.navigator) return EnvironmentNames.Browser
-    return EnvironmentNames.Unknown
+  private static getUserAgentData() {
+    if ("userAgentData" in window.navigator) {
+      return (window.navigator as any).userAgentData
+    }
+    return undefined
   }
 
-  static ver() {
-    switch (this.env()) {
-      // @ts-ignore
-      case EnvironmentNames.Bun: return Bun.version
-      // @ts-ignore
-      case EnvironmentNames.Deno: return Deno.version.deno
-      // @ts-ignore
-      case EnvironmentNames.Node: return process.versions.node
-      case EnvironmentNames.Browser: return window.navigator.userAgent
-      default: return undefined
+  private static async getHighEntropyValues(hints: string[]) {
+    const uad = this.getUserAgentData()
+    if (uad && "getHighEntropyValues" in uad) {
+      try {
+        return await uad.getHighEntropyValues(hints)
+      }
+      catch { }
     }
+    return undefined
+  }
+
+  static hasBunApi(): boolean {
+    // @ts-ignore
+    return typeof Bun !== "undefined"
+  }
+
+  static hasDenoApi(): boolean {
+    // @ts-ignore
+    return typeof Deno !== "undefined"
+  }
+
+  static hasNodeApi(): boolean {
+    // @ts-ignore
+    return typeof process !== "undefined" && typeof process.versions !== "undefined" && typeof process.versions.node !== "undefined"
+  }
+
+  static hasBrowserApi(): boolean {
+    return typeof window !== "undefined"
+  }
+
+  private static async getBrands() {
+    let brands: Brand[] | undefined
+
+    if (this.hasBunApi()) {
+      brands = [{
+        brand: "Bun",
+        // @ts-ignore
+        version: Bun.version,
+      }]
+    }
+    else if (this.hasDenoApi()) {
+      brands = [{
+        brand: "Deno",
+        // @ts-ignore
+        version: Deno.version.deno,
+      }]
+    }
+    else if (this.hasNodeApi()) {
+      brands = [{
+        brand: "Node",
+        // @ts-ignore
+        version: process.versions.node,
+      }]
+    }
+    else {
+      const hevs = await this.getHighEntropyValues(["fullVersionList"])
+      if (hevs?.fullVersionList) {
+        brands = (hevs.fullVersionList as Brand[])
+          .filter(x => !x.brand.startsWith("Not"))
+        if (brands.length >= 2) {
+          brands = brands.filter(x => x.brand !== "Chromium")
+        }
+      }
+      else {
+        const uad = this.getUserAgentData()
+        if (uad && uad.brands) {
+          brands = (uad.brands as Brand[])
+            .filter(x => !x.brand.startsWith("Not"))
+        }
+      }
+    }
+
+    return brands ?? this.getBrandsFromUA()
+  }
+
+  private static getBrandsFromUA() {
+    let pairs = (window.navigator.userAgent ?? "")
+      .split(" ")
+      .filter(x => x.includes("/"))
+      .filter(x => !x.includes("Mozilla"))
+
+    if (pairs.length >= 2) {
+      pairs = pairs
+        .filter(x => !x.includes("Gecko"))
+        .filter(x => !x.includes("WebKit"))
+    }
+
+    if (pairs.some(x => x.includes("Edg"))) {
+      pairs = pairs
+        .filter(x => !x.includes("Chrome"))
+        .filter(x => !x.includes("Safari"))
+    }
+
+    if (pairs.some(x => x.includes("Chrome"))) {
+      pairs = pairs
+        .filter(x => !x.includes("Safari"))
+    }
+
+    return pairs.map(x => {
+      const brand: Brand = {
+        brand: x.split("/")[0],
+        version: x.split("/")[1],
+      }
+      return brand
+    })
+  }
+
+  static runtime(): RuntimeNames {
+    if (this.hasBunApi() || this.hasDenoApi() || this.hasNodeApi()) return "Server"
+    else if (this.hasBrowserApi()) return "Browser"
+    return "Unknown"
+  }
+
+  static async brand() {
+    const brands = await this.getBrands()
+    if (brands.length > 0) return brands[0].brand
+    return "Unknown"
+  }
+
+  static async version() {
+    const brands = await this.getBrands()
+    if (brands.length > 0) return brands[0].version
+    return "Unknown"
   }
 }

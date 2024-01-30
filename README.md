@@ -33,6 +33,7 @@ Stream utilities for JavaScript/TypeScript.
 
 ## Unrelated
 * [DomConsole](./misc/DomConsole/README.md)
+* [Environment](./misc/Environment/README.md)
 
 ## Demos and Examples
 * [https://an-js-streams.pages.dev/](https://an-js-streams.pages.dev/)

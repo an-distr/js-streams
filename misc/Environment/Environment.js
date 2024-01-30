@@ -16,34 +16,120 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-export var EnvironmentNames;
-(function (EnvironmentNames) {
-    EnvironmentNames[EnvironmentNames["Unknown"] = 0] = "Unknown";
-    EnvironmentNames[EnvironmentNames["Browser"] = 1] = "Browser";
-    EnvironmentNames[EnvironmentNames["Node"] = 2] = "Node";
-    EnvironmentNames[EnvironmentNames["Deno"] = 3] = "Deno";
-    EnvironmentNames[EnvironmentNames["Bun"] = 4] = "Bun";
-})(EnvironmentNames || (EnvironmentNames = {}));
 export class Environment {
-    static env() {
-        if (typeof Bun !== "undefined")
-            return EnvironmentNames.Bun;
-        if (typeof Deno !== "undefined")
-            return EnvironmentNames.Deno;
-        if (typeof process !== "undefined" && process.versions && process.versions.node)
-            return EnvironmentNames.Node;
-        if (typeof window !== "undefined" && window.navigator)
-            return EnvironmentNames.Browser;
-        return EnvironmentNames.Unknown;
-    }
-    static ver() {
-        switch (this.env()) {
-            case EnvironmentNames.Bun: return Bun.version;
-            case EnvironmentNames.Deno: return Deno.version.deno;
-            case EnvironmentNames.Node: return process.versions.node;
-            case EnvironmentNames.Browser: return window.navigator.userAgent;
-            default: return undefined;
+    static getUserAgentData() {
+        if ("userAgentData" in window.navigator) {
+            return window.navigator.userAgentData;
         }
+        return undefined;
+    }
+    static async getHighEntropyValues(hints) {
+        const uad = this.getUserAgentData();
+        if (uad && "getHighEntropyValues" in uad) {
+            try {
+                return await uad.getHighEntropyValues(hints);
+            }
+            catch (_a) { }
+        }
+        return undefined;
+    }
+    static hasBunApi() {
+        return typeof Bun !== "undefined";
+    }
+    static hasDenoApi() {
+        return typeof Deno !== "undefined";
+    }
+    static hasNodeApi() {
+        return typeof process !== "undefined" && typeof process.versions !== "undefined" && typeof process.versions.node !== "undefined";
+    }
+    static hasBrowserApi() {
+        return typeof window !== "undefined";
+    }
+    static async getBrands() {
+        let brands;
+        if (this.hasBunApi()) {
+            brands = [{
+                    brand: "Bun",
+                    version: Bun.version,
+                }];
+        }
+        else if (this.hasDenoApi()) {
+            brands = [{
+                    brand: "Deno",
+                    version: Deno.version.deno,
+                }];
+        }
+        else if (this.hasNodeApi()) {
+            brands = [{
+                    brand: "Node",
+                    version: process.versions.node,
+                }];
+        }
+        else {
+            const hevs = await this.getHighEntropyValues(["fullVersionList"]);
+            if (hevs === null || hevs === void 0 ? void 0 : hevs.fullVersionList) {
+                brands = hevs.fullVersionList
+                    .filter(x => !x.brand.startsWith("Not"));
+                if (brands.length >= 2) {
+                    brands = brands.filter(x => x.brand !== "Chromium");
+                }
+            }
+            else {
+                const uad = this.getUserAgentData();
+                if (uad && uad.brands) {
+                    brands = uad.brands
+                        .filter(x => !x.brand.startsWith("Not"));
+                }
+            }
+        }
+        return brands !== null && brands !== void 0 ? brands : this.getBrandsFromUA();
+    }
+    static getBrandsFromUA() {
+        var _a;
+        let pairs = ((_a = window.navigator.userAgent) !== null && _a !== void 0 ? _a : "")
+            .split(" ")
+            .filter(x => x.includes("/"))
+            .filter(x => !x.includes("Mozilla"));
+        if (pairs.length >= 2) {
+            pairs = pairs
+                .filter(x => !x.includes("Gecko"))
+                .filter(x => !x.includes("WebKit"));
+        }
+        if (pairs.some(x => x.includes("Edg"))) {
+            pairs = pairs
+                .filter(x => !x.includes("Chrome"))
+                .filter(x => !x.includes("Safari"));
+        }
+        if (pairs.some(x => x.includes("Chrome"))) {
+            pairs = pairs
+                .filter(x => !x.includes("Safari"));
+        }
+        return pairs.map(x => {
+            const brand = {
+                brand: x.split("/")[0],
+                version: x.split("/")[1],
+            };
+            return brand;
+        });
+    }
+    static runtime() {
+        if (this.hasBunApi() || this.hasDenoApi() || this.hasNodeApi())
+            return "Server";
+        else if (this.hasBrowserApi())
+            return "Browser";
+        return "Unknown";
+    }
+    static async brand() {
+        const brands = await this.getBrands();
+        if (brands.length > 0)
+            return brands[0].brand;
+        return "Unknown";
+    }
+    static async version() {
+        const brands = await this.getBrands();
+        if (brands.length > 0)
+            return brands[0].version;
+        return "Unknown";
     }
 }
 //# sourceMappingURL=Environment.js.map
