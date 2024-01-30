@@ -139,6 +139,11 @@ export class Environment {
       pairs[fxiOSIndex] = pairs[fxiOSIndex].replace("FxiOS", "FireFox")
     }
 
+    if (pairs.some(x => x.includes("OPT"))) {
+      pairs = pairs
+        .filter(x => !x.includes("Safari"))
+    }
+
     if (pairs.some(x => x.includes("Edg"))) {
       pairs = pairs
         .filter(x => !x.includes("Chrome"))
