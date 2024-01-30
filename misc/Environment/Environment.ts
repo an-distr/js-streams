@@ -128,9 +128,19 @@ export class Environment {
       pairs[versionIndex] = pairs[versionIndex].replace("Version", "Safari")
     }
 
-    const criOsIndex = pairs.findIndex(x => x.includes("CriOS"))
-    if (criOsIndex >= 0) {
-      pairs[versionIndex] = pairs[versionIndex].replace("CriOS", "Chrome")
+    const criOSIndex = pairs.findIndex(x => x.includes("CriOS"))
+    if (criOSIndex >= 0) {
+      pairs[criOSIndex] = pairs[criOSIndex].replace("CriOS", "Chrome")
+    }
+
+    const edgiOSIndex = pairs.findIndex(x => x.includes("EdgiOS"))
+    if (edgiOSIndex >= 0) {
+      pairs[edgiOSIndex] = pairs[edgiOSIndex].replace("EdgiOS", "Edg")
+    }
+
+    const fxiOSIndex = pairs.findIndex(x => x.includes("FxiOS"))
+    if (fxiOSIndex >= 0) {
+      pairs[fxiOSIndex] = pairs[fxiOSIndex].replace("FxiOS", "FireFox")
     }
 
     if (pairs.some(x => x.includes("Edg"))) {
