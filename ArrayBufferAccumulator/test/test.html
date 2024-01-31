@@ -6,9 +6,11 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
 <link id="hljs-theme" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/21.1.1/primer.min.css" integrity="sha512-nwakYqn4w11bj59NffiuchQMfL6BuLG0oYDbmdDDGGD8Zj5JqxU7RH1OvbudufKqinoUSUWc8lQFtelega4gPg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/21.1.1/primer.min.css"
+  integrity="sha512-nwakYqn4w11bj59NffiuchQMfL6BuLG0oYDbmdDDGGD8Zj5JqxU7RH1OvbudufKqinoUSUWc8lQFtelega4gPg=="
+  crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="/misc/DomConsole/DomConsole.css">
-<link rel="stylesheet" href="/misc/DomConsole/DomConsole.theme.chrome.css">
+<link id="dc-theme" rel="stylesheet">
 <style>
   #isDarkMode {
     display: none;
@@ -28,13 +30,25 @@
 
 <header class="Header">
   <div class="Header-item">
-    <a href="/" style="color: white;"><h3></h3></a>
+    <a href="/" class="Header-link d-flex flex-items-center">
+      <img src="/favicon.svg" class="mr-2" style="width: var(--h3-size, 20px); height: auto;">
+      <h3></h3>
+    </a>
+  </div>
+  <div class="Header-item Header-item--full"></div>
+  <div class="Header-item">
+    <label for="siteTheme">Theme&nbsp;</label>
+    <select id="siteTheme" class="form-select">
+      <option value="auto">Auto</option>
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+    </select>
   </div>
 </header>
 
 <div id="isDarkMode"></div>
 
-<main class="container-md mt-2">
+<main class="container-md mt-2 px-3">
   <button id="run" class="btn">Run</button>
   <hr>
   <pre style="max-height: 25vh; overflow-y: scroll;"><code id="source"></pre>
@@ -51,10 +65,30 @@
   document.title = location.pathname.split("/").slice(-3)[0]
   document.getElementsByTagName("h3")[0].textContent = document.title
 
+  const siteTheme = document.getElementById("siteTheme")
+  siteTheme.value = localStorage.getItem("siteTheme") ?? "auto"
+  siteTheme.onchange = () => {
+    document.documentElement.dataset.colorMode = siteTheme.value
+    switch (siteTheme.value) {
+      case "light":
+        document.getElementById("hljs-theme").href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+        document.getElementById("dc-theme").href = "/misc/DomConsole/DomConsole.theme.chrome.light.css"
+        break
+      case "dark":
+        document.getElementById("hljs-theme").href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css"
+        document.getElementById("dc-theme").href = "/misc/DomConsole/DomConsole.theme.chrome.dark.css"
+        break
+      default:
+        document.getElementById("hljs-theme").href = getComputedStyle(document.getElementById("isDarkMode")).display === "block"
+          ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css"
+          : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+        document.getElementById("dc-theme").href = "/misc/DomConsole/DomConsole.theme.chrome.css"
+    }
+    localStorage.setItem("siteTheme", siteTheme.value)
+  }
+
   new IntersectionObserver(entries => {
-    document.getElementById("hljs-theme").href = getComputedStyle(entries[0].target).display === "block"
-      ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css"
-      : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+    document.getElementById("siteTheme").dispatchEvent(new Event("change"))
   }).observe(document.getElementById("isDarkMode"))
 
   fetch("./test.ts")
