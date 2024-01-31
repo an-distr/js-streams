@@ -6,7 +6,7 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
 <link id="hljs-theme" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@primer/css@21.1.1/dist/primer.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/21.1.1/primer.min.css" integrity="sha512-nwakYqn4w11bj59NffiuchQMfL6BuLG0oYDbmdDDGGD8Zj5JqxU7RH1OvbudufKqinoUSUWc8lQFtelega4gPg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="/misc/DomConsole/DomConsole.css">
 <link rel="stylesheet" href="/misc/DomConsole/DomConsole.theme.chrome.css">
 <style>
@@ -43,7 +43,7 @@
 </main>
 
 <script type="module">
-  import highlightJs from "https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/+esm"
+  import highlightJs from "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/es/highlight.min.js"
   import { DomConsole } from "/misc/DomConsole/DomConsole.js"
 
   globalThis.console = new DomConsole("console", globalThis.console)
@@ -53,8 +53,8 @@
 
   new IntersectionObserver(entries => {
     document.getElementById("hljs-theme").href = getComputedStyle(entries[0].target).display === "block"
-      ? "https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark-dimmed.min.css"
-      : "https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css"
+      ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css"
+      : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
   }).observe(document.getElementById("isDarkMode"))
 
   fetch("./test.ts")
