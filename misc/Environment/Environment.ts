@@ -103,6 +103,9 @@ export class Environment {
             .filter(x => !x.brand.includes("Not"))
         }
       }
+      if (brands?.length === 0) {
+        brands = undefined
+      }
     }
 
     return brands ?? this.getBrandsFromUA()

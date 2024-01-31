@@ -81,6 +81,9 @@ export class Environment {
                         .filter(x => !x.brand.includes("Not"));
                 }
             }
+            if ((brands === null || brands === void 0 ? void 0 : brands.length) === 0) {
+                brands = undefined;
+            }
         }
         return brands !== null && brands !== void 0 ? brands : this.getBrandsFromUA();
     }
