@@ -8,17 +8,25 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/21.1.1/primer.min.css"
   integrity="sha512-nwakYqn4w11bj59NffiuchQMfL6BuLG0oYDbmdDDGGD8Zj5JqxU7RH1OvbudufKqinoUSUWc8lQFtelega4gPg=="
   crossorigin="anonymous" referrerpolicy="no-referrer" />
+<title>Streams Demos and Examples</title>
 <style>
   ul {
-    list-style: none;
+    list-style-position: inside;
+  }
+
+  li p {
+    display: inline-block;
+  }
+
+  section ul {
+    padding-left: 2em;
   }
 </style>
-<title>Streams Demos and Examples</title>
 
 <header class="Header" style="flex-wrap: wrap !important;">
   <div class="Header-item">
     <a href="/" class="Header-link d-flex flex-items-center">
-      <img src="/favicon.svg" class="mr-2" style="width: var(--h3-size, 20px); height: auto;">
+      <img src="/favicon.svg" alt="favicon" class="mr-2" style="width: var(--h3-size, 20px); height: auto;">
       <h3>Streams Demos and Examples</h3>
     </a>
   </div>
@@ -35,81 +43,120 @@
 
 <main class="container-md pt-3 px-3">
 
-  <div class="form-group">
-    <div class="form-group-header">
-      <h4>Repository</h4>
-    </div>
-    <ul>
-      <li><a href="https://github.com/an-dist/js-streams">GitHub</a></li>
-    </ul>
-  </div>
-  <hr>
-
-  <div class="form-group">
+  <section class="form-group">
     <div class="form-group-header">
       <h4>Demos</h4>
     </div>
     <ul>
-      <li><a href="demo/JsonToCsv/demo.html">Json to CSV</a></li>
+      <li><a href="demo/JsonToCsv/demo.html">
+          <p>Json to CSV</p>
+        </a></li>
     </ul>
-  </div>
+  </section>
   <hr>
 
-  <div class="form-group">
+  <section class="form-group">
     <div class="form-group-header">
       <h4>Examples</h4>
     </div>
-    <ul>
-      <li>
+    <section class="form-group ml-2">
+      <div class="form-group-header">
         <h5>Streams</h5>
-        <ul class="ml-4">
-          <li><a href="ArrayAccumulator/test/test.html">ArrayAccumulator</a></li>
-          <li><a href="ArrayBufferAccumulator/test/test.html">ArrayBufferAccumulator</a></li>
-          <li><a href="AssertStream/test/test.html">AssertStream</a></li>
-          <li><a href="CombinedTransformStream/test/test.html">CombinedTransformStream</a></li>
-          <li><a href="CsvLineEncoder/test/test.html">CsvLineEncoder</a></li>
-          <li><a href="DownloadStream/test/test.html">DownloadStream</a></li>
-          <li><a href="Flattener/test/test.html">Flattener</a></li>
-          <li><a href="JsonDeserializer/test/test.html">JsonDeserializer</a></li>
-          <li><a href="JsonSerializer/test/test.html">JsonSerializer</a></li>
-          <li><a href="PeekStream/test/test.html">PeekStream</a></li>
-          <li><a href="PerformanceStream/test/test.html">PerformanceStream</a></li>
-          <li><a href="Utf8Streams/test/test.html">Utf8Streams</a></li>
-        </ul>
-      </li>
-      <li>
+      </div>
+      <ul>
+        <li><a href="ArrayAccumulator/test/test.html">
+            <p>ArrayAccumulator</p>
+          </a></li>
+        <li><a href="ArrayBufferAccumulator/test/test.html">
+            <p>ArrayBufferAccumulator</p>
+          </a></li>
+        <li><a href="AssertStream/test/test.html">
+            <p>AssertStream</p>
+          </a></li>
+        <li><a href="CombinedTransformStream/test/test.html">
+            <p>CombinedTransformStream</p>
+          </a></li>
+        <li><a href="CsvLineEncoder/test/test.html">
+            <p>CsvLineEncoder</p>
+          </a></li>
+        <li><a href="DownloadStream/test/test.html">
+            <p>DownloadStream</p>
+          </a></li>
+        <li><a href="Flattener/test/test.html">
+            <p>Flattener</p>
+          </a></li>
+        <li><a href="JsonDeserializer/test/test.html">
+            <p>JsonDeserializer</p>
+          </a></li>
+        <li><a href="JsonSerializer/test/test.html">
+            <p>JsonSerializer</p>
+          </a></li>
+        <li><a href="PeekStream/test/test.html">
+            <p>PeekStream</p>
+          </a></li>
+        <li><a href="PerformanceStream/test/test.html">
+            <p>PerformanceStream</p>
+          </a></li>
+        <li><a href="Utf8Streams/test/test.html">
+            <p>Utf8Streams</p>
+          </a></li>
+      </ul>
+    </section>
+    <section class="form-group ml-2">
+      <div class="form-group-header">
         <h5>Funcs</h5>
-        <ul class="ml-4">
-          <li><a href="funcs/toAsyncIterableIterator/test/test.html">toAsyncIterableIterator</a></li>
-        </ul>
-      </li>
-    </ul>
-  </div>
+      </div>
+      <ul>
+        <li><a href="funcs/toAsyncIterableIterator/test/test.html">
+            <p>toAsyncIterableIterator</p>
+          </a></li>
+      </ul>
+    </section>
+  </section>
   <hr>
 
-  <div class="form-group">
+  <section class="form-group">
     <div class="form-group-header">
       <h4>Unrelated</h4>
     </div>
     <ul>
-      <li><a href="misc/DomConsole/test/test.html">DomConsole</a></li>
-      <li><a href="misc/Environment/test/test.html">Environment</a></li>
+      <li><a href="misc/DomConsole/test/test.html">
+          <p>DomConsole</p>
+        </a></li>
+      <li><a href="misc/Environment/test/test.html">
+          <p>Environment</p>
+        </a></li>
     </ul>
-  </div>
+  </section>
   <hr>
 
-  <div class="form-group">
+  <section class="form-group">
+    <div class="form-group-header">
+      <h4>Repository</h4>
+    </div>
+    <ul>
+      <li><a href="https://github.com/an-dist/js-streams">
+          <p>GitHub</p>
+        </a></li>
+    </ul>
+  </section>
+  <hr>
+
+  <section class="form-group">
     <div class="form-group-header">
       <h4>License</h4>
     </div>
-    <ul class="ml-4" style="list-style: circle;">
-      <li>The demos and examples on this site are is licensed under the <a href="https://unlicense.org">Unlicense</a>,
-        unless otherwise noted.
-      <li>Streams is licensed under the <a href="https://github.com/an-dist/js-streams/blob/latest/LICENSE">MIT No
-          Attribution (MIT-0)</a>.</li>
+    <ul>
+      <li>
+        <p>The demos and examples on this site are is licensed under the <a href="https://unlicense.org">Unlicense</a>,
+          unless otherwise noted.</p>
+      </li>
+      <li>
+        <p>Streams is licensed under the <a href="https://github.com/an-dist/js-streams/blob/latest/LICENSE">MIT No
+            Attribution (MIT-0)</a>.</p>
       </li>
     </ul>
-  </div>
+  </section>
 
 </main>
 
