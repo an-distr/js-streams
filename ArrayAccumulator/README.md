@@ -4,7 +4,7 @@
 Accumulate the array and emit it at a constant size array.
 
 ## Example
-https://an-js-streams.pages.dev/ArrayAccumulator/test/test.html
+https://an-js-streams.pages.dev/.site/test?mod=ArrayAccumulator
 
 ## Usage
 ```ts

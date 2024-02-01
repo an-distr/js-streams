@@ -4,7 +4,7 @@
 Flatten the array.
 
 ## Example
-https://an-js-streams.pages.dev/Flattener/test/test.html
+https://an-js-streams.pages.dev/.site/test?mod=Flattener
 
 ## Usage
 ```ts

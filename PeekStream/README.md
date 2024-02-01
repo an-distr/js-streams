@@ -4,7 +4,7 @@
 Peeking chunk of stream.
 
 ## Example
-https://an-js-streams.pages.dev/PeekStream/test/test.html
+https://an-js-streams.pages.dev/.site/test?mod=PeekStream
 
 ## Usage
 ```ts

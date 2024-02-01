@@ -4,7 +4,7 @@
 Convert the object to a CSV line.
 
 ## Example
-https://an-js-streams.pages.dev/CsvLineEncoder/test/test.html
+https://an-js-streams.pages.dev/.site/test?mod=CsvLineEncoder
 
 ## Usage
 ```ts

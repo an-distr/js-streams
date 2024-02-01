@@ -4,7 +4,7 @@
 Combine multiple TransfromStreams.
 
 ## Example
-https://an-js-streams.pages.dev/CombinedTransformStream/test/test.html
+https://an-js-streams.pages.dev/.site/test?mod=CombinedTransformStream
 
 ## Usage
 ```ts

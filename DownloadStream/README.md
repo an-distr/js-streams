@@ -4,7 +4,7 @@
 Download the stream.
 
 ## Example
-https://an-js-streams.pages.dev/DownloadStream/test/test.html
+https://an-js-streams.pages.dev/DownloadStream/test/test
 
 ## Compatibility
 * \>= ECMAScript2018

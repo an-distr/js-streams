@@ -4,7 +4,7 @@
 Assert for Stream.
 
 ## Example
-https://an-js-streams.pages.dev/AssertStream/test/test.html
+https://an-js-streams.pages.dev/.site/test?mod=AssertStream
 
 ## Usage
 ```ts

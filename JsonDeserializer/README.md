@@ -4,7 +4,7 @@
 Convert the string to a JSON/JSON Lines array.
 
 ## Example
-https://an-js-streams.pages.dev/JsonDeserializer/test/test.html
+https://an-js-streams.pages.dev/.site/test?mod=JsonDeserializer
 
 ## Usage
 ```ts
