@@ -36,7 +36,7 @@
 <header>
   <a href="/">
     <img src="/.site/favicon.svg" alt="favicon">
-    <h1>DomConsole</h1>
+    <h1></h1>
   </a>
   <div>
     <label for="siteTheme">Theme</label>
@@ -66,7 +66,9 @@
 
   globalThis.console = new DomConsole("console", globalThis.console)
 
-  document.title = location.pathname.split("/").slice(-3)[0]
+  let mod = "/" + (new URL(location).searchParams.get("mod") ?? "").split("/").join("/")
+
+  document.title = mod.split("/").slice(-1)[0]
   document.getElementsByTagName("h1")[0].textContent = document.title
 
   const siteTheme = document.getElementById("siteTheme")
@@ -92,13 +94,13 @@
     document.getElementById("siteTheme").dispatchEvent(new Event("change"))
   }).observe(document.getElementById("isDarkMode"))
 
-  fetch("./test.ts")
+  fetch([mod, "test", "test.ts"].join("/"))
     .then(resp => resp.text()
       .then(text => document.getElementById("source").innerHTML = highlightJs.highlight(text, { language: "typescript" }).value))
 
   document.getElementById("run").onclick = e => {
     e.target.disabled = "disabled"
     e.target.textContent = "Plese waiting..."
-    setTimeout(() => import("./test.js").then(_ => e.target.textContent = "Test complete."), 1);
+    setTimeout(() => import([mod, "test", "test.js"].join("/")).then(_ => e.target.textContent = "Test complete."), 1);
   }
 </script>
