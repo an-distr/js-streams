@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+<html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="description" content="Streams(https://github.com/an-dist/js-streams) Demos and Examples">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
 <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="192x192">
+<link rel="stylesheet" href="/site.css">
 <link id="hljs-theme" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/21.1.1/primer.min.css"
-  integrity="sha512-nwakYqn4w11bj59NffiuchQMfL6BuLG0oYDbmdDDGGD8Zj5JqxU7RH1OvbudufKqinoUSUWc8lQFtelega4gPg=="
-  crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="/misc/DomConsole/DomConsole.css">
 <link id="dc-theme" rel="stylesheet">
+<script defer src="/site.js"></script>
 <style>
   #isDarkMode {
     display: none;
@@ -27,19 +26,21 @@
       display: block;
     }
   }
+
+  pre:has(>code) {
+    max-height: 25vh;
+    overflow-y: scroll;
+  }
 </style>
 
-<header class="Header" style="flex-wrap: wrap !important;">
-  <div class="Header-item">
-    <a href="/" class="Header-link d-flex flex-items-center">
-      <img src="/favicon.svg" alt="favicon" class="mr-2" style="width: var(--h3-size, 20px); height: auto;">
-      <h3></h3>
-    </a>
-  </div>
-  <div class="Header-item Header-item--full"></div>
-  <div class="Header-item mr-0">
-    <label for="siteTheme">Theme&nbsp;</label>
-    <select id="siteTheme" class="form-select">
+<header>
+  <a href="/">
+    <img src="/favicon.svg" alt="favicon">
+    <h1>DomConsole</h1>
+  </a>
+  <div>
+    <label for="siteTheme">Theme</label>
+    <select id="siteTheme">
       <option value="auto">Auto</option>
       <option value="light">Light</option>
       <option value="dark">Dark</option>
@@ -49,11 +50,11 @@
 
 <div id="isDarkMode"></div>
 
-<main class="container-md pt-3 px-3">
-  <button id="run" class="btn">Run</button>
+<main>
+  <button id="run">Run</button>
   <hr>
   <section>
-    <pre style="max-height: 25vh; overflow-y: scroll;"><code id="source"></pre>
+    <pre><code id="source"></pre>
   </section>
   <hr>
   <section id="console"></section>
@@ -66,12 +67,10 @@
   globalThis.console = new DomConsole("console", globalThis.console)
 
   document.title = location.pathname.split("/").slice(-3)[0]
-  document.getElementsByTagName("h3")[0].textContent = document.title
+  document.getElementsByTagName("h1")[0].textContent = document.title
 
   const siteTheme = document.getElementById("siteTheme")
-  siteTheme.value = localStorage.getItem("siteTheme") ?? "auto"
-  siteTheme.onchange = () => {
-    document.documentElement.dataset.colorMode = siteTheme.value
+  siteTheme.addEventListener("change", () => {
     switch (siteTheme.value) {
       case "light":
         document.getElementById("hljs-theme").href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
@@ -87,8 +86,7 @@
           : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
         document.getElementById("dc-theme").href = "/misc/DomConsole/DomConsole.theme.chrome.css"
     }
-    localStorage.setItem("siteTheme", siteTheme.value)
-  }
+  })
 
   new IntersectionObserver(entries => {
     document.getElementById("siteTheme").dispatchEvent(new Event("change"))

@@ -1,27 +1,23 @@
 <!DOCTYPE html>
-<html lang="en" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+<html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="description" content="Streams(https://github.com/an-dist/js-streams) Demos and Examples">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
 <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="192x192">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/21.1.1/primer.min.css"
-  integrity="sha512-nwakYqn4w11bj59NffiuchQMfL6BuLG0oYDbmdDDGGD8Zj5JqxU7RH1OvbudufKqinoUSUWc8lQFtelega4gPg=="
-  crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="/site.css">
+<script defer src="/site.js"></script>
 <title>Json to CSV</title>
 
-<header class="Header" style="flex-wrap: wrap !important;">
-  <div class="Header-item">
-    <a href="/" class="Header-link d-flex flex-items-center">
-      <img src="/favicon.svg" alt="favicon" class="mr-2" style="width: var(--h3-size, 20px); height: auto;">
-      <h3>Json to CSV</h3>
-    </a>
-  </div>
-  <div class="Header-item Header-item--full"></div>
-  <div class="Header-item mr-0">
-    <label for="siteTheme">Theme&nbsp;</label>
-    <select id="siteTheme" class="form-select">
+<header>
+  <a href="/">
+    <img src="/favicon.svg" alt="favicon">
+    <h1>Json to CSV</h1>
+  </a>
+  <div>
+    <label for="siteTheme">Theme</label>
+    <select id="siteTheme">
       <option value="auto">Auto</option>
       <option value="light">Light</option>
       <option value="dark">Dark</option>
@@ -29,35 +25,30 @@
   </div>
 </header>
 
-<main class="container-md mt-2 px-3">
+<main>
 
-  <section class="form-group">
-    <div class="form-group-header">
-      <h4>Options</h4>
-    </div>
+  <section>
+    <h2>Options</h2>
     <input id="chkDirect" type="checkbox">
     <label for="chkDirect">Direct download</label>
   </section>
+
   <hr>
 
-  <section class="form-group">
-    <div class="form-group-header">
-      <h4>JSON to CSV (Download)</h4>
-    </div>
+  <section>
+    <h2>JSON to CSV (Download)</h2>
     <script type="module" src="JsonToCsv.download.js"></script>
-    <input id="txtUrl" type="url" class="form-control input-block mb-2"
-      value="https://jsonplaceholder.typicode.com/posts">
-    <button id="btnConvertUrl" class="btn">Convert</button>
+    <input id="txtUrl" type="url" value="https://jsonplaceholder.typicode.com/posts">
+    <button id="btnConvertUrl">Convert</button>
     <div style="display: flex; flex-direction: column;"></div>
   </section>
+
   <hr>
 
-  <section class="form-group">
-    <div class="form-group-header">
-      <h4>JSON to CSV (Upload)</h4>
-    </div>
+  <section>
+    <h2>JSON to CSV (Upload)</h2>
     <script type="module" src="JsonToCsv.upload.js"></script>
-    <input id="txtFile" type="file" class="form-control input-block" accept=".json,.jsonl">
+    <input id="txtFile" type="file" accept=".json,.jsonl">
     <div style="display: flex; flex-direction: column;"></div>
   </section>
 

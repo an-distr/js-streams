@@ -1,29 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+<html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="description" content="Streams(https://github.com/an-dist/js-streams) Demos and Examples">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any">
 <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="192x192">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/21.1.1/primer.min.css"
-  integrity="sha512-nwakYqn4w11bj59NffiuchQMfL6BuLG0oYDbmdDDGGD8Zj5JqxU7RH1OvbudufKqinoUSUWc8lQFtelega4gPg=="
-  crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="../DomConsole.css">
 <link id="theme" rel="stylesheet" href="../DomConsole.theme.chrome.css">
+<script defer src="/site.js"></script>
 <title>DomConsole</title>
 
-<header class="Header" style="flex-wrap: wrap !important;">
-  <div class="Header-item">
-    <a href="/" class="Header-link d-flex flex-items-center">
-      <img src="/favicon.svg" alt="favicon" class="mr-2" style="width: var(--h3-size, 20px); height: auto;">
-      <h3>DomConsole</h3>
-    </a>
-  </div>
-  <div class="Header-item Header-item--full"></div>
-  <div class="Header-item mr-0">
-    <label for="siteTheme">Theme&nbsp;</label>
-    <select id="siteTheme" class="form-select">
+<header>
+  <a href="/">
+    <img src="/favicon.svg" alt="favicon">
+    <h1>DomConsole</h1>
+  </a>
+  <div>
+    <label for="siteTheme">Theme</label>
+    <select id="siteTheme">
       <option value="auto">Auto</option>
       <option value="light">Light</option>
       <option value="dark">Dark</option>
@@ -31,15 +27,13 @@
   </div>
 </header>
 
-<main class="container-md mt-2 px-3">
+<main>
 
-  <div style="position: sticky; top: 0; background-color: var(--color-canvas-default);">
+  <section style="position: sticky; top: 0; background-color: var(--back-color, rgb(255, 255, 255));">
 
-    <div class="form-group">
-      <div class="form-group-header">
-        <h4>Theme</h4>
-      </div>
-      <select id="themes" class="form-select">
+    <div>
+      <h2>Theme</h2>
+      <select id="themes">
         <option value="">None</option>
         <option value="../DomConsole.theme.chrome.css" selected>Chrome(Auto)</option>
         <option value="../DomConsole.theme.chrome.light.css">Chrome(Light)</option>
@@ -47,44 +41,44 @@
       </select>
     </div>
 
-    <div class="form-group">
-      <div class="form-group-header">
-        <h4>Logging</h4>
-      </div>
-      <button id="log" class="btn">log</button>
-      <button id="trace" class="btn">trace</button>
-      <button id="debug" class="btn">debug</button>
-      <button id="info" class="btn">info</button>
-      <button id="warn" class="btn">warn</button>
-      <button id="error" class="btn">error</button>
-      <button id="assert" class="btn">assert</button>
-    </div>
+    <hr>
 
-    <div class="form-group">
-      <div class="form-group-header">
-        <h4>Table</h4>
-      </div>
-      <button id="table" class="btn">table</button>
-    </div>
+    <section>
+      <h2>Console</h2>
 
-    <div class="form-group">
-      <div class="form-group-header">
-        <h4>Grouping</h4>
+      <div>
+        <h3>Logging</h3>
+        <button id="log">log</button>
+        <button id="trace">trace</button>
+        <button id="debug">debug</button>
+        <button id="info">info</button>
+        <button id="warn">warn</button>
+        <button id="error">error</button>
+        <button id="assert">assert</button>
       </div>
-      <button id="group" class="btn">group</button>
-      <button id="groupCollapsed" class="btn">groupCollapsed</button>
-      <button id="groupEnd" class="btn">groupEnd</button>
-    </div>
 
-    <div class="form-group">
-      <div class="form-group-header">
-        <h4>Clear</h4>
+      <div>
+        <h3>Table</h3>
+        <button id="table">table</button>
       </div>
-      <button id="clear" class="btn">clear</button>
-    </div>
+
+      <div>
+        <h3>Grouping</h3>
+        <button id="group">group</button>
+        <button id="groupCollapsed">groupCollapsed</button>
+        <button id="groupEnd">groupEnd</button>
+      </div>
+
+      <div>
+        <h3>Clear</h3>
+        <button id="clear">clear</button>
+      </div>
+
+    </section>
 
     <hr>
-  </div>
+
+  </section>
 
   <section id="console"></section>
 
@@ -141,14 +135,4 @@
   [...document.querySelectorAll("button")].forEach(btn => btn.addEventListener("click", e => {
     scrollTo(0, document.documentElement.scrollHeight - document.documentElement.clientHeight)
   }))
-</script>
-
-<script>
-  const siteTheme = document.getElementById("siteTheme")
-  siteTheme.value = localStorage.getItem("siteTheme") ?? "auto"
-  document.documentElement.dataset.colorMode = siteTheme.value
-  siteTheme.onchange = () => {
-    document.documentElement.dataset.colorMode = siteTheme.value
-    localStorage.setItem("siteTheme", siteTheme.value)
-  }
 </script>
