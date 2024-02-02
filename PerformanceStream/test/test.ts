@@ -1,11 +1,10 @@
 import { PerformanceStreamBuilder } from "../PerformanceStream.ts"
 import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.ts"
+import { sleep } from "../../funcs/sleep/sleep.ts"
 
 (async () => {
 
   CompatiblePerformance.replaceIfUnsupported()
-
-  const sleep = (msec: number) => new Promise(resolve => setTimeout(resolve, msec))
 
   const source = () => new ReadableStream({
     start(controller) {

@@ -1,8 +1,8 @@
 import { PerformanceStreamBuilder } from "../PerformanceStream.js";
 import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.js";
+import { sleep } from "../../funcs/sleep/sleep.js";
 (async () => {
     CompatiblePerformance.replaceIfUnsupported();
-    const sleep = (msec) => new Promise(resolve => setTimeout(resolve, msec));
     const source = () => new ReadableStream({
         start(controller) {
             for (const n of [1, 2, 3, 4, 5]) {

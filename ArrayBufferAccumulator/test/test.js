@@ -2,6 +2,7 @@ import { ArrayBufferAccumulator } from "../ArrayBufferAccumulator.js";
 import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.js";
 import { PerformanceStreamBuilder } from "../../PerformanceStream/PerformanceStream.js";
 import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Streams.js";
+import { sleep } from "../../funcs/sleep/sleep.js";
 (async () => {
     CompatiblePerformance.replaceIfUnsupported();
     function source(totalSize, chunkSize, isArray) {
@@ -92,6 +93,7 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
             durationMedian: psResult.median,
         });
         console.groupEnd();
+        await sleep();
     };
     const testNewLine = async (chunkSize) => {
         const text = "aaaaaaaaaa\nbbbbbbbbbb\ncccccccccc\ndddddddddd\neeeeeeeeee\n11111";

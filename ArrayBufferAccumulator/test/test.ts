@@ -2,6 +2,7 @@ import { ArrayBufferAccumulator } from "../ArrayBufferAccumulator.ts"
 import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.ts"
 import { PerformanceStreamBuilder } from "../../PerformanceStream/PerformanceStream.ts"
 import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Streams.ts"
+import { sleep } from "../../funcs/sleep/sleep.ts"
 
 (async () => {
 
@@ -109,6 +110,8 @@ import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Stre
     })
 
     console.groupEnd()
+
+    await sleep()
   }
 
   const testNewLine = async (chunkSize: number) => {
