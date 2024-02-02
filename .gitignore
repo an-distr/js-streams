@@ -2,3 +2,5 @@
 .vscode
 .result
 deno.lock
+.wrangler
+node_modules
