@@ -16,6 +16,13 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-
-export * from "./sleep/sleep.ts"
-export * from "./toAsyncIterableIterator/toAsyncIterableIterator.ts"
+const sleep_impl = (typeof Bun !== "undefined")
+    ? msec => {
+        Bun.sleepSync(msec !== null && msec !== void 0 ? msec : 0);
+        return Promise.resolve();
+    }
+    : msec => new Promise(resolve => setTimeout(resolve, msec !== null && msec !== void 0 ? msec : 0));
+export function sleep(msec) {
+    return sleep_impl(msec);
+}
+//# sourceMappingURL=sleep.js.map

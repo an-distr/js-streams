@@ -17,5 +17,15 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export * from "./sleep/sleep.ts"
-export * from "./toAsyncIterableIterator/toAsyncIterableIterator.ts"
+// @ts-ignore
+const sleep_impl: (msec?: number) => Promise<void> = (typeof Bun !== "undefined")
+  ? msec => {
+    // @ts-ignore
+    Bun.sleepSync(msec ?? 0)
+    return Promise.resolve()
+  }
+  : msec => new Promise(resolve => setTimeout(resolve, msec ?? 0));
+
+export function sleep(msec?: number) {
+  return sleep_impl(msec)
+}
