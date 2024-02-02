@@ -2,9 +2,11 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="Streams(https://github.com/an-dist/js-streams) for JavaScript/TypeScript Demos and Examples">
+<meta name="description"
+  content="Streams(https://github.com/an-dist/js-streams) for JavaScript/TypeScript Demos and Examples">
 
 <link rel="preload" as="style" href="/.site/site.css">
+<link rel="modulepreload" href="../DownloadStream.js">
 
 <link rel="icon" href="/.site/favicon.svg" type="image/svg+xml" sizes="any">
 <link rel="icon" href="/.site/favicon.png" type="image/png" sizes="192x192">
@@ -44,6 +46,6 @@
   document.getElementById("download").onclick = async () => {
     const url = document.getElementById("url")
     const readable = (await fetch(url.value, { credentials: "include" })).body
-    await readable.pipeTo(new DownloadStream("photos.json"))
+    await readable.pipeTo(new DownloadStream("download.json"))
   }
 </script>
