@@ -2,7 +2,8 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="Streams(https://github.com/an-dist/js-streams) for JavaScript/TypeScript Demos and Examples">
+<meta name="description"
+  content="Streams(https://github.com/an-dist/js-streams) for JavaScript/TypeScript Demos and Examples">
 
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 
@@ -32,7 +33,7 @@
   }
 
   pre:has(>code) {
-    max-height: 20rem;
+    height: 20rem;
     overflow-y: scroll;
   }
 </style>
@@ -71,7 +72,6 @@
 </main>
 
 <script type="module">
-  import highlightJs from "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/es/highlight.min.js"
   import { DomConsole } from "/misc/DomConsole/DomConsole.js"
 
   globalThis.console = new DomConsole("console", globalThis.console)
@@ -106,11 +106,15 @@
 
   fetch([mod, "test", "test.ts"].join("/"))
     .then(resp => resp.text()
-      .then(text => document.getElementById("source").innerHTML = highlightJs.highlight(text, { language: "typescript" }).value))
+      .then(async (text) => {
+        const { default: highlightJs } = await import("https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/es/highlight.min.js")
+        document.getElementById("source").innerHTML = highlightJs.highlight(text, { language: "typescript" }).value
+      }))
 
   document.getElementById("run").onclick = e => {
     e.target.disabled = "disabled"
     e.target.textContent = "Plese waiting..."
-    setTimeout(() => import([mod, "test", "test.js"].join("/")).then(_ => e.target.textContent = "Test complete."), 1);
+    setTimeout(() => import([mod, "test", "test.js"].join("/"))
+      .then(_ => e.target.textContent = "Test complete."), 1);
   }
 </script>
