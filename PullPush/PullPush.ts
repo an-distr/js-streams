@@ -17,9 +17,9 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export type PushableTypes<T> = ArrayBufferLike | ArrayLike<T> | Iterable<T> | AsyncIterable<T> | T
+export type PullPushTypes<T> = ArrayBufferLike | ArrayLike<T> | Iterable<T> | AsyncIterable<T> | T
 
-export interface PushPullQueue<T, All> {
+export interface PullPushQueue<T, All> {
   length(): number
   more(): boolean
   all(): All
@@ -29,7 +29,7 @@ export interface PushPullQueue<T, All> {
   splice(start: number, deleteCount?: number): All
 }
 
-export class PushPullNonQueue<I, O> implements PushPullQueue<I, O> {
+export class PullPushNonQueue<I, O> implements PullPushQueue<I, O> {
   length() {
     return 0
   }
@@ -57,7 +57,7 @@ export class PushPullNonQueue<I, O> implements PushPullQueue<I, O> {
   }
 }
 
-export class PushPullArrayQueue<T = any> implements PushPullQueue<T, ArrayLike<T>> {
+export class PullPushArrayQueue<T = any> implements PullPushQueue<T, ArrayLike<T>> {
   private queue: T[] = []
 
   length() {
@@ -94,7 +94,7 @@ export class PushPullArrayQueue<T = any> implements PushPullQueue<T, ArrayLike<T
   }
 }
 
-export class PushPullStringQueue implements PushPullQueue<string, string> {
+export class PullPushStringQueue implements PullPushQueue<string, string> {
   private queue: string = ""
 
   length() {
@@ -135,16 +135,16 @@ export class PushPullStringQueue implements PushPullQueue<string, string> {
   }
 }
 
-export abstract class PushPull<I = any, O = any, Q extends PushPullQueue<I, any> = PushPullArrayQueue<I>> implements AsyncIterable<O> {
+export abstract class PullPush<I = any, O = any, Q extends PullPushQueue<I, any> = PullPushArrayQueue<I>> implements AsyncIterable<O> {
   protected queue: Q
 
   constructor(queue: Q) {
     this.queue = queue
   }
 
-  abstract pushpull(data?: PushableTypes<I>, flush?: boolean): AsyncGenerator<O>
+  abstract pullpush(data?: PullPushTypes<I>, flush?: boolean): AsyncGenerator<O>
 
-  async push(data?: PushableTypes<I>) {
+  async push(data?: PullPushTypes<I>) {
     if (data !== undefined) {
       if (typeof data === "function") {
         data = (await data())
@@ -170,19 +170,19 @@ export abstract class PushPull<I = any, O = any, Q extends PushPullQueue<I, any>
     }
   }
 
-  pull(data?: PushableTypes<I>) {
-    return this.pushpull(data)
+  pull(data?: PullPushTypes<I>) {
+    return this.pullpush(data)
   }
 
-  flush(data?: PushableTypes<I>) {
-    return this.pushpull(data, true)
+  flush(data?: PullPushTypes<I>) {
+    return this.pullpush(data, true)
   }
 
   [Symbol.asyncIterator]() {
     return this.flush()
   }
 
-  readable(data?: PushableTypes<I>) {
+  readable(data?: PullPushTypes<I>) {
     const This = this
     return new ReadableStream<O>({
       async start(controller) {

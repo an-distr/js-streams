@@ -16,13 +16,13 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-import { PushPull, PushPullArrayQueue } from "../PushPull/PushPull.js";
-export class ArrayAccumulator extends PushPull {
+import { PullPush, PullPushArrayQueue } from "../PullPush/PullPush.js";
+export class ArrayAccumulator extends PullPush {
     constructor(size) {
-        super(new PushPullArrayQueue);
+        super(new PullPushArrayQueue);
         this.size = size;
     }
-    async *pushpull(data, flush) {
+    async *pullpush(data, flush) {
         await this.push(data);
         do {
             while (this.queue.length() >= this.size) {

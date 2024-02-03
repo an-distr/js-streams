@@ -16,11 +16,11 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-import { PushPull, PushPullNonQueue } from "../PushPull/PushPull.js";
-export class ArrayBufferAccumulator extends PushPull {
+import { PullPush, PullPushNonQueue } from "../PullPush/PullPush.js";
+export class ArrayBufferAccumulator extends PullPush {
     constructor(size, options) {
         var _a;
-        super(new PushPullNonQueue());
+        super(new PullPushNonQueue());
         this.size = size;
         this.fixed = (options === null || options === void 0 ? void 0 : options.forceEmit) ? false : (_a = options === null || options === void 0 ? void 0 : options.fixed) !== null && _a !== void 0 ? _a : false;
         this.buffer = new ArrayBuffer(size);
@@ -59,7 +59,7 @@ export class ArrayBufferAccumulator extends PushPull {
             }
         }
     }
-    async *pushpull(data, flush) {
+    async *pullpush(data, flush) {
         if (data) {
             let chunkView;
             let chunkSize;

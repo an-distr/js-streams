@@ -16,11 +16,11 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-import { PushPull, PushPullStringQueue } from "../PushPull/PushPull.js";
-export class JsonDeserializer extends PushPull {
+import { PullPush, PullPushStringQueue } from "../PullPush/PullPush.js";
+export class JsonDeserializer extends PullPush {
     constructor(options) {
         var _a;
-        super(new PushPullStringQueue);
+        super(new PullPushStringQueue);
         this.lineSeparated = (options === null || options === void 0 ? void 0 : options.lineSeparated) === true;
         this.parse = (_a = options === null || options === void 0 ? void 0 : options.parse) !== null && _a !== void 0 ? _a : JSON.parse;
         const sanitizeForJson = value => {
@@ -89,7 +89,7 @@ export class JsonDeserializer extends PushPull {
                 }
             };
     }
-    async *pushpull(data, flush) {
+    async *pullpush(data, flush) {
         await this.push(data);
         do {
             const lastSeparator = this.indexOfLastSeparator(this.queue.all());

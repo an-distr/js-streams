@@ -16,7 +16,7 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-export class PushPullNonQueue {
+export class PullPushNonQueue {
     length() {
         return 0;
     }
@@ -37,7 +37,7 @@ export class PushPullNonQueue {
         throw new Error("Method not implemented.");
     }
 }
-export class PushPullArrayQueue {
+export class PullPushArrayQueue {
     constructor() {
         this.queue = [];
     }
@@ -68,7 +68,7 @@ export class PushPullArrayQueue {
         }
     }
 }
-export class PushPullStringQueue {
+export class PullPushStringQueue {
     constructor() {
         this.queue = "";
     }
@@ -103,7 +103,7 @@ export class PushPullStringQueue {
         }
     }
 }
-export class PushPull {
+export class PullPush {
     constructor(queue) {
         this.queue = queue;
     }
@@ -136,10 +136,10 @@ export class PushPull {
         }
     }
     pull(data) {
-        return this.pushpull(data);
+        return this.pullpush(data);
     }
     flush(data) {
-        return this.pushpull(data, true);
+        return this.pullpush(data, true);
     }
     [Symbol.asyncIterator]() {
         return this.flush();
@@ -179,4 +179,4 @@ export class PushPull {
         });
     }
 }
-//# sourceMappingURL=PushPull.js.map
+//# sourceMappingURL=PullPush.js.map

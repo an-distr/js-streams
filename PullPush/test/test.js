@@ -1,7 +1,7 @@
-import * as pp from "../PushPull.js";
+import * as pp from "../PullPush.js";
 (() => {
-    console.group("PushPullStringQueue");
-    const q = new pp.PushPullStringQueue();
+    console.group("PullPushStringQueue");
+    const q = new pp.PullPushStringQueue();
     console.assert(q.length() === 0, "q.length() === 0:", q.length());
     console.assert(!q.more(), "!q.more():", q.more());
     q.push("123");
@@ -29,8 +29,8 @@ import * as pp from "../PushPull.js";
     console.groupEnd();
 })();
 (() => {
-    console.group("PushPullArrayQueue");
-    const q = new pp.PushPullArrayQueue();
+    console.group("PullPushArrayQueue");
+    const q = new pp.PullPushArrayQueue();
     console.assert(q.length() === 0, "q.length() === 0:", q.length());
     console.assert(!q.more(), "!q.more():", q.more());
     [1, 2, 3].forEach(n => q.push(n));

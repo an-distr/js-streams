@@ -1,8 +1,8 @@
-import * as pp from "../PushPull.ts"
+import * as pp from "../PullPush.ts"
 
 (() => {
-  console.group("PushPullStringQueue")
-  const q = new pp.PushPullStringQueue()
+  console.group("PullPushStringQueue")
+  const q = new pp.PullPushStringQueue()
   console.assert(q.length() === 0, "q.length() === 0:", q.length())
   console.assert(!q.more(), "!q.more():", q.more())
   q.push("123")
@@ -31,8 +31,8 @@ import * as pp from "../PushPull.ts"
 })();
 
 (() => {
-  console.group("PushPullArrayQueue")
-  const q = new pp.PushPullArrayQueue<number>()
+  console.group("PullPushArrayQueue")
+  const q = new pp.PullPushArrayQueue<number>()
   console.assert(q.length() === 0, "q.length() === 0:", q.length())
   console.assert(!q.more(), "!q.more():", q.more());
   [1, 2, 3].forEach(n => q.push(n))

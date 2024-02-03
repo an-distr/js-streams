@@ -17,17 +17,17 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import { PushPull, PushPullArrayQueue, PushableTypes } from "../PushPull/PushPull.ts"
+import { PullPush, PullPushArrayQueue, PullPushTypes } from "../PullPush/PullPush.ts"
 
-export class ArrayAccumulator<I = any> extends PushPull<I, ArrayLike<I>> {
+export class ArrayAccumulator<I = any> extends PullPush<I, ArrayLike<I>> {
   private size: number
 
   constructor(size: number) {
-    super(new PushPullArrayQueue)
+    super(new PullPushArrayQueue)
     this.size = size;
   }
 
-  async *pushpull(data?: PushableTypes<I>, flush?: boolean) {
+  async *pullpush(data?: PullPushTypes<I>, flush?: boolean) {
     await this.push(data)
 
     do {

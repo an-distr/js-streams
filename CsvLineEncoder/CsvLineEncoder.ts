@@ -17,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import { PushPull, PushPullArrayQueue, PushableTypes } from "../PushPull/PushPull.ts"
+import { PullPush, PullPushArrayQueue, PullPushTypes } from "../PullPush/PullPush.ts"
 
 export interface CsvLineEncoderOptions {
   delimiter?: string
@@ -26,7 +26,7 @@ export interface CsvLineEncoderOptions {
   newLine?: string
 }
 
-export class CsvLineEncoder<I = any> extends PushPull<I, string> {
+export class CsvLineEncoder<I = any> extends PullPush<I, string> {
   private keys = new Map<string, Extract<keyof any, string>[]>()
   private delimiter: string
   private escape: string | ((s: string) => string)
@@ -35,7 +35,7 @@ export class CsvLineEncoder<I = any> extends PushPull<I, string> {
   private doEscape: (s: string) => string
 
   constructor(options?: CsvLineEncoderOptions) {
-    super(new PushPullArrayQueue)
+    super(new PullPushArrayQueue)
     this.delimiter = options?.delimiter ?? ","
     this.escape = options?.escape ?? "auto"
     this.withNewLine = options?.withNewLine ?? true
@@ -56,7 +56,7 @@ export class CsvLineEncoder<I = any> extends PushPull<I, string> {
             : s => s;
   }
 
-  async *pushpull(data?: PushableTypes<I>) {
+  async *pullpush(data?: PullPushTypes<I>) {
     await this.push(data)
 
     while (this.queue.more()) {

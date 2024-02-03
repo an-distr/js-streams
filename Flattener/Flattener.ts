@@ -17,17 +17,17 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import { PushPull, PushPullArrayQueue, PushableTypes } from "../PushPull/PushPull.ts"
+import { PullPush, PullPushArrayQueue, PullPushTypes } from "../PullPush/PullPush.ts"
 
-export class Flattener<I> extends PushPull<I, I> {
+export class Flattener<I> extends PullPush<I, I> {
   private limit?: number
 
   constructor(limit?: number) {
-    super(new PushPullArrayQueue)
+    super(new PullPushArrayQueue)
     this.limit = limit
   }
 
-  async *pushpull(data?: PushableTypes<I>) {
+  async *pullpush(data?: PullPushTypes<I>) {
     await this.push(data)
     while (this.queue.more()) {
       this.push(yield* this.flatten(0, this.queue.splice(0)))

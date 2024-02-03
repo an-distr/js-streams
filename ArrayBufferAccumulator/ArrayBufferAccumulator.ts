@@ -17,14 +17,14 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import { PushPull, PushPullNonQueue, PushableTypes } from "../PushPull/PushPull.ts"
+import { PullPush, PullPushNonQueue, PullPushTypes } from "../PullPush/PullPush.ts"
 
 export interface ArrayBufferAccumulatorOptions {
   forceEmit?: number[][] | ((bytes: IterableIterator<number>) => number)
   fixed?: boolean
 }
 
-export class ArrayBufferAccumulator extends PushPull<ArrayBufferLike | ArrayLike<number>, ArrayBufferLike, PushPullNonQueue<ArrayBufferLike | ArrayLike<number>, ArrayBufferLike>> {
+export class ArrayBufferAccumulator extends PullPush<ArrayBufferLike | ArrayLike<number>, ArrayBufferLike, PullPushNonQueue<ArrayBufferLike | ArrayLike<number>, ArrayBufferLike>> {
   private size: number
   private forceEmit: ((bytes: IterableIterator<number>) => number) | undefined
   private fixed: boolean
@@ -33,7 +33,7 @@ export class ArrayBufferAccumulator extends PushPull<ArrayBufferLike | ArrayLike
   private pos: number
 
   constructor(size: number, options?: ArrayBufferAccumulatorOptions) {
-    super(new PushPullNonQueue())
+    super(new PullPushNonQueue())
     this.size = size
     this.fixed = options?.forceEmit ? false : options?.fixed ?? false
     this.buffer = new ArrayBuffer(size)
@@ -74,7 +74,7 @@ export class ArrayBufferAccumulator extends PushPull<ArrayBufferLike | ArrayLike
     }
   }
 
-  async *pushpull(data?: PushableTypes<ArrayBufferLike | ArrayLike<number>>, flush?: boolean) {
+  async *pullpush(data?: PullPushTypes<ArrayBufferLike | ArrayLike<number>>, flush?: boolean) {
     if (data) {
       let chunkView: Uint8Array
       let chunkSize: number

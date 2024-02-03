@@ -16,11 +16,11 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-import { PushPull, PushPullArrayQueue } from "../PushPull/PushPull.js";
-export class CsvLineEncoder extends PushPull {
+import { PullPush, PullPushArrayQueue } from "../PullPush/PullPush.js";
+export class CsvLineEncoder extends PullPush {
     constructor(options) {
         var _a, _b, _c, _d;
-        super(new PushPullArrayQueue);
+        super(new PullPushArrayQueue);
         this.keys = new Map();
         this.delimiter = (_a = options === null || options === void 0 ? void 0 : options.delimiter) !== null && _a !== void 0 ? _a : ",";
         this.escape = (_b = options === null || options === void 0 ? void 0 : options.escape) !== null && _b !== void 0 ? _b : "auto";
@@ -40,7 +40,7 @@ export class CsvLineEncoder extends PushPull {
                         ? s => "\"" + s.replace(/\"/g, "\"\"") + "\""
                         : s => s;
     }
-    async *pushpull(data) {
+    async *pullpush(data) {
         await this.push(data);
         while (this.queue.more()) {
             const value = this.queue.pop();

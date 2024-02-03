@@ -17,28 +17,28 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import { PushPull, PushPullArrayQueue, PushableTypes } from "../PushPull/PushPull.ts"
+import { PullPush, PullPushArrayQueue, PullPushTypes } from "../PullPush/PullPush.ts"
 
 export interface JsonSerializerOptions {
   lineSeparated?: boolean
   stringify?: (value: any) => string
 }
 
-export class JsonSerializer<I = any> extends PushPull<I, string> {
+export class JsonSerializer<I = any> extends PullPush<I, string> {
   private lineSeparated: boolean
   private separator: string
   private stringify: (value: any) => string
   private isNotFirst: boolean
 
   constructor(options?: JsonSerializerOptions) {
-    super(new PushPullArrayQueue)
+    super(new PullPushArrayQueue)
     this.lineSeparated = options?.lineSeparated === true
     this.separator = this.lineSeparated ? "\n" : ","
     this.stringify = options?.stringify ?? JSON.stringify
     this.isNotFirst = false;
   }
 
-  async *pushpull(data?: PushableTypes<I>, flush?: boolean) {
+  async *pullpush(data?: PullPushTypes<I>, flush?: boolean) {
     await this.push(data)
 
     do {

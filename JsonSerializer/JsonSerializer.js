@@ -16,17 +16,17 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-import { PushPull, PushPullArrayQueue } from "../PushPull/PushPull.js";
-export class JsonSerializer extends PushPull {
+import { PullPush, PullPushArrayQueue } from "../PullPush/PullPush.js";
+export class JsonSerializer extends PullPush {
     constructor(options) {
         var _a;
-        super(new PushPullArrayQueue);
+        super(new PullPushArrayQueue);
         this.lineSeparated = (options === null || options === void 0 ? void 0 : options.lineSeparated) === true;
         this.separator = this.lineSeparated ? "\n" : ",";
         this.stringify = (_a = options === null || options === void 0 ? void 0 : options.stringify) !== null && _a !== void 0 ? _a : JSON.stringify;
         this.isNotFirst = false;
     }
-    async *pushpull(data, flush) {
+    async *pullpush(data, flush) {
         await this.push(data);
         do {
             for (const value of this.queue.splice(0)) {

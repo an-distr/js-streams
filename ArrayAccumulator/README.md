@@ -23,7 +23,7 @@ for await (const value of accumulator) { // The ArrayAccumulator works as an Asy
 
 // Create accumulator with constant emit size and lazy specify data.
 const accumulator = new ArrayAccumulator(2)
-for await (const value of accumulator.pushpull(array)) { // pushpull function is Push and pull at the same time.
+for await (const value of accumulator.pullpush(array)) { // pullpush function is Push and pull at the same time.
   console.log(value)
   // [1, 2]
   // [3, 4]
