@@ -87,13 +87,13 @@ import { sleep } from "../../funcs/sleep/sleep.ts"
     await sleep(0)
   }
 
-  const testList = [
-    testPush,
-    testFlush,
-    testAsyncIterator,
-    testReadable,
-    testTransform,
-    testWritable,
+  const testList: { name: string, func: (size: number, data: any) => Promise<void> }[] = [
+    { name: "Push", func: testPush },
+    { name: "Flush", func: testFlush },
+    { name: "AsyncIterator", func: testAsyncIterator },
+    { name: "Readable", func: testReadable },
+    { name: "Transform", func: testTransform },
+    { name: "Writable", func: testWritable },
   ]
 
   const sizeList = [
@@ -120,7 +120,7 @@ import { sleep } from "../../funcs/sleep/sleep.ts"
     for (const data of dataList) {
       for (const size of sizeList) {
         console.groupCollapsed(`size=${size}, data=${JSON.stringify(data)}`)
-        await test(size, data)
+        await test.func(size, data)
         console.groupEnd()
         await sleep(0)
       }
@@ -128,7 +128,7 @@ import { sleep } from "../../funcs/sleep/sleep.ts"
     console.groupEnd()
   }
 
-  console.groupCollapsed(testPerformance.name)
+  console.groupCollapsed("Performance")
   await testPerformance(8, 100000)
   await testPerformance(32, 100000)
   await testPerformance(1000, 100000)
