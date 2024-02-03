@@ -1,78 +1,74 @@
 import { Utf8DecoderStream, Utf8EncoderStream } from "../Utf8Streams.ts"
 
-(async () => {
+const source = (s?: string) => new ReadableStream({
+  start(controller) {
+    controller.enqueue(s)
+    controller.close()
+  }
+})
 
-  const source = (s?: string) => new ReadableStream({
-    start(controller) {
-      controller.enqueue(s)
-      controller.close()
-    }
+const logging = (label: string) => new TransformStream({
+  transform(chunk, controller) {
+    console.log(label, chunk)
+    controller.enqueue(chunk)
+  }
+})
+
+const result = (r: { s: string | undefined | null }) => new WritableStream({
+  write(chunk) {
+    r.s = chunk
+  }
+})
+
+const testBuiltin = () => {
+  console.group("Builtin")
+
+  console.log("TextEncoderStream", "TextEncoderStream" in globalThis)
+  console.log("TextEncoderStream", "TextDecoderStream" in globalThis)
+
+  console.groupEnd()
+}
+
+const testProps = () => {
+  console.group("Properties")
+
+  const encoder = new Utf8EncoderStream()
+  console.log("Utf8EncoderStream", {
+    encoding: encoder.encoding,
   })
 
-  const logging = (label: string) => new TransformStream({
-    transform(chunk, controller) {
-      console.log(label, chunk)
-      controller.enqueue(chunk)
-    }
+  const decoder = new Utf8DecoderStream()
+  console.log("Utf8DecoderStream", {
+    encoding: decoder.encoding,
+    fatal: decoder.fatal,
+    ignoreBOM: decoder.ignoreBOM,
   })
 
-  const result = (r: { s: string | undefined | null }) => new WritableStream({
-    write(chunk) {
-      r.s = chunk
-    }
-  })
+  console.groupEnd()
+}
 
-  const testBuiltin = () => {
-    console.group("Builtin")
+const test = async (s?: string) => {
+  console.group("value:", s, "type:", typeof s)
 
-    console.log("TextEncoderStream", "TextEncoderStream" in globalThis)
-    console.log("TextEncoderStream", "TextDecoderStream" in globalThis)
+  const r = { s: null }
 
-    console.groupEnd()
-  }
+  await source(s)
+    .pipeThrough(logging("Before Utf8EncoderStream"))
+    .pipeThrough(new Utf8EncoderStream())
+    .pipeThrough(logging("After Utf8EncoderStream"))
+    .pipeThrough(new Utf8DecoderStream())
+    .pipeThrough(logging("After Utf8DecoderStream"))
+    .pipeTo(result(r))
 
-  const testProps = () => {
-    console.group("Properties")
+  console.assert(s === r.s || (s === undefined && r.s === ""), "Not matched.", r.s)
+  console.log("Result:", r.s, "type:", typeof r.s)
+  console.groupEnd()
+}
 
-    const encoder = new Utf8EncoderStream()
-    console.log("Utf8EncoderStream", {
-      encoding: encoder.encoding,
-    })
-
-    const decoder = new Utf8DecoderStream()
-    console.log("Utf8DecoderStream", {
-      encoding: decoder.encoding,
-      fatal: decoder.fatal,
-      ignoreBOM: decoder.ignoreBOM,
-    })
-
-    console.groupEnd()
-  }
-
-  const test = async (s?: string) => {
-    console.group("value:", s, "type:", typeof s)
-
-    const r = { s: null }
-
-    await source(s)
-      .pipeThrough(logging("Before Utf8EncoderStream"))
-      .pipeThrough(new Utf8EncoderStream())
-      .pipeThrough(logging("After Utf8EncoderStream"))
-      .pipeThrough(new Utf8DecoderStream())
-      .pipeThrough(logging("After Utf8DecoderStream"))
-      .pipeTo(result(r))
-
-    console.assert(s === r.s || (s === undefined && r.s === ""), "Not matched.", r.s)
-    console.log("Result:", r.s, "type:", typeof r.s)
-    console.groupEnd()
-  }
-
-  testBuiltin()
-  testProps()
-  await test(undefined)
-  await test("")
-  await test("a")
-  await test("\ta\nb")
-  await test("a".repeat(1024))
-
-})()
+testBuiltin()
+testProps()
+await test(undefined)
+await test("")
+await test("a")
+await test("\ta\nb")
+await test("a".repeat(1024))

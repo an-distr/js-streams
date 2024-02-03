@@ -1,4 +1,4 @@
-"use strict";import{JsonDeserializer as a}from"../JsonDeserializer.js";(async()=>{const o=e=>new ReadableStream({start(s){s.enqueue(e),s.close()}}),n=()=>new WritableStream({write(e){console.log(e)}});console.log("=== JSON ==="),await o('[{"a":1,"b":2},{"a":3,"b":4},{"a":5,"b":6}]').pipeThrough(new a().transform()).pipeTo(n()),console.log("=== JSON Lines ==="),await o(`{"a":1,"b":2}
+"use strict";import{JsonDeserializer as n}from"../JsonDeserializer.js";const a=e=>new ReadableStream({start(o){o.enqueue(e),o.close()}}),s=()=>new WritableStream({write(e){console.log(e)}});console.log("=== JSON ===");const t='[{"a":1,"b":2},{"a":3,"b":4},{"a":5,"b":6}]';await a(t).pipeThrough(new n().transform()).pipeTo(s()),console.log("=== JSON Lines ===");const r=`{"a":1,"b":2}
 {"a":3,"b":4}
-{"a":5,"b":6}`).pipeThrough(new a({lineSeparated:!0}).transform()).pipeTo(n()),console.log("Test completed.")})();
+{"a":5,"b":6}`;await a(r).pipeThrough(new n({lineSeparated:!0}).transform()).pipeTo(s()),console.log("Test completed.");
 //# sourceMappingURL=test.js.map
