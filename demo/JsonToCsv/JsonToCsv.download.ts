@@ -6,8 +6,9 @@ const btnConvertUrl = document.getElementById("btnConvertUrl") as HTMLButtonElem
 const linkHolder = btnConvertUrl.parentElement!.lastElementChild as HTMLDivElement
 
 btnConvertUrl.onclick = async () => {
-  fetch(txtUrl.value, { credentials: "include" }).then(response => {
-    if (!response.body) {
+  fetch(txtUrl.value, { credentials: "include" }).then(async response => {
+    if (!response.ok) {
+      console.warn(`${txtUrl.value} responded status code ${response.status}.`, await response.text())
       return
     }
 
@@ -18,7 +19,7 @@ btnConvertUrl.onclick = async () => {
       }
     }
 
-    response.body
+    response.body!
       .pipeThrough(new streams.Utf8DecoderStream())
       .pipeThrough(new streams.JsonDeserializer({ lineSeparated: response.headers.get("content-type")?.includes("jsonl") }).transform())
       .pipeThrough(new streams.CsvLineEncoder({ withNewLine: true }).transform())

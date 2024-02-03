@@ -4,9 +4,10 @@ const txtUrl = document.getElementById("txtUrl");
 const btnConvertUrl = document.getElementById("btnConvertUrl");
 const linkHolder = btnConvertUrl.parentElement.lastElementChild;
 btnConvertUrl.onclick = async () => {
-    fetch(txtUrl.value, { credentials: "include" }).then(response => {
+    fetch(txtUrl.value, { credentials: "include" }).then(async (response) => {
         var _a;
-        if (!response.body) {
+        if (!response.ok) {
+            console.warn(`${txtUrl.value} responded status code ${response.status}.`, await response.text());
             return;
         }
         let options;

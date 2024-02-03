@@ -1,5 +1,6 @@
 import { ArrayAccumulator } from "../ArrayAccumulator.ts"
 import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.ts"
+import { sleep } from "../../funcs/sleep/sleep.ts"
 
 (async () => {
 
@@ -82,6 +83,8 @@ import { CompatiblePerformance } from "../../misc/CompatiblePerformance/Compatib
     const perf = performance.getEntriesByName("perf")[0]
     console.log(`duration: ${perf.duration}`)
     console.groupEnd()
+
+    await sleep(0)
   }
 
   const testList = [
@@ -119,6 +122,7 @@ import { CompatiblePerformance } from "../../misc/CompatiblePerformance/Compatib
         console.groupCollapsed(`size=${size}, data=${JSON.stringify(data)}`)
         await test(size, data)
         console.groupEnd()
+        await sleep(0)
       }
     }
     console.groupEnd()

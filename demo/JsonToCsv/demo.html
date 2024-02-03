@@ -6,6 +6,7 @@
   content="Streams(https://github.com/an-dist/js-streams) for JavaScript/TypeScript Demos and Examples">
 
 <link rel="preload" as="style" href="/.site/site.css">
+<link rel="preload" as="style" href="/misc/DomConsole/DomConsole.css">
 <link rel="modulepreload" href="../../web.js">
 <link rel="modulepreload" href="JsonToCsv.download.js">
 <link rel="modulepreload" href="JsonToCsv.upload.js">
@@ -15,6 +16,8 @@
 <link rel="apple-touch-icon" href="/.site/apple-touch-icon.png" sizes="192x192">
 
 <link rel="stylesheet" href="/.site/site.css">
+<link rel="stylesheet" href="/misc/DomConsole/DomConsole.css">
+<link id="dc-theme" rel="stylesheet">
 
 <script defer src="/.site/site.js"></script>
 
@@ -66,8 +69,16 @@
     <div style="display: flex; flex-direction: column;"></div>
   </section>
 
+  <hr>
+
+  <section id="console"></section>
+
 </main>
 
-<script defer>
-  document.getElementById("txtUrl").value = location.href.split("/").slice(0, 3).join("/") + "/json?rows=100"
+<script type="module">
+  import { DomConsole } from "../../web.js"
+
+  globalThis.console = new DomConsole("console", globalThis.console)
+
+  document.getElementById("txtUrl").value = location.href.split("/").slice(0, 3).join("/") + "/api/json?rows=100"
 </script>

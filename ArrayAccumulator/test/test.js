@@ -1,5 +1,6 @@
 import { ArrayAccumulator } from "../ArrayAccumulator.js";
 import { CompatiblePerformance } from "../../misc/CompatiblePerformance/CompatiblePerformance.js";
+import { sleep } from "../../funcs/sleep/sleep.js";
 (async () => {
     CompatiblePerformance.replaceIfUnsupported();
     const source = (data) => new ReadableStream({
@@ -70,6 +71,7 @@ import { CompatiblePerformance } from "../../misc/CompatiblePerformance/Compatib
         const perf = performance.getEntriesByName("perf")[0];
         console.log(`duration: ${perf.duration}`);
         console.groupEnd();
+        await sleep(0);
     };
     const testList = [
         testPush,
@@ -103,6 +105,7 @@ import { CompatiblePerformance } from "../../misc/CompatiblePerformance/Compatib
                 console.groupCollapsed(`size=${size}, data=${JSON.stringify(data)}`);
                 await test(size, data);
                 console.groupEnd();
+                await sleep(0);
             }
         }
         console.groupEnd();

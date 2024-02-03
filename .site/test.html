@@ -63,7 +63,7 @@
 <div id="isDarkMode"></div>
 
 <main>
-  <button id="run">Run</button>
+  <button id="execute">Execute</button>
   <hr>
   <section>
     <pre><code id="source"></pre>
@@ -112,7 +112,7 @@
         document.getElementById("source").innerHTML = highlightJs.highlight(text, { language: "typescript" }).value
       }))
 
-  document.getElementById("run").onclick = e => {
+  document.getElementById("execute").onclick = e => {
     e.target.disabled = "disabled"
     e.target.textContent = "Plese waiting..."
     setTimeout(() => import([mod, "test", "test.js"].join("/"))
