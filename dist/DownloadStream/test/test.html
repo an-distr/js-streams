@@ -55,7 +55,7 @@
 
   globalThis.console = new DomConsole("console", globalThis.console)
 
-  document.getElementById("url").value = location.href.split("/").slice(0, 3).join("/") + "/api/json?rows=100"
+  document.getElementById("url").value = location.href.split("/").slice(0, 3).join("/") + "/.site/sample.json"
 
   document.getElementById("download").onclick = async () => {
     const url = document.getElementById("url")
