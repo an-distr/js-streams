@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["test.ts"],
+  "sourcesContent": ["import { JsonDeserializer } from \"../JsonDeserializer.ts\"\n\n(async () => {\n\n  const source = (s: string) => new ReadableStream({\n    start(controller) {\n      controller.enqueue(s)\n      controller.close()\n    }\n  })\n\n  const logging = () => new WritableStream({\n    write(chunk) {\n      console.log(chunk)\n    }\n  })\n\n  console.log(\"=== JSON ===\")\n  const json = '[{\"a\":1,\"b\":2},{\"a\":3,\"b\":4},{\"a\":5,\"b\":6}]'\n  await source(json)\n    .pipeThrough(new JsonDeserializer().transform())\n    .pipeTo(logging())\n\n  console.log(\"=== JSON Lines ===\")\n  const jsonl = '{\"a\":1,\"b\":2}\\n{\"a\":3,\"b\":4}\\n{\"a\":5,\"b\":6}'\n  await source(jsonl)\n    .pipeThrough(new JsonDeserializer({ lineSeparated: true }).transform())\n    .pipeTo(logging())\n\n  console.log(\"Test completed.\")\n\n})()"],
+  "mappings": "aAAA,OAAS,oBAAAA,MAAwB,0BAEhC,SAAY,CAEX,MAAMC,EAAUC,GAAc,IAAI,eAAe,CAC/C,MAAMC,EAAY,CAChBA,EAAW,QAAQD,CAAC,EACpBC,EAAW,MAAM,CACnB,CACF,CAAC,EAEKC,EAAU,IAAM,IAAI,eAAe,CACvC,MAAMC,EAAO,CACX,QAAQ,IAAIA,CAAK,CACnB,CACF,CAAC,EAED,QAAQ,IAAI,cAAc,EAE1B,MAAMJ,EADO,6CACI,EACd,YAAY,IAAID,EAAiB,EAAE,UAAU,CAAC,EAC9C,OAAOI,EAAQ,CAAC,EAEnB,QAAQ,IAAI,oBAAoB,EAEhC,MAAMH,EADQ;AAAA;AAAA,cACI,EACf,YAAY,IAAID,EAAiB,CAAE,cAAe,EAAK,CAAC,EAAE,UAAU,CAAC,EACrE,OAAOI,EAAQ,CAAC,EAEnB,QAAQ,IAAI,iBAAiB,CAE/B,GAAG",
+  "names": ["JsonDeserializer", "source", "s", "controller", "logging", "chunk"]
+}

@@ -1,0 +1,2 @@
+"use strict";import{toAsyncIterableIterator as l}from"../toAsyncIterableIterator.js";(async()=>{const s=e=>new ReadableStream({start(o){for(const t of e)o.enqueue(t);o.close()}}),a=async e=>{console.group("vals:",e.length>10?`${e.splice(0,10)}...`:e);const o=s(e);let t=0;for await(const c of l(o))console.assert(c===e[t]),++t;console.groupEnd()};await a([]),await a([1,2,3,4,5]),await a(["a","b","c","d","e"]),await a([1,void 0,null,"a",.1]);const n=[];for(let e=0;e<1e5;++e)n.push(e);await a(n),console.log("Test completed.")})();
+//# sourceMappingURL=test.js.map

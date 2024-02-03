@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["test.ts"],
+  "sourcesContent": ["import { AssertStream } from \"../AssertStream.ts\"\n\n(async () => {\n\n  const source = (data: any) => new ReadableStream({\n    start(controller) {\n      controller.enqueue(data)\n      controller.close()\n    }\n  })\n\n  const terminate = () => new WritableStream\n\n  await source([1, 2, 3, 4, 5])\n    .pipeThrough(new AssertStream(chunk => chunk <= 4))\n    .pipeTo(terminate())\n\n  console.log(\"Test completed.\")\n\n})()"],
+  "mappings": "aAAA,OAAS,gBAAAA,MAAoB,sBAE5B,SAAY,CAEX,MAAMC,EAAUC,GAAc,IAAI,eAAe,CAC/C,MAAMC,EAAY,CAChBA,EAAW,QAAQD,CAAI,EACvBC,EAAW,MAAM,CACnB,CACF,CAAC,EAEKC,EAAY,IAAM,IAAI,eAE5B,MAAMH,EAAO,CAAC,EAAG,EAAG,EAAG,EAAG,CAAC,CAAC,EACzB,YAAY,IAAID,EAAaK,GAASA,GAAS,CAAC,CAAC,EACjD,OAAOD,EAAU,CAAC,EAErB,QAAQ,IAAI,iBAAiB,CAE/B,GAAG",
+  "names": ["AssertStream", "source", "data", "controller", "terminate", "chunk"]
+}
