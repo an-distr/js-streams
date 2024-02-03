@@ -1,7 +1,4 @@
 {
-  "exclude": [
-    ".build"
-  ],
   "compilerOptions": {
     "target": "ES2018",
     "module": "ESNext",
