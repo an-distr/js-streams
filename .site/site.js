@@ -1,6 +1,6 @@
 (() => {
 
-  if (location.host.split(".").length > 2) {
+  if (location.host.split(".").length > 3) {
     document.title += ` (${location.host.split(".")[0]})`
     const h1 = document.getElementsByTagName("h1")[0]
     if (h1.textContent.length === 0) {
