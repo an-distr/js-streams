@@ -2,17 +2,13 @@
 
   if (location.host.split(".").length > 3) {
     document.title += ` (${location.host.split(".")[0]})`
-    const h1 = document.getElementsByTagName("h1")[0]
-    if (h1.textContent.length === 0) {
-      h1.textContent = document.title
-    }
   }
   else if (location.host.startsWith("localhost")) {
     document.title += " (local)"
-    const h1 = document.getElementsByTagName("h1")[0]
-    if (h1.textContent.length === 0) {
-      h1.textContent = document.title
-    }
+  }
+  const h1 = document.getElementsByTagName("h1")[0]
+  if (h1.textContent.length === 0) {
+    h1.textContent = document.title
   }
 
   const siteTheme = document.getElementById("siteTheme")
