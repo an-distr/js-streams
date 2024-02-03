@@ -1,5 +1,9 @@
 {
   "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "debug": "npx wrangler pages dev --local-protocol=https dist"
+  },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240129.0",
     "esbuild": "^0.20.0",
