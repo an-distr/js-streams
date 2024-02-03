@@ -35,14 +35,18 @@
 
 <main>
   <section>
-    <label for="url">URL</label>
-    <input id="url" type="url" value="https://jsonplaceholder.typicode.com/photos">
+    <label for="url">
+      <h2>URL</h2>
+    </label>
+    <input id="url" type="url">
     <button id="download">Download</button>
   </section>
 </main>
 
 <script type="module">
   import { DownloadStream } from "../DownloadStream.js"
+
+  document.getElementById("url").value = location.href.split("/").slice(0, 3).join("/") + "/json?rows=100"
 
   document.getElementById("download").onclick = async () => {
     const url = document.getElementById("url")

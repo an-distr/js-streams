@@ -79,7 +79,7 @@
 
   let mod = "/" + (new URL(location).searchParams.get("mod") ?? "").split("/").join("/")
 
-  document.title = mod.split("/").slice(-1)[0]
+  document.title = `${mod.split("/").slice(-1)[0]}${document.title}`
   document.getElementsByTagName("h1")[0].textContent = document.title
 
   const siteTheme = document.getElementById("siteTheme")

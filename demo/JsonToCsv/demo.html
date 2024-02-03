@@ -50,7 +50,7 @@
       <h2>JSON to CSV (Download)</h2>
     </label>
     <script type="module" src="JsonToCsv.download.js"></script>
-    <input id="txtUrl" type="url" value="https://jsonplaceholder.typicode.com/posts">
+    <input id="txtUrl" type="url">
     <button id="btnConvertUrl">Convert</button>
     <div style="display: flex; flex-direction: column;"></div>
   </section>
@@ -67,3 +67,7 @@
   </section>
 
 </main>
+
+<script defer>
+  document.getElementById("txtUrl").value = location.href.split("/").slice(0, 3).join("/") + "/json?rows=100"
+</script>
