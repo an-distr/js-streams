@@ -1,6 +1,5 @@
 .DS_Store
 .vscode
 .result
-deno.lock
 .wrangler
 node_modules
