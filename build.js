@@ -47,23 +47,5 @@ console.group("Transpiling. (min)")
 }
 console.groupEnd()
 
-// Transpiling. (bundle)
-console.group("Transpiling. (bundle)")
-{
-  const options = {
-    entryPoints: [
-      "dist/web.ts",
-      "dist/mod.ts",
-    ],
-    outdir: "dist/bundle",
-    bundle: true,
-    minify: true,
-    sourcemap: "linked",
-  }
-  const context = await esbuild.context(options)
-  await context.rebuild()
-}
-console.groupEnd()
-
 // Exit.
 process.exit()
