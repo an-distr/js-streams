@@ -1,4 +1,5 @@
-"use strict";/*!
+"use strict";
+/*!
 MIT No Attribution
 
 Copyright 2024 an(https://github.com/an-dist)
@@ -15,5 +16,29 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/export class Utf8DecoderStream extends TransformStream{constructor(){const e=new TextDecoder;super({transform(n,r){r.enqueue(e.decode(n,{stream:!0}))}}),this.encoding=e.encoding,this.fatal=e.fatal,this.ignoreBOM=e.ignoreBOM}}export class Utf8EncoderStream extends TransformStream{constructor(){const e=new TextEncoder;super({transform(n,r){r.enqueue(e.encode(n))}}),this.encoding=e.encoding}}
+*/
+export class Utf8DecoderStream extends TransformStream {
+  constructor() {
+    const decoder = new TextDecoder();
+    super({
+      transform(chunk, controller) {
+        controller.enqueue(decoder.decode(chunk, { stream: true }));
+      }
+    });
+    this.encoding = decoder.encoding;
+    this.fatal = decoder.fatal;
+    this.ignoreBOM = decoder.ignoreBOM;
+  }
+}
+export class Utf8EncoderStream extends TransformStream {
+  constructor() {
+    const encoder = new TextEncoder();
+    super({
+      transform(chunk, controller) {
+        controller.enqueue(encoder.encode(chunk));
+      }
+    });
+    this.encoding = encoder.encoding;
+  }
+}
 //# sourceMappingURL=Utf8Streams.js.map

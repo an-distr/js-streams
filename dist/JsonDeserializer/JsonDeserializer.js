@@ -1,4 +1,5 @@
-"use strict";/*!
+"use strict";
+/*!
 MIT No Attribution
 
 Copyright 2024 an(https://github.com/an-dist)
@@ -15,11 +16,93 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/import{PullPush as n,PullPushStringQueue as l}from"../PullPush/PullPush.js";export class JsonDeserializer extends n{constructor(i){super(new l),this.lineSeparated=i?.lineSeparated===!0,this.parse=i?.parse??JSON.parse;const a=e=>{let s=!0;for(;s;)switch(e.slice(0,1)){case",":case"[":case" ":case"\r":case`
-`:case"	":e=e.slice(1);break;default:s=!1}for(s=!0;s;)switch(e.slice(-1)){case",":case"]":case" ":case"\r":case`
-`:case"	":e=e.slice(0,-1);break;default:s=!1}return e};this.sanitize=this.lineSeparated?e=>a(e.split(`\r
-`).filter(Boolean).join(`
-`).split(`
-`).filter(Boolean).join(",")):a,this.indexOfLastSeparator=this.lineSeparated?e=>{for(let s=e.length-1;s>=0;s--)if(e[s]===`
-`)return s}:e=>{let s=-1,r=-1;for(let t=e.length-1;t>=0;t--)switch(e[t]){case"{":s=t;break;case",":r=t;break;case"}":if(s>r&&r>t)return r;break}}}async*pullpush(i,a){await this.push(i);do{const e=this.indexOfLastSeparator(this.queue.all());if(e){const s="["+this.sanitize(this.queue.splice(0,e))+"]";await this.push(yield*this.parse(s))}if(a){if(this.queue.more()){const s="["+this.sanitize(this.queue.all())+"]";await this.push(yield*this.parse(s)),this.queue.empty()}}else break}while(this.queue.more())}}
+*/
+import { PullPush, PullPushStringQueue } from "../PullPush/PullPush.js";
+export class JsonDeserializer extends PullPush {
+  constructor(options) {
+    super(new PullPushStringQueue());
+    this.lineSeparated = options?.lineSeparated === true;
+    this.parse = options?.parse ?? JSON.parse;
+    const sanitizeForJson = (value) => {
+      let b = true;
+      while (b) {
+        switch (value.slice(0, 1)) {
+          case ",":
+          case "[":
+          case " ":
+          case "\r":
+          case "\n":
+          case "	":
+            value = value.slice(1);
+            break;
+          default:
+            b = false;
+        }
+      }
+      b = true;
+      while (b) {
+        switch (value.slice(-1)) {
+          case ",":
+          case "]":
+          case " ":
+          case "\r":
+          case "\n":
+          case "	":
+            value = value.slice(0, -1);
+            break;
+          default:
+            b = false;
+        }
+      }
+      return value;
+    };
+    this.sanitize = this.lineSeparated ? (value) => sanitizeForJson(
+      value.split("\r\n").filter(Boolean).join("\n").split("\n").filter(Boolean).join(",")
+    ) : sanitizeForJson;
+    this.indexOfLastSeparator = this.lineSeparated ? (value) => {
+      for (let i = value.length - 1; i >= 0; i--) {
+        if (value[i] === "\n") {
+          return i;
+        }
+      }
+    } : (value) => {
+      let nextStart = -1;
+      let separator = -1;
+      for (let i = value.length - 1; i >= 0; i--) {
+        switch (value[i]) {
+          case "{":
+            nextStart = i;
+            break;
+          case ",":
+            separator = i;
+            break;
+          case "}":
+            if (nextStart > separator && separator > i) {
+              return separator;
+            }
+            break;
+        }
+      }
+    };
+  }
+  async *pullpush(data, flush) {
+    await this.push(data);
+    do {
+      const lastSeparator = this.indexOfLastSeparator(this.queue.all());
+      if (lastSeparator) {
+        const json = "[" + this.sanitize(this.queue.splice(0, lastSeparator)) + "]";
+        await this.push(yield* this.parse(json));
+      }
+      if (flush) {
+        if (this.queue.more()) {
+          const json = "[" + this.sanitize(this.queue.all()) + "]";
+          await this.push(yield* this.parse(json));
+          this.queue.empty();
+        }
+      } else {
+        break;
+      }
+    } while (this.queue.more());
+  }
+}
 //# sourceMappingURL=JsonDeserializer.js.map

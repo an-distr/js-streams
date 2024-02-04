@@ -1,2 +1,126 @@
-"use strict";import{ArrayAccumulator as s}from"../ArrayAccumulator.js";const l=e=>new ReadableStream({start(a){a.enqueue(e),a.close()}}),u=()=>new TransformStream({transform(e,a){console.log(e),a.enqueue(e)}}),f=()=>new WritableStream,i=async(e,a)=>{const n=new s(e);await n.push(a);for await(const o of n.flush())console.log(o)},m=async(e,a)=>{const n=new s(e);for await(const o of n.flush(a))console.log(o)},p=async(e,a)=>{const n=new s(e);await n.push(a);for await(const o of n)console.log(o)},d=async(e,a)=>{await new s(e).readable(a).pipeThrough(u()).pipeTo(f())},y=async(e,a)=>{const n=new s(e);await l(a).pipeThrough(n.transform()).pipeThrough(u()).pipeTo(f())},g=async(e,a)=>{const n=new s(e);await l(a).pipeTo(n.writable());for await(const o of n)console.log(o)},c=async(e,a)=>{console.groupCollapsed(`size=${e}, total=${a}`),performance.clearMeasures("perf"),performance.clearMarks("start"),performance.clearMarks("end"),performance.mark("start");const n=new s(e);for(let t=0;t<a;++t)for await(const r of n.pull(t))console.assert(r.length===e,"flush= false","value=",r,"length=",r.length,"size=",e);for await(const t of n.flush())console.assert(t.length===a%e,"flush= true","value=",t,"length=",t.length,"size=",a%e);performance.mark("end"),performance.measure("perf","start","end");const o=performance.getEntriesByName("perf")[0];console.log(`duration: ${o.duration}`),console.groupEnd()},w=[{name:"Push",func:i},{name:"Flush",func:m},{name:"AsyncIterator",func:p},{name:"Readable",func:d},{name:"Transform",func:y},{name:"Writable",func:g}],b=[4,5,6],h=[void 0,null,"abc",123,1.23,[1,2,3,4,5],["aaa","bbb","ccc","ddd","eee"],[{a:1},{b:2},{c:3},{d:4},{e:5}],function*(){yield 1,yield 2,yield 3,yield 4,yield 5},async function*(){yield 1,yield 2,yield 3,yield 4,yield 5}];for(const e of w){console.groupCollapsed(e.name);for(const a of h)for(const n of b)console.groupCollapsed(`size=${n}, data=${JSON.stringify(a)}`),await e.func(n,a),console.groupEnd();console.groupEnd()}console.groupCollapsed("Performance"),await c(8,1e5),await c(32,1e5),await c(1e3,1e5),console.groupEnd(),console.log("Test completed.");
+"use strict";
+import { ArrayAccumulator } from "../ArrayAccumulator.js";
+const source = (data) => new ReadableStream({
+  start(controller) {
+    controller.enqueue(data);
+    controller.close();
+  }
+});
+const logging = () => new TransformStream({
+  transform(chunk, controller) {
+    console.log(chunk);
+    controller.enqueue(chunk);
+  }
+});
+const terminate = () => new WritableStream();
+const testPush = async (size, data) => {
+  const accumulator = new ArrayAccumulator(size);
+  await accumulator.push(data);
+  for await (const value of accumulator.flush()) {
+    console.log(value);
+  }
+};
+const testFlush = async (size, data) => {
+  const accumulator = new ArrayAccumulator(size);
+  for await (const value of accumulator.flush(data)) {
+    console.log(value);
+  }
+};
+const testAsyncIterator = async (size, data) => {
+  const accumulator = new ArrayAccumulator(size);
+  await accumulator.push(data);
+  for await (const value of accumulator) {
+    console.log(value);
+  }
+};
+const testReadable = async (size, data) => {
+  const accumulator = new ArrayAccumulator(size);
+  await accumulator.readable(data).pipeThrough(logging()).pipeTo(terminate());
+};
+const testTransform = async (size, data) => {
+  const accumulator = new ArrayAccumulator(size);
+  await source(data).pipeThrough(accumulator.transform()).pipeThrough(logging()).pipeTo(terminate());
+};
+const testWritable = async (size, data) => {
+  const accumulator = new ArrayAccumulator(size);
+  await source(data).pipeTo(accumulator.writable());
+  for await (const value of accumulator) {
+    console.log(value);
+  }
+};
+const testPerformance = async (size, total) => {
+  console.groupCollapsed(`size=${size}, total=${total}`);
+  performance.clearMeasures("perf");
+  performance.clearMarks("start");
+  performance.clearMarks("end");
+  performance.mark("start");
+  const accumulator = new ArrayAccumulator(size);
+  for (let i = 0; i < total; ++i) {
+    for await (const value of accumulator.pull(i)) {
+      console.assert(value.length === size, "flush= false", "value=", value, "length=", value.length, "size=", size);
+    }
+  }
+  for await (const value of accumulator.flush()) {
+    console.assert(value.length === total % size, "flush= true", "value=", value, "length=", value.length, "size=", total % size);
+  }
+  performance.mark("end");
+  performance.measure("perf", "start", "end");
+  const perf = performance.getEntriesByName("perf")[0];
+  console.log(`duration: ${perf.duration}`);
+  console.groupEnd();
+};
+const testList = [
+  { name: "Push", func: testPush },
+  { name: "Flush", func: testFlush },
+  { name: "AsyncIterator", func: testAsyncIterator },
+  { name: "Readable", func: testReadable },
+  { name: "Transform", func: testTransform },
+  { name: "Writable", func: testWritable }
+];
+const sizeList = [
+  4,
+  5,
+  6
+];
+const dataList = [
+  void 0,
+  null,
+  "abc",
+  123,
+  1.23,
+  [1, 2, 3, 4, 5],
+  ["aaa", "bbb", "ccc", "ddd", "eee"],
+  [{ a: 1 }, { b: 2 }, { c: 3 }, { d: 4 }, { e: 5 }],
+  function* () {
+    yield 1;
+    yield 2;
+    yield 3;
+    yield 4;
+    yield 5;
+  },
+  async function* () {
+    yield 1;
+    yield 2;
+    yield 3;
+    yield 4;
+    yield 5;
+  }
+];
+for (const test of testList) {
+  console.groupCollapsed(test.name);
+  for (const data of dataList) {
+    for (const size of sizeList) {
+      console.groupCollapsed(`size=${size}, data=${JSON.stringify(data)}`);
+      await test.func(size, data);
+      console.groupEnd();
+    }
+  }
+  console.groupEnd();
+}
+console.groupCollapsed("Performance");
+await testPerformance(8, 1e5);
+await testPerformance(32, 1e5);
+await testPerformance(1e3, 1e5);
+console.groupEnd();
+console.log("Test completed.");
 //# sourceMappingURL=test.js.map

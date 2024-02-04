@@ -1,4 +1,5 @@
-"use strict";/*!
+"use strict";
+/*!
 MIT No Attribution
 
 Copyright 2024 an(https://github.com/an-dist)
@@ -15,5 +16,83 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/import{CombinedTransformStream as o}from"../CombinedTransformStream/CombinedTransformStream.js";export class PerformanceStreamBuilder{constructor(r,e,s){this.transforms=[];this.measureName=r,this.startMark=e,this.endMark=s}pipe(r){return this.transforms.push(r),this}build(r){const e=this,s=new TransformStream({start(){performance.clearMeasures(e.measureName),performance.clearMarks(`${e.measureName}.${e.startMark}`),performance.clearMarks(`${e.measureName}.${e.endMark}`)},transform(n,i){performance.mark(`${e.measureName}.${e.startMark}`),i.enqueue(n)}}),u=new TransformStream({transform(n,i){performance.mark(`${e.measureName}.${e.endMark}`),performance.measure(e.measureName,`${e.measureName}.${e.startMark}`,`${e.measureName}.${e.endMark}`),performance.mark(`${e.measureName}.${e.startMark}`),i.enqueue(n)},flush(){e.entries=performance.getEntriesByName(e.measureName),performance.clearMeasures(e.measureName),performance.clearMarks(`${e.measureName}.${e.startMark}`),performance.clearMarks(`${e.measureName}.${e.endMark}`)}}),a=new o(this.transforms,r);return this.transforms.splice(0),s.readable.pipeTo(a.writable,r),a.readable.pipeTo(u.writable,r),{writable:s.writable,readable:u.readable}}result(){if(!this.entries||this.entries.length===0)return;const r=this.entries.map(m=>m.duration);if(r.length===0)return{transforming:0,occupancy:0,minimum:0,maximum:0,average:0,median:0};const e=r.reduce((m,t)=>m+=t,0),s=r.reduce((m,t)=>Math.min(m,t)),u=r.reduce((m,t)=>Math.max(m,t)),a=[...new Set(r.sort((m,t)=>m-t))],n=a.length/2|0,i=a.length===0?0:a.length%2?a[n]:a[n-1]+a[n];return{transforming:r.length,occupancy:e,minimum:s,maximum:u,average:e/r.length,median:i}}}
+*/
+import { CombinedTransformStream } from "../CombinedTransformStream/CombinedTransformStream.js";
+export class PerformanceStreamBuilder {
+  constructor(measureName, startMark, endMark) {
+    this.transforms = [];
+    this.measureName = measureName;
+    this.startMark = startMark;
+    this.endMark = endMark;
+  }
+  pipe(transform) {
+    this.transforms.push(transform);
+    return this;
+  }
+  build(options) {
+    const This = this;
+    const first = new TransformStream({
+      start() {
+        performance.clearMeasures(This.measureName);
+        performance.clearMarks(`${This.measureName}.${This.startMark}`);
+        performance.clearMarks(`${This.measureName}.${This.endMark}`);
+      },
+      transform(chunk, controller) {
+        performance.mark(`${This.measureName}.${This.startMark}`);
+        controller.enqueue(chunk);
+      }
+    });
+    const last = new TransformStream({
+      transform(chunk, controller) {
+        performance.mark(`${This.measureName}.${This.endMark}`);
+        performance.measure(This.measureName, `${This.measureName}.${This.startMark}`, `${This.measureName}.${This.endMark}`);
+        performance.mark(`${This.measureName}.${This.startMark}`);
+        controller.enqueue(chunk);
+      },
+      flush() {
+        This.entries = performance.getEntriesByName(This.measureName);
+        performance.clearMeasures(This.measureName);
+        performance.clearMarks(`${This.measureName}.${This.startMark}`);
+        performance.clearMarks(`${This.measureName}.${This.endMark}`);
+      }
+    });
+    const combined = new CombinedTransformStream(this.transforms, options);
+    this.transforms.splice(0);
+    first.readable.pipeTo(combined.writable, options);
+    combined.readable.pipeTo(last.writable, options);
+    return {
+      writable: first.writable,
+      readable: last.readable
+    };
+  }
+  result() {
+    if (!this.entries || this.entries.length === 0)
+      return void 0;
+    const durations = this.entries.map((e) => e.duration);
+    if (durations.length === 0) {
+      return {
+        transforming: 0,
+        occupancy: 0,
+        minimum: 0,
+        maximum: 0,
+        average: 0,
+        median: 0
+      };
+    }
+    const occupancy = durations.reduce((s, d) => s += d, 0);
+    const minimum = durations.reduce((l, r) => Math.min(l, r));
+    const maximum = durations.reduce((l, r) => Math.max(l, r));
+    const sorted = [...new Set(durations.sort((l, r) => l - r))];
+    const medianIndex = sorted.length / 2 | 0;
+    const median = sorted.length === 0 ? 0 : sorted.length % 2 ? sorted[medianIndex] : sorted[medianIndex - 1] + sorted[medianIndex];
+    return {
+      transforming: durations.length,
+      occupancy,
+      minimum,
+      maximum,
+      average: occupancy / durations.length,
+      median
+    };
+  }
+}
 //# sourceMappingURL=PerformanceStream.js.map

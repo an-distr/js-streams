@@ -1,4 +1,5 @@
-"use strict";/*!
+"use strict";
+/*!
 MIT No Attribution
 
 Copyright 2024 an(https://github.com/an-dist)
@@ -15,7 +16,15 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/export class DomConsole{constructor(e,t,n){if(typeof e=="string"){this.owner=document.getElementById(e),this.owner.append(this.createContextMenu(this.owner));const i=document.createElement("style");i.setAttribute("scoped",""),i.textContent=`
+*/
+export class DomConsole {
+  constructor(owner, redirect, parent) {
+    if (typeof owner === "string") {
+      this.owner = document.getElementById(owner);
+      this.owner.append(this.createContextMenu(this.owner));
+      const scopedStyle = document.createElement("style");
+      scopedStyle.setAttribute("scoped", "");
+      scopedStyle.textContent = `
         .console-list {
           >.console-list-item>label {
             display: block;
@@ -26,7 +35,296 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           >.console-list-item:has(>label>input[name="group-visibility"]:checked)>.console-list {
             display: block;
           }
-        }`,this.owner.append(i)}else this.owner=e;this.redirect=t,this.parent=n,this.holder=document.createElement("ul"),this.holder.classList.add("console-list"),this.owner.appendChild(this.holder)}dataToString(...e){const t=[];for(let n=0;n<arguments.length;++n)switch(typeof e[n]){case"string":t.push(e[n]);break;case"number":case"bigint":case"boolean":t.push(e[n].toString());break;case"undefined":t.push("undefined");break;default:if(Array.isArray(e[n])){const i=e[n];t.push(`(${i.length}) [${i.map(s=>this.dataToString(s)).join(", ")}]`)}else t.push(JSON.stringify(e[n]));break}return t.join(" ")}appendItem(e,...t){const n=document.createElement("li");n.classList.add("console-list-item"),e&&n.classList.add(`console-list-item-${e}`);const i=document.createElement("label");return i.textContent=this.dataToString(...t),n.append(i),this.holder.append(n),n}toNextHolder(e,...t){const n=this.appendItem("group",...t),i=document.createElement("input");i.name="group-visibility",i.type="checkbox",i.checked=!e,n.firstElementChild.prepend(i),this.child=new DomConsole(n,this.redirect,this)}createContextMenu(e){const t=document.createElement("ul");t.classList.add("console-menu"),t.style.display="none",t.style.position="fixed";let n;e.addEventListener("contextmenu",s=>{if(!s.target?.parentElement?.classList.contains("console-list-item-group"))return;s.preventDefault();const r=e.querySelector(".console-menu");r&&(r.style.left=s.pageX+"px",r.style.top=s.pageY-scrollY+"px",r.style.display="block",n=s.target)}),window.addEventListener("click",()=>{const s=e.querySelector(".console-menu");s&&(s.style.display="none")});const i=(s,r)=>{const l=document.createElement("li");l.textContent=s,l.onclick=()=>{r(n),t.style.display="none"},t.append(l)};return i("Expand all",s=>this.expand(!0,s?.parentElement)),i("Collapse all",s=>this.expand(!1,s?.parentElement)),t}withTrace(e,t){const n=(t.stack??"").replace(`Error
-`,"").split(`
-`).map(i=>i.trim().split(/[ |@|(|)]/).filter(s=>!["at",""].includes(s)).join(" @ ")).map(i=>i.replace(location.href.replace(location.pathname,""),"")).filter(i=>i.length>0).filter(i=>!i.includes("trace @ ")).filter(i=>!i.includes("/DomConsole/DomConsole")).map(i=>i.includes(" @ ")?i:"(anonymous) @ "+i);if(n.length>0){const i=document.createElement("ul");for(const s of n){const r=document.createElement("li");r.textContent=s,i.append(r)}e.append(i)}}createHeaderCell(e){const t=document.createElement("th");return t.textContent=e,t}getThis(){let e=this;for(;e.child;)e=e.child;return e}expand(e,t,n){const i=[...(t??this.owner).querySelectorAll("input[name='group-visibility']")],s=l=>{const a=[];let o=l.parentElement;for(;o;){if(o.tagName==="LI"){const c=o.firstElementChild?.firstElementChild;c&&c!==l&&c.getAttribute("type")==="checkbox"&&a.push(c)}o=o.parentElement}return a},r=t===void 0?0:s(t).length;i.forEach(l=>{const a=n===void 0?0:s(l).length-r+n;l.checked=a>=0?e:!e})}group(...e){const t=this.getThis();t.toNextHolder(!1,...e),t.redirect?.group(...e)}groupCollapsed(...e){const t=this.getThis();t.toNextHolder(!0,...e),t.redirect?.groupCollapsed(...e)}groupEnd(){const e=this.getThis();e.parent&&(e.parent.child=void 0),e.redirect?.groupEnd()}clear(){const e=this.holder,t=e.cloneNode(!1);this.owner.replaceChild(t,e),this.holder=t,this.child=void 0,this.redirect?.clear()}assert(e,...t){const n=this.getThis();if(e!==void 0&&!e){const i=n.appendItem("assert","Assertion failed:",...t);n.withTrace(i.firstElementChild,new Error),n.redirect?.assert(!1,...t)}}log(...e){const t=this.getThis();t.appendItem("log",...e),t.redirect?.log(...e)}trace(...e){const t=this.getThis(),n=t.appendItem("trace",...e);t.withTrace(n.firstElementChild,new Error),t.redirect?.trace(...e)}debug(...e){const t=this.getThis();t.appendItem("debug",...e),t.redirect?.debug(...e)}info(...e){const t=this.getThis();t.appendItem("info",...e),t.redirect?.info(...e)}warn(...e){const t=this.getThis(),n=t.appendItem("warn",...e);t.withTrace(n.firstElementChild,new Error),t.redirect?.warn(...e)}error(...e){const t=this.getThis(),n=t.appendItem("error",...e);t.withTrace(n.firstElementChild,new Error),t.redirect?.error(...e)}table(e,t){const n=this.getThis(),i=document.createElement("table");i.classList.add("console-list-item-table");const r=i.createTHead().insertRow(-1);if(r.append(n.createHeaderCell("(index)")),Array.isArray(e))for(const o in e[0])t&&t.indexOf(o)===-1||r.append(n.createHeaderCell(o));else r.append(n.createHeaderCell("Value"));const l=i.createTBody();if(e)if(Array.isArray(e)){let o=0;for(const c of e){const d=l.insertRow(-1);d.insertCell(-1).textContent=o.toString();for(const h in c)t&&t.indexOf(h)===-1||(d.insertCell(-1).textContent=c[h]);++o}}else for(const o in e){const c=l.insertRow(-1);c.insertCell(-1).textContent=o,c.insertCell(-1).textContent=e[o]}const a=n.appendItem();a.firstElementChild.append(i),n.holder.append(a),n.redirect?.table(e,t)}count(e){this.getThis().redirect?.count(e)}countReset(e){this.getThis().redirect?.countReset(e)}dir(e,t){this.getThis().redirect?.dir(e,t)}dirxml(...e){this.getThis().redirect?.dirxml(...e)}time(e){this.getThis().redirect?.time(e)}timeEnd(e){this.getThis().redirect?.timeEnd(e)}timeLog(e,...t){this.getThis().redirect?.timeLog(e,...t)}timeStamp(e){this.getThis().redirect?.timeStamp(e)}}
+        }`;
+      this.owner.append(scopedStyle);
+    } else {
+      this.owner = owner;
+    }
+    this.redirect = redirect;
+    this.parent = parent;
+    this.holder = document.createElement("ul");
+    this.holder.classList.add("console-list");
+    this.owner.appendChild(this.holder);
+  }
+  dataToString(...data) {
+    const lst = [];
+    for (let i = 0; i < arguments.length; ++i) {
+      switch (typeof data[i]) {
+        case "string":
+          lst.push(data[i]);
+          break;
+        case "number":
+        case "bigint":
+        case "boolean":
+          lst.push(data[i].toString());
+          break;
+        case "undefined":
+          lst.push("undefined");
+          break;
+        default:
+          if (Array.isArray(data[i])) {
+            const arr = data[i];
+            lst.push(`(${arr.length}) [${arr.map((v) => this.dataToString(v)).join(", ")}]`);
+          } else {
+            lst.push(JSON.stringify(data[i]));
+          }
+          break;
+      }
+    }
+    return lst.join(" ");
+  }
+  appendItem(classSuffix, ...data) {
+    const li = document.createElement("li");
+    li.classList.add("console-list-item");
+    if (classSuffix) {
+      li.classList.add(`console-list-item-${classSuffix}`);
+    }
+    const lbl = document.createElement("label");
+    lbl.textContent = this.dataToString(...data);
+    li.append(lbl);
+    this.holder.append(li);
+    return li;
+  }
+  toNextHolder(collapsed, ...data) {
+    const current = this.appendItem("group", ...data);
+    const chk = document.createElement("input");
+    chk.name = "group-visibility";
+    chk.type = "checkbox";
+    chk.checked = !collapsed;
+    current.firstElementChild.prepend(chk);
+    this.child = new DomConsole(current, this.redirect, this);
+  }
+  createContextMenu(owner) {
+    const menu = document.createElement("ul");
+    menu.classList.add("console-menu");
+    menu.style.display = "none";
+    menu.style.position = "fixed";
+    let target;
+    owner.addEventListener("contextmenu", (ev) => {
+      if (!ev.target?.parentElement?.classList.contains("console-list-item-group"))
+        return;
+      ev.preventDefault();
+      const menu2 = owner.querySelector(".console-menu");
+      if (!menu2)
+        return;
+      menu2.style.left = ev.pageX + "px";
+      menu2.style.top = ev.pageY - scrollY + "px";
+      menu2.style.display = "block";
+      target = ev.target;
+    });
+    window.addEventListener("click", () => {
+      const menu2 = owner.querySelector(".console-menu");
+      if (!menu2)
+        return;
+      menu2.style.display = "none";
+    });
+    const addItem = (text, action) => {
+      const item = document.createElement("li");
+      item.textContent = text;
+      item.onclick = () => {
+        action(target);
+        menu.style.display = "none";
+      };
+      menu.append(item);
+    };
+    addItem("Expand all", (target2) => this.expand(true, target2?.parentElement));
+    addItem("Collapse all", (target2) => this.expand(false, target2?.parentElement));
+    return menu;
+  }
+  withTrace(parent, error) {
+    const callStack = (error.stack ?? "").replace("Error\n", "").split("\n").map((s) => s.trim().split(/[ |@|(|)]/).filter((s2) => !["at", ""].includes(s2)).join(" @ ")).map((s) => s.replace(location.href.replace(location.pathname, ""), "")).filter((s) => s.length > 0).filter((s) => !s.includes("trace @ ")).filter((s) => !s.includes("/DomConsole/DomConsole")).map((s) => s.includes(" @ ") ? s : "(anonymous) @ " + s);
+    if (callStack.length > 0) {
+      const callStackItem = document.createElement("ul");
+      for (const stack of callStack) {
+        const stackItem = document.createElement("li");
+        stackItem.textContent = stack;
+        callStackItem.append(stackItem);
+      }
+      parent.append(callStackItem);
+    }
+  }
+  createHeaderCell(textContent) {
+    const headerCell = document.createElement("th");
+    headerCell.textContent = textContent;
+    return headerCell;
+  }
+  getThis() {
+    let This = this;
+    while (This.child) {
+      This = This.child;
+    }
+    return This;
+  }
+  expand(expand, owner, depth) {
+    const chks = [...(owner ?? this.owner).querySelectorAll("input[name='group-visibility']")];
+    const ancestors = (target) => {
+      const ancestors2 = [];
+      let current = target.parentElement;
+      while (current) {
+        if (current.tagName === "LI") {
+          const found = current.firstElementChild?.firstElementChild;
+          if (found && found !== target) {
+            if (found.getAttribute("type") === "checkbox") {
+              ancestors2.push(found);
+            }
+          }
+        }
+        current = current.parentElement;
+      }
+      return ancestors2;
+    };
+    const ownerDepth = owner === void 0 ? 0 : ancestors(owner).length;
+    chks.forEach((chk) => {
+      const level = depth === void 0 ? 0 : ancestors(chk).length - ownerDepth + depth;
+      chk.checked = level >= 0 ? expand : !expand;
+    });
+  }
+  group(...data) {
+    const This = this.getThis();
+    This.toNextHolder(false, ...data);
+    This.redirect?.group(...data);
+  }
+  groupCollapsed(...data) {
+    const This = this.getThis();
+    This.toNextHolder(true, ...data);
+    This.redirect?.groupCollapsed(...data);
+  }
+  groupEnd() {
+    const This = this.getThis();
+    if (This.parent)
+      This.parent.child = void 0;
+    This.redirect?.groupEnd();
+  }
+  clear() {
+    const oldHolder = this.holder;
+    const newHolder = oldHolder.cloneNode(false);
+    this.owner.replaceChild(newHolder, oldHolder);
+    this.holder = newHolder;
+    this.child = void 0;
+    this.redirect?.clear();
+  }
+  assert(condition, ...data) {
+    const This = this.getThis();
+    if (condition !== void 0 && !condition) {
+      const item = This.appendItem("assert", "Assertion failed:", ...data);
+      This.withTrace(item.firstElementChild, new Error());
+      This.redirect?.assert(false, ...data);
+    }
+  }
+  log(...data) {
+    const This = this.getThis();
+    This.appendItem("log", ...data);
+    This.redirect?.log(...data);
+  }
+  trace(...data) {
+    const This = this.getThis();
+    const item = This.appendItem("trace", ...data);
+    This.withTrace(item.firstElementChild, new Error());
+    This.redirect?.trace(...data);
+  }
+  debug(...data) {
+    const This = this.getThis();
+    This.appendItem("debug", ...data);
+    This.redirect?.debug(...data);
+  }
+  info(...data) {
+    const This = this.getThis();
+    This.appendItem("info", ...data);
+    This.redirect?.info(...data);
+  }
+  warn(...data) {
+    const This = this.getThis();
+    const item = This.appendItem("warn", ...data);
+    This.withTrace(item.firstElementChild, new Error());
+    This.redirect?.warn(...data);
+  }
+  error(...data) {
+    const This = this.getThis();
+    const item = This.appendItem("error", ...data);
+    This.withTrace(item.firstElementChild, new Error());
+    This.redirect?.error(...data);
+  }
+  table(tabularData, properties) {
+    const This = this.getThis();
+    const table = document.createElement("table");
+    table.classList.add("console-list-item-table");
+    const header = table.createTHead();
+    const headerRow = header.insertRow(-1);
+    headerRow.append(This.createHeaderCell("(index)"));
+    if (Array.isArray(tabularData)) {
+      for (const key in tabularData[0]) {
+        if (properties) {
+          if (properties.indexOf(key) === -1) {
+            continue;
+          }
+        }
+        headerRow.append(This.createHeaderCell(key));
+      }
+    } else {
+      headerRow.append(This.createHeaderCell("Value"));
+    }
+    const body = table.createTBody();
+    if (tabularData) {
+      if (Array.isArray(tabularData)) {
+        let dataIndex = 0;
+        for (const data of tabularData) {
+          const bodyRow = body.insertRow(-1);
+          bodyRow.insertCell(-1).textContent = dataIndex.toString();
+          for (const key in data) {
+            if (properties) {
+              if (properties.indexOf(key) === -1) {
+                continue;
+              }
+            }
+            bodyRow.insertCell(-1).textContent = data[key];
+          }
+          ++dataIndex;
+        }
+      } else {
+        for (const key in tabularData) {
+          const bodyRow = body.insertRow(-1);
+          bodyRow.insertCell(-1).textContent = key;
+          bodyRow.insertCell(-1).textContent = tabularData[key];
+        }
+      }
+    }
+    const li = This.appendItem();
+    li.firstElementChild.append(table);
+    This.holder.append(li);
+    This.redirect?.table(tabularData, properties);
+  }
+  /*! Redirect only. **/
+  count(label) {
+    const This = this.getThis();
+    This.redirect?.count(label);
+  }
+  countReset(label) {
+    const This = this.getThis();
+    This.redirect?.countReset(label);
+  }
+  dir(item, options) {
+    const This = this.getThis();
+    This.redirect?.dir(item, options);
+  }
+  dirxml(...data) {
+    const This = this.getThis();
+    This.redirect?.dirxml(...data);
+  }
+  time(label) {
+    const This = this.getThis();
+    This.redirect?.time(label);
+  }
+  timeEnd(label) {
+    const This = this.getThis();
+    This.redirect?.timeEnd(label);
+  }
+  timeLog(label, ...data) {
+    const This = this.getThis();
+    This.redirect?.timeLog(label, ...data);
+  }
+  timeStamp(label) {
+    const This = this.getThis();
+    This.redirect?.timeStamp(label);
+  }
+}
 //# sourceMappingURL=DomConsole.js.map

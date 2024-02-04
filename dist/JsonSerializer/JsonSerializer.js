@@ -1,4 +1,5 @@
-"use strict";/*!
+"use strict";
+/*!
 MIT No Attribution
 
 Copyright 2024 an(https://github.com/an-dist)
@@ -15,6 +16,35 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/import{PullPush as e,PullPushArrayQueue as a}from"../PullPush/PullPush.js";export class JsonSerializer extends e{constructor(i){super(new a),this.lineSeparated=i?.lineSeparated===!0,this.separator=this.lineSeparated?`
-`:",",this.stringify=i?.stringify??JSON.stringify,this.isNotFirst=!1}async*pullpush(i,t){await this.push(i);do{for(const s of this.queue.splice(0))this.isNotFirst?await this.push(yield this.separator+this.stringify(s)):(this.lineSeparated||await this.push(yield"["),await this.push(yield this.stringify(s)),this.isNotFirst=!0);t&&(this.lineSeparated||await this.push(yield"]"),this.isNotFirst=!1)}while(this.queue.more())}}
+*/
+import { PullPush, PullPushArrayQueue } from "../PullPush/PullPush.js";
+export class JsonSerializer extends PullPush {
+  constructor(options) {
+    super(new PullPushArrayQueue());
+    this.lineSeparated = options?.lineSeparated === true;
+    this.separator = this.lineSeparated ? "\n" : ",";
+    this.stringify = options?.stringify ?? JSON.stringify;
+    this.isNotFirst = false;
+  }
+  async *pullpush(data, flush) {
+    await this.push(data);
+    do {
+      for (const value of this.queue.splice(0)) {
+        if (this.isNotFirst) {
+          await this.push(yield this.separator + this.stringify(value));
+        } else {
+          if (!this.lineSeparated)
+            await this.push(yield "[");
+          await this.push(yield this.stringify(value));
+          this.isNotFirst = true;
+        }
+      }
+      if (flush) {
+        if (!this.lineSeparated)
+          await this.push(yield "]");
+        this.isNotFirst = false;
+      }
+    } while (this.queue.more());
+  }
+}
 //# sourceMappingURL=JsonSerializer.js.map

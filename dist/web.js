@@ -1,4 +1,5 @@
-"use strict";/*!
+"use strict";
+/*!
 MIT No Attribution
 
 Copyright 2024 an(https://github.com/an-dist)
@@ -15,5 +16,8 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/export*from"./mod.js";export*from"./DownloadStream/DownloadStream.js";export*from"./misc/DomConsole/DomConsole.js";
+*/
+export * from "./mod.js";
+export * from "./DownloadStream/DownloadStream.js";
+export * from "./misc/DomConsole/DomConsole.js";
 //# sourceMappingURL=web.js.map

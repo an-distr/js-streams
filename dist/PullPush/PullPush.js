@@ -1,4 +1,5 @@
-"use strict";/*!
+"use strict";
+/*!
 MIT No Attribution
 
 Copyright 2024 an(https://github.com/an-dist)
@@ -15,5 +16,161 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/export class PullPushNonQueue{length(){return 0}more(){return!0}all(){throw new Error("Method not implemented.")}push(e){}pop(){}empty(){}splice(e,u){throw new Error("Method not implemented.")}}export class PullPushArrayQueue{constructor(){this.queue=[]}length(){return this.queue.length}more(){return this.queue.length>0}all(){return this.queue}push(e){this.queue.push(e)}pop(){return this.queue.pop()}empty(){this.queue.splice(0)}splice(e,u){return u?this.queue.splice(e,u):this.queue.splice(e)}}export class PullPushStringQueue{constructor(){this.queue=""}length(){return this.queue.length}more(){return this.queue.length>0}all(){return this.queue}push(e){this.queue+=e}pop(){return this.splice(-1)}empty(){this.queue=""}splice(e,u){if(u){const s=this.queue.slice(e,e+u);return this.queue=this.queue.slice(0,e)+this.queue.slice(e+u),s}else{const s=this.queue.slice(e);return this.queue=this.queue.slice(0,e),s}}}export class PullPush{constructor(e){this.queue=e}async push(e){if(e!==void 0)if(typeof e=="function"&&(e=await e()),e===null)this.queue.push(e);else if(typeof e=="string")this.queue.push(e);else if(Array.isArray(e))for(const u of e)this.queue.push(u);else if(typeof e[Symbol.iterator]=="function")for(const u of e)this.queue.push(u);else if(typeof e[Symbol.asyncIterator]=="function")for await(const u of e)this.queue.push(u);else this.queue.push(e)}pull(e){return this.pullpush(e)}flush(e){return this.pullpush(e,!0)}[Symbol.asyncIterator](){return this.flush()}readable(e){const u=this;return new ReadableStream({async start(s){for await(const r of u.flush(e))s.enqueue(r);s.close()}})}transform(){const e=this;return new TransformStream({async transform(u,s){for await(const r of e.pull(u))s.enqueue(r)},async flush(u){for await(const s of e.flush())u.enqueue(s)}})}writable(){const e=this;return new WritableStream({async write(u){await e.push(u)}})}}
+*/
+export class PullPushNonQueue {
+  length() {
+    return 0;
+  }
+  more() {
+    return true;
+  }
+  all() {
+    throw new Error("Method not implemented.");
+  }
+  push(_data) {
+  }
+  pop() {
+    return void 0;
+  }
+  empty() {
+  }
+  splice(_start, _deleteCount) {
+    throw new Error("Method not implemented.");
+  }
+}
+export class PullPushArrayQueue {
+  constructor() {
+    this.queue = [];
+  }
+  length() {
+    return this.queue.length;
+  }
+  more() {
+    return this.queue.length > 0;
+  }
+  all() {
+    return this.queue;
+  }
+  push(data) {
+    this.queue.push(data);
+  }
+  pop() {
+    return this.queue.pop();
+  }
+  empty() {
+    this.queue.splice(0);
+  }
+  splice(start, deleteCount) {
+    if (deleteCount) {
+      return this.queue.splice(start, deleteCount);
+    } else {
+      return this.queue.splice(start);
+    }
+  }
+}
+export class PullPushStringQueue {
+  constructor() {
+    this.queue = "";
+  }
+  length() {
+    return this.queue.length;
+  }
+  more() {
+    return this.queue.length > 0;
+  }
+  all() {
+    return this.queue;
+  }
+  push(data) {
+    this.queue += data;
+  }
+  pop() {
+    return this.splice(-1);
+  }
+  empty() {
+    this.queue = "";
+  }
+  splice(start, deleteCount) {
+    if (deleteCount) {
+      const value = this.queue.slice(start, start + deleteCount);
+      this.queue = this.queue.slice(0, start) + this.queue.slice(start + deleteCount);
+      return value;
+    } else {
+      const value = this.queue.slice(start);
+      this.queue = this.queue.slice(0, start);
+      return value;
+    }
+  }
+}
+export class PullPush {
+  constructor(queue) {
+    this.queue = queue;
+  }
+  async push(data) {
+    if (data !== void 0) {
+      if (typeof data === "function") {
+        data = await data();
+      }
+      if (data === null) {
+        this.queue.push(data);
+      } else if (typeof data === "string") {
+        this.queue.push(data);
+      } else if (Array.isArray(data)) {
+        for (const value of data)
+          this.queue.push(value);
+      } else if (typeof data[Symbol.iterator] === "function") {
+        for (const value of data)
+          this.queue.push(value);
+      } else if (typeof data[Symbol.asyncIterator] === "function") {
+        for await (const value of data)
+          this.queue.push(value);
+      } else {
+        this.queue.push(data);
+      }
+    }
+  }
+  pull(data) {
+    return this.pullpush(data);
+  }
+  flush(data) {
+    return this.pullpush(data, true);
+  }
+  [Symbol.asyncIterator]() {
+    return this.flush();
+  }
+  readable(data) {
+    const This = this;
+    return new ReadableStream({
+      async start(controller) {
+        for await (const chunk of This.flush(data)) {
+          controller.enqueue(chunk);
+        }
+        controller.close();
+      }
+    });
+  }
+  transform() {
+    const This = this;
+    return new TransformStream({
+      async transform(data, controller) {
+        for await (const chunk of This.pull(data)) {
+          controller.enqueue(chunk);
+        }
+      },
+      async flush(controller) {
+        for await (const chunk of This.flush()) {
+          controller.enqueue(chunk);
+        }
+      }
+    });
+  }
+  writable() {
+    const This = this;
+    return new WritableStream({
+      async write(data) {
+        await This.push(data);
+      }
+    });
+  }
+}
 //# sourceMappingURL=PullPush.js.map

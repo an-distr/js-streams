@@ -1,4 +1,5 @@
-"use strict";/*!
+"use strict";
+/*!
 MIT No Attribution
 
 Copyright 2024 an(https://github.com/an-dist)
@@ -15,5 +16,154 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/export class CompatiblePerformance{constructor(){this.navigation={};this.timeOrigin=0;this.timing={};this.eventCounts={};this.onresourcetimingbufferfull=()=>null;this.entries=new Map,this.now_impl=globalThis.performance.now??(()=>Date.now())}static replaceIfUnsupported(){(!("now"in globalThis.performance)||!("mark"in globalThis.performance)||!("measure"in globalThis.performance)||!("getEntries"in globalThis.performance)||!("getEntriesByType"in globalThis.performance)||!("getEntriesByName"in globalThis.performance)||!("clearMeasures"in globalThis.performance)||!("clearMarks"in globalThis.performance))&&(console.warn("globalThis.performance switch to CompatiblePerformance"),globalThis.performance=new CompatiblePerformance)}clearResourceTimings(){}setResourceTimingBufferSize(e){}addEventListener(e,t,r){}removeEventListener(e,t,r){}dispatchEvent(e){return!0}toJSON(){return{navigation:this.navigation,timeOrigin:this.timeOrigin,timing:this.timing}}now(){return this.now_impl()}mark(e,t){const r={entryType:"mark",name:e,startTime:t?.startTime??this.now(),duration:0,detail:t?.detail,toJSON:()=>null};return this.entries.has("mark")?this.entries.get("mark").push(r):this.entries.set("mark",[r]),r.toJSON=()=>JSON.stringify(r),r}measure(e,t,r){let a,n;t&&(typeof t=="string"?a=t:n=t);let i,s;n&&(typeof n.start=="string"?a=n.start:typeof n.start=="number"&&(i={entryType:"mark",name:a??"",startTime:0,duration:n.start,toJSON:()=>null}),typeof n.end=="string"?r=n.end:typeof n.end=="number"&&(s={entryType:"mark",name:r??"",startTime:this.now(),duration:n.end,toJSON:()=>null})),(!i||!s)&&(!i&&a&&(i=this.getEntriesByName(a,"mark").slice(-1)[0]),!s&&r&&(s=this.getEntriesByName(r,"mark").slice(-1)[0]));const o={entryType:"measure",name:e,startTime:i?.startTime??0,duration:n?.duration??(s?.startTime??0)-(i?.startTime??this.now()),detail:n?.detail??s.detail??i.detail,toJSON:()=>null};return o.toJSON=()=>JSON.stringify(o),this.entries.has("measure")?this.entries.get("measure").push(o):this.entries.set("measure",[o]),o}getEntries(){return[].concat(...this.entries.values())}getEntriesByType(e){return this.entries.get(e)??[]}getEntriesByName(e,t){return t?this.getEntriesByType(t).filter(r=>r.name===e):this.getEntries().filter(r=>r.name===e)}clearMeasures(e){e?this.entries.set("measure",this.getEntriesByType("measure").filter(t=>t.name!==e)):this.entries.delete("measure")}clearMarks(e){e?this.entries.set("mark",this.getEntriesByType("mark").filter(t=>t.name!==e)):this.entries.delete("mark")}}
+*/
+export class CompatiblePerformance {
+  constructor() {
+    /*! Not implemented */
+    this.navigation = {};
+    /*! Not implemented */
+    this.timeOrigin = 0;
+    /*! Not implemented */
+    this.timing = {};
+    /*! Not implemented */
+    this.eventCounts = {};
+    /*! Not implemented */
+    this.onresourcetimingbufferfull = () => null;
+    this.entries = /* @__PURE__ */ new Map();
+    this.now_impl = globalThis.performance.now ?? (() => Date.now());
+  }
+  static replaceIfUnsupported() {
+    if (!("now" in globalThis.performance) || !("mark" in globalThis.performance) || !("measure" in globalThis.performance) || !("getEntries" in globalThis.performance) || !("getEntriesByType" in globalThis.performance) || !("getEntriesByName" in globalThis.performance) || !("clearMeasures" in globalThis.performance) || !("clearMarks" in globalThis.performance)) {
+      console.warn("globalThis.performance switch to CompatiblePerformance");
+      globalThis.performance = new CompatiblePerformance();
+    }
+  }
+  /*! Not implemented */
+  clearResourceTimings() {
+  }
+  /*! Not implemented */
+  setResourceTimingBufferSize(_maxSize) {
+  }
+  /*! Not implemented */
+  addEventListener(_type, _callback, _options) {
+  }
+  /*! Not implemented */
+  removeEventListener(_type, _callback, _options) {
+  }
+  /*! Not implemented */
+  dispatchEvent(_event) {
+    return true;
+  }
+  /*! Not implemented */
+  toJSON() {
+    return { navigation: this.navigation, timeOrigin: this.timeOrigin, timing: this.timing };
+  }
+  now() {
+    return this.now_impl();
+  }
+  mark(markName, markOptions) {
+    const entry = {
+      entryType: "mark",
+      name: markName,
+      startTime: markOptions?.startTime ?? this.now(),
+      duration: 0,
+      detail: markOptions?.detail,
+      toJSON: () => null
+    };
+    if (this.entries.has("mark")) {
+      this.entries.get("mark").push(entry);
+    } else {
+      this.entries.set("mark", [entry]);
+    }
+    entry.toJSON = () => JSON.stringify(entry);
+    return entry;
+  }
+  measure(measureName, startOrMeasureOptions, endMark) {
+    let startMark;
+    let options;
+    if (startOrMeasureOptions) {
+      if (typeof startOrMeasureOptions === "string") {
+        startMark = startOrMeasureOptions;
+      } else {
+        options = startOrMeasureOptions;
+      }
+    }
+    let lastStartMark;
+    let lastEndMark;
+    if (options) {
+      if (typeof options.start === "string") {
+        startMark = options.start;
+      } else if (typeof options.start === "number") {
+        lastStartMark = {
+          entryType: "mark",
+          name: startMark ?? "",
+          startTime: 0,
+          duration: options.start,
+          toJSON: () => null
+        };
+      }
+      if (typeof options.end === "string") {
+        endMark = options.end;
+      } else if (typeof options.end === "number") {
+        lastEndMark = {
+          entryType: "mark",
+          name: endMark ?? "",
+          startTime: this.now(),
+          duration: options.end,
+          toJSON: () => null
+        };
+      }
+    }
+    if (!lastStartMark || !lastEndMark) {
+      if (!lastStartMark && startMark) {
+        lastStartMark = this.getEntriesByName(startMark, "mark").slice(-1)[0];
+      }
+      if (!lastEndMark && endMark) {
+        lastEndMark = this.getEntriesByName(endMark, "mark").slice(-1)[0];
+      }
+    }
+    const entry = {
+      entryType: "measure",
+      name: measureName,
+      startTime: lastStartMark?.startTime ?? 0,
+      duration: options?.duration ?? (lastEndMark?.startTime ?? 0) - (lastStartMark?.startTime ?? this.now()),
+      detail: options?.detail ?? lastEndMark.detail ?? lastStartMark.detail,
+      toJSON: () => null
+    };
+    entry.toJSON = () => JSON.stringify(entry);
+    if (this.entries.has("measure")) {
+      this.entries.get("measure").push(entry);
+    } else {
+      this.entries.set("measure", [entry]);
+    }
+    return entry;
+  }
+  getEntries() {
+    return [].concat(...this.entries.values());
+  }
+  getEntriesByType(type) {
+    return this.entries.get(type) ?? [];
+  }
+  getEntriesByName(name, type) {
+    if (type) {
+      return this.getEntriesByType(type).filter((e) => e.name === name);
+    } else {
+      return this.getEntries().filter((e) => e.name === name);
+    }
+  }
+  clearMeasures(measureName) {
+    if (measureName) {
+      this.entries.set("measure", this.getEntriesByType("measure").filter((e) => e.name !== measureName));
+    } else {
+      this.entries.delete("measure");
+    }
+  }
+  clearMarks(markName) {
+    if (markName) {
+      this.entries.set("mark", this.getEntriesByType("mark").filter((e) => e.name !== markName));
+    } else {
+      this.entries.delete("mark");
+    }
+  }
+}
 //# sourceMappingURL=CompatiblePerformance.js.map

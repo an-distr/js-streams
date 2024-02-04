@@ -2,6 +2,6 @@
   "version": 3,
   "sources": ["test.ts"],
   "sourcesContent": ["import { AssertStream } from \"../AssertStream.ts\"\n\nconst source = (data: any) => new ReadableStream({\n  start(controller) {\n    controller.enqueue(data)\n    controller.close()\n  }\n})\n\nconst terminate = () => new WritableStream\n\nawait source([1, 2, 3, 4, 5])\n  .pipeThrough(new AssertStream(chunk => chunk <= 4))\n  .pipeTo(terminate())\n\nconsole.log(\"Test completed.\")"],
-  "mappings": "aAAA,OAAS,gBAAAA,MAAoB,qBAE7B,MAAMC,EAAUC,GAAc,IAAI,eAAe,CAC/C,MAAMC,EAAY,CAChBA,EAAW,QAAQD,CAAI,EACvBC,EAAW,MAAM,CACnB,CACF,CAAC,EAEKC,EAAY,IAAM,IAAI,eAE5B,MAAMH,EAAO,CAAC,EAAG,EAAG,EAAG,EAAG,CAAC,CAAC,EACzB,YAAY,IAAID,EAAaK,GAASA,GAAS,CAAC,CAAC,EACjD,OAAOD,EAAU,CAAC,EAErB,QAAQ,IAAI,iBAAiB",
-  "names": ["AssertStream", "source", "data", "controller", "terminate", "chunk"]
+  "mappings": ";AAAA,SAAS,oBAAoB;AAE7B,MAAM,SAAS,CAAC,SAAc,IAAI,eAAe;AAAA,EAC/C,MAAM,YAAY;AAChB,eAAW,QAAQ,IAAI;AACvB,eAAW,MAAM;AAAA,EACnB;AACF,CAAC;AAED,MAAM,YAAY,MAAM,IAAI;AAE5B,MAAM,OAAO,CAAC,GAAG,GAAG,GAAG,GAAG,CAAC,CAAC,EACzB,YAAY,IAAI,aAAa,WAAS,SAAS,CAAC,CAAC,EACjD,OAAO,UAAU,CAAC;AAErB,QAAQ,IAAI,iBAAiB;",
+  "names": []
 }

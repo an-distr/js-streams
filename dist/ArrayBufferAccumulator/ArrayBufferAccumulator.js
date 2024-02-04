@@ -1,4 +1,5 @@
-"use strict";/*!
+"use strict";
+/*!
 MIT No Attribution
 
 Copyright 2024 an(https://github.com/an-dist)
@@ -15,5 +16,101 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/import{PullPush as n,PullPushNonQueue as c}from"../PullPush/PullPush.js";export class ArrayBufferAccumulator extends n{constructor(t,s){super(new c),this.size=t,this.fixed=s?.forceEmit?!1:s?.fixed??!1,this.buffer=new ArrayBuffer(t),this.bufferView=new Uint8Array(this.buffer),this.pos=0,s?.forceEmit&&(Array.isArray(s.forceEmit)?this.forceEmit=i=>{const f=[];for(const r of i)f.push(r);const u=s.forceEmit;for(let r=0;r<u.length;++r){const e=u[r];let o=0,h=0;for(const l of f.values()){if(l!==e[h]){++o,h=0;continue}if(e.length===h+1)return o+e.length;++o,++h}}return-1}:this.forceEmit=s.forceEmit)}async*pullpush(t,s){if(t){let i,f;if(Array.isArray(t))i=new Uint8Array(t),f=t.length;else{const e=t;i=new Uint8Array(e),f=e.byteLength}let u=0,r;for(;f>0;)if(this.pos===this.size&&(yield this.bufferView.slice(),this.pos=0),r=Math.min(this.size-this.pos,f),this.bufferView.set(i.slice(u,u+r),this.pos),this.pos+=r,u+=r,f-=r,this.forceEmit&&this.pos>0){let e=this.forceEmit(this.bufferView.slice(0,this.pos).values());for(;e>0;)yield this.bufferView.slice(0,e),this.bufferView.copyWithin(0,e,this.size),this.pos-=e,e=this.forceEmit(this.bufferView.slice(0,this.pos).values())}}if(s&&this.pos>0){if(this.forceEmit){let i=this.forceEmit(this.bufferView.slice(0,this.pos).values());for(;i>0;)yield this.bufferView.slice(0,i),this.bufferView.copyWithin(0,i,this.size),this.pos-=i,i=this.forceEmit(this.bufferView.slice(0,this.pos).values())}this.fixed&&(this.bufferView.fill(0,this.pos),this.pos=this.size),this.pos>0&&(yield this.bufferView.slice(0,this.pos))}}}
+*/
+import { PullPush, PullPushNonQueue } from "../PullPush/PullPush.js";
+export class ArrayBufferAccumulator extends PullPush {
+  constructor(size, options) {
+    super(new PullPushNonQueue());
+    this.size = size;
+    this.fixed = options?.forceEmit ? false : options?.fixed ?? false;
+    this.buffer = new ArrayBuffer(size);
+    this.bufferView = new Uint8Array(this.buffer);
+    this.pos = 0;
+    if (options?.forceEmit) {
+      if (Array.isArray(options.forceEmit)) {
+        this.forceEmit = (bytes) => {
+          const clonedBytes = [];
+          for (const byte of bytes) {
+            clonedBytes.push(byte);
+          }
+          const patterns = options.forceEmit;
+          for (let patternIndex = 0; patternIndex < patterns.length; ++patternIndex) {
+            const pattern = patterns[patternIndex];
+            let byteIndex = 0;
+            let patternByteIndex = 0;
+            for (const byte of clonedBytes.values()) {
+              if (byte !== pattern[patternByteIndex]) {
+                ++byteIndex;
+                patternByteIndex = 0;
+                continue;
+              }
+              if (pattern.length === patternByteIndex + 1) {
+                return byteIndex + pattern.length;
+              }
+              ++byteIndex;
+              ++patternByteIndex;
+            }
+          }
+          return -1;
+        };
+      } else {
+        this.forceEmit = options.forceEmit;
+      }
+    }
+  }
+  async *pullpush(data, flush) {
+    if (data) {
+      let chunkView;
+      let chunkSize;
+      if (Array.isArray(data)) {
+        chunkView = new Uint8Array(data);
+        chunkSize = data.length;
+      } else {
+        const buffer = data;
+        chunkView = new Uint8Array(buffer);
+        chunkSize = buffer.byteLength;
+      }
+      let chunkPos = 0;
+      let copySize;
+      while (chunkSize > 0) {
+        if (this.pos === this.size) {
+          yield this.bufferView.slice();
+          this.pos = 0;
+        }
+        copySize = Math.min(this.size - this.pos, chunkSize);
+        this.bufferView.set(chunkView.slice(chunkPos, chunkPos + copySize), this.pos);
+        this.pos += copySize;
+        chunkPos += copySize;
+        chunkSize -= copySize;
+        if (this.forceEmit && this.pos > 0) {
+          let forceEmitPos = this.forceEmit(this.bufferView.slice(0, this.pos).values());
+          while (forceEmitPos > 0) {
+            yield this.bufferView.slice(0, forceEmitPos);
+            this.bufferView.copyWithin(0, forceEmitPos, this.size);
+            this.pos -= forceEmitPos;
+            forceEmitPos = this.forceEmit(this.bufferView.slice(0, this.pos).values());
+          }
+        }
+      }
+    }
+    if (flush && this.pos > 0) {
+      if (this.forceEmit) {
+        let forceEmitPos = this.forceEmit(this.bufferView.slice(0, this.pos).values());
+        while (forceEmitPos > 0) {
+          yield this.bufferView.slice(0, forceEmitPos);
+          this.bufferView.copyWithin(0, forceEmitPos, this.size);
+          this.pos -= forceEmitPos;
+          forceEmitPos = this.forceEmit(this.bufferView.slice(0, this.pos).values());
+        }
+      }
+      if (this.fixed) {
+        this.bufferView.fill(0, this.pos);
+        this.pos = this.size;
+      }
+      if (this.pos > 0) {
+        yield this.bufferView.slice(0, this.pos);
+      }
+    }
+  }
+}
 //# sourceMappingURL=ArrayBufferAccumulator.js.map

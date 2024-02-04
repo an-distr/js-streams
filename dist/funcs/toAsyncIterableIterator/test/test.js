@@ -1,2 +1,30 @@
-"use strict";import{toAsyncIterableIterator as c}from"../toAsyncIterableIterator.js";const l=e=>new ReadableStream({start(t){for(const a of e)t.enqueue(a);t.close()}}),o=async e=>{console.group("vals:",e.length>10?`${e.splice(0,10)}...`:e);const t=l(e);let a=0;for await(const s of c(t))console.assert(s===e[a]),++a;console.groupEnd()};await o([]),await o([1,2,3,4,5]),await o(["a","b","c","d","e"]),await o([1,void 0,null,"a",.1]);const n=[];for(let e=0;e<1e5;++e)n.push(e);await o(n),console.log("Test completed.");
+"use strict";
+import { toAsyncIterableIterator } from "../toAsyncIterableIterator.js";
+const source = (vals) => new ReadableStream({
+  start(controller) {
+    for (const val of vals) {
+      controller.enqueue(val);
+    }
+    controller.close();
+  }
+});
+const test = async (vals) => {
+  console.group("vals:", vals.length > 10 ? `${vals.splice(0, 10)}...` : vals);
+  const readable = source(vals);
+  let i = 0;
+  for await (const val of toAsyncIterableIterator(readable)) {
+    console.assert(val === vals[i]);
+    ++i;
+  }
+  console.groupEnd();
+};
+await test([]);
+await test([1, 2, 3, 4, 5]);
+await test(["a", "b", "c", "d", "e"]);
+await test([1, void 0, null, "a", 0.1]);
+const big = [];
+for (let i = 0; i < 1e5; ++i)
+  big.push(i);
+await test(big);
+console.log("Test completed.");
 //# sourceMappingURL=test.js.map

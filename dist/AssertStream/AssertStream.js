@@ -1,4 +1,5 @@
-"use strict";/*!
+"use strict";
+/*!
 MIT No Attribution
 
 Copyright 2024 an(https://github.com/an-dist)
@@ -15,5 +16,19 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/export class AssertStream extends TransformStream{constructor(s){super({transform(e,r){console.assert(s?s(e):void 0,e),r.enqueue(e)}})}}
+*/
+export class AssertStream extends TransformStream {
+  constructor(condition) {
+    super({
+      transform(chunk, controller) {
+        if (condition) {
+          console.assert(condition(chunk), chunk);
+        } else {
+          console.assert(void 0, chunk);
+        }
+        controller.enqueue(chunk);
+      }
+    });
+  }
+}
 //# sourceMappingURL=AssertStream.js.map

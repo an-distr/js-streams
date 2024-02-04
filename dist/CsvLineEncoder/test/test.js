@@ -1,5 +1,50 @@
-"use strict";import{CsvLineEncoder as o}from"../CsvLineEncoder.js";const p=e=>new ReadableStream({start(s){s.enqueue(e),s.close()}}),a=()=>new TransformStream({transform(e,s){console.log(e),s.enqueue(e)}}),r=()=>new WritableStream,n=[{a:1,b:2,c:`aaa
-bbb,ccc`},{a:4,b:5,c:6},{a:7,b:8,c:9},{c1:"a",c2:"b",c3:"c",c4:"d"}];console.groupCollapsed("=== escape: all ==="),await p(n).pipeThrough(new o({escape:"all"}).transform()).pipeThrough(a()).pipeTo(r()),console.groupEnd(),console.groupCollapsed("=== escape: auto ==="),await p(n).pipeThrough(new o({escape:"auto"}).transform()).pipeThrough(a()).pipeTo(r()),console.groupEnd(),console.groupCollapsed("=== escape: none ==="),await p(n).pipeThrough(new o({escape:"none"}).transform()).pipeThrough(a()).pipeTo(r()),console.groupEnd(),console.groupCollapsed("=== escape: custom ==="),await p(n).pipeThrough(new o({escape:e=>`[${e}]`}).transform()).pipeThrough(a()).pipeTo(r()),console.groupEnd(),console.groupCollapsed("=== delimiter: custom ==="),await p(n).pipeThrough(new o({delimiter:"|"}).transform()).pipeThrough(a()).pipeTo(r()),console.groupEnd(),console.groupCollapsed("=== newLine: custom ==="),await p(n).pipeThrough(new o({newLine:"|"}).transform()).pipeThrough(a()).pipeTo(r()),console.groupEnd(),console.groupCollapsed(`
-=== no new line ===`);let l="";await p(n).pipeThrough(new o({withNewLine:!1}).transform()).pipeTo(new WritableStream({write(e){l+=e}})),console.log(l),console.groupEnd(),console.log(`
-Test completed.`);
+"use strict";
+import { CsvLineEncoder } from "../CsvLineEncoder.js";
+const source = (data2) => new ReadableStream({
+  start(controller) {
+    controller.enqueue(data2);
+    controller.close();
+  }
+});
+const logging = () => new TransformStream({
+  transform(chunk, controller) {
+    console.log(chunk);
+    controller.enqueue(chunk);
+  }
+});
+const terminate = () => new WritableStream();
+const data = [
+  { "a": 1, "b": 2, "c": "aaa\nbbb,ccc" },
+  { "a": 4, "b": 5, "c": 6 },
+  { "a": 7, "b": 8, "c": 9 },
+  { "c1": "a", "c2": "b", "c3": "c", "c4": "d" }
+];
+console.groupCollapsed("=== escape: all ===");
+await source(data).pipeThrough(new CsvLineEncoder({ escape: "all" }).transform()).pipeThrough(logging()).pipeTo(terminate());
+console.groupEnd();
+console.groupCollapsed("=== escape: auto ===");
+await source(data).pipeThrough(new CsvLineEncoder({ escape: "auto" }).transform()).pipeThrough(logging()).pipeTo(terminate());
+console.groupEnd();
+console.groupCollapsed("=== escape: none ===");
+await source(data).pipeThrough(new CsvLineEncoder({ escape: "none" }).transform()).pipeThrough(logging()).pipeTo(terminate());
+console.groupEnd();
+console.groupCollapsed("=== escape: custom ===");
+await source(data).pipeThrough(new CsvLineEncoder({ escape: (s) => `[${s}]` }).transform()).pipeThrough(logging()).pipeTo(terminate());
+console.groupEnd();
+console.groupCollapsed("=== delimiter: custom ===");
+await source(data).pipeThrough(new CsvLineEncoder({ delimiter: "|" }).transform()).pipeThrough(logging()).pipeTo(terminate());
+console.groupEnd();
+console.groupCollapsed("=== newLine: custom ===");
+await source(data).pipeThrough(new CsvLineEncoder({ newLine: "|" }).transform()).pipeThrough(logging()).pipeTo(terminate());
+console.groupEnd();
+console.groupCollapsed("\n=== no new line ===");
+let text = "";
+await source(data).pipeThrough(new CsvLineEncoder({ withNewLine: false }).transform()).pipeTo(new WritableStream({
+  write(chunk) {
+    text += chunk;
+  }
+}));
+console.log(text);
+console.groupEnd();
+console.log("\nTest completed.");
 //# sourceMappingURL=test.js.map

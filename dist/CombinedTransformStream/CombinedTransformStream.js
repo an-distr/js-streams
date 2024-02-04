@@ -1,4 +1,5 @@
-"use strict";/*!
+"use strict";
+/*!
 MIT No Attribution
 
 Copyright 2024 an(https://github.com/an-dist)
@@ -15,5 +16,19 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/export class CombinedTransformStream{constructor(e,t){const i=e.slice(0)[0],l=e.slice(-1)[0];let a;for(const r of e)a&&a.readable.pipeTo(r.writable,t),a=r;this.writable=i.writable,this.readable=l.readable}}
+*/
+export class CombinedTransformStream {
+  constructor(transforms, options) {
+    const first = transforms.slice(0)[0];
+    const last = transforms.slice(-1)[0];
+    let previous = void 0;
+    for (const transform of transforms) {
+      if (previous)
+        previous.readable.pipeTo(transform.writable, options);
+      previous = transform;
+    }
+    this.writable = first.writable;
+    this.readable = last.readable;
+  }
+}
 //# sourceMappingURL=CombinedTransformStream.js.map

@@ -1,2 +1,34 @@
-"use strict";import{CombinedTransformStream as t}from"../CombinedTransformStream.js";const a=()=>new ReadableStream({start(e){for(const r of[1,2,3,4,5])e.enqueue(r);e.close()}}),s=()=>new WritableStream({write(e){console.log(`writed: ${e}`),console.groupEnd()}}),m=()=>new TransformStream({transform(e,r){console.group(`chunk=${e}`),r.enqueue(e)}}),o=e=>new TransformStream({transform(r,n){console.log(`chunk=${r}, name=${e}`),n.enqueue(r)}});await a().pipeThrough(m()).pipeThrough(new t([o("transform 1"),o("transform 2"),o("transform 3")])).pipeTo(s());
+"use strict";
+import { CombinedTransformStream } from "../CombinedTransformStream.js";
+const source = () => new ReadableStream({
+  start(controller) {
+    for (const n of [1, 2, 3, 4, 5]) {
+      controller.enqueue(n);
+    }
+    controller.close();
+  }
+});
+const terminate = () => new WritableStream({
+  write(chunk) {
+    console.log(`writed: ${chunk}`);
+    console.groupEnd();
+  }
+});
+const grouping = () => new TransformStream({
+  transform(chunk, controller) {
+    console.group(`chunk=${chunk}`);
+    controller.enqueue(chunk);
+  }
+});
+const transform = (name) => new TransformStream({
+  transform(chunk, controller) {
+    console.log(`chunk=${chunk}, name=${name}`);
+    controller.enqueue(chunk);
+  }
+});
+await source().pipeThrough(grouping()).pipeThrough(new CombinedTransformStream([
+  transform("transform 1"),
+  transform("transform 2"),
+  transform("transform 3")
+])).pipeTo(terminate());
 //# sourceMappingURL=test.js.map

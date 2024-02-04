@@ -1,4 +1,5 @@
-"use strict";/*!
+"use strict";
+/*!
 MIT No Attribution
 
 Copyright 2024 an(https://github.com/an-dist)
@@ -15,5 +16,65 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/export class DownloadStream extends WritableStream{constructor(l,o){const i=t=>{const a=URL.createObjectURL(t),e=document.createElement("a");e.href=a,e.target="_blank",e.download=l,e.innerText=l,o?.linkHolder?o.linkHolder.appendChild(e):(e.click(),e.remove(),setTimeout(()=>URL.revokeObjectURL(a),1e4))};if(o?.mode==="filesystem"){let t,a,e;super({async start(){t=await navigator.storage.getDirectory(),a=await t.getFileHandle(l,{create:!0}),e=await a.createWritable()},async write(r){await e.write(r)},async close(){await e.close();const r=await a.getFile();i(r)},async abort(r){e.abort(r),await t.removeEntry(l)}})}else{let t;super({start(){t=[]},write(a){t.push(a)},close(){const a=new Blob(t);i(a)},abort(){t=[]}})}}}
+*/
+export class DownloadStream extends WritableStream {
+  constructor(name, options) {
+    const download = (blob) => {
+      const url = URL.createObjectURL(blob);
+      const trigger = document.createElement("a");
+      trigger.href = url;
+      trigger.target = "_blank";
+      trigger.download = name;
+      trigger.innerText = name;
+      if (options?.linkHolder) {
+        options.linkHolder.appendChild(trigger);
+      } else {
+        trigger.click();
+        trigger.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 10 * 1e3);
+      }
+    };
+    if (options?.mode === "filesystem") {
+      let directory;
+      let handle;
+      let fileStream;
+      super({
+        async start() {
+          directory = await navigator.storage.getDirectory();
+          handle = await directory.getFileHandle(name, { create: true });
+          fileStream = await handle.createWritable();
+        },
+        async write(chunk) {
+          await fileStream.write(chunk);
+        },
+        async close() {
+          await fileStream.close();
+          const file = await handle.getFile();
+          download(file);
+        },
+        async abort(reason) {
+          fileStream.abort(reason);
+          await directory.removeEntry(name);
+        }
+      });
+    } else {
+      let chunks;
+      super({
+        start() {
+          chunks = [];
+        },
+        write(chunk) {
+          chunks.push(chunk);
+        },
+        close() {
+          const blob = new Blob(chunks);
+          download(blob);
+        },
+        abort() {
+          chunks = [];
+        }
+      });
+    }
+  }
+}
 //# sourceMappingURL=DownloadStream.js.map

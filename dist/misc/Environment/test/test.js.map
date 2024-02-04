@@ -2,6 +2,6 @@
   "version": 3,
   "sources": ["test.ts"],
   "sourcesContent": ["import { Environment } from \"../Environment.ts\"\n\nconsole.table({\n  runtime: Environment.runtime(),\n  brand: await Environment.brand(),\n  version: await Environment.version(),\n})\n\nconsole.group(\"Debug info\")\nconsole.table({\n  ua: (typeof window !== \"undefined\") ? window.navigator.userAgent : \"\",\n  brands: (typeof window !== \"undefined\" && typeof (window.navigator as any).userAgentData !== \"undefined\") ? JSON.stringify((window.navigator as any).userAgentData.brands) : \"\",\n  hasBunApi: Environment.hasBunApi(),\n  hasDenoApi: Environment.hasDenoApi(),\n  hasNodeApi: Environment.hasNodeApi(),\n  hasBrowserApi: Environment.hasBrowserApi(),\n})\nconsole.groupEnd()"],
-  "mappings": "aAAA,OAAS,eAAAA,MAAmB,oBAE5B,QAAQ,MAAM,CACZ,QAASA,EAAY,QAAQ,EAC7B,MAAO,MAAMA,EAAY,MAAM,EAC/B,QAAS,MAAMA,EAAY,QAAQ,CACrC,CAAC,EAED,QAAQ,MAAM,YAAY,EAC1B,QAAQ,MAAM,CACZ,GAAK,OAAO,OAAW,IAAe,OAAO,UAAU,UAAY,GACnE,OAAS,OAAO,OAAW,KAAe,OAAQ,OAAO,UAAkB,cAAkB,IAAe,KAAK,UAAW,OAAO,UAAkB,cAAc,MAAM,EAAI,GAC7K,UAAWA,EAAY,UAAU,EACjC,WAAYA,EAAY,WAAW,EACnC,WAAYA,EAAY,WAAW,EACnC,cAAeA,EAAY,cAAc,CAC3C,CAAC,EACD,QAAQ,SAAS",
-  "names": ["Environment"]
+  "mappings": ";AAAA,SAAS,mBAAmB;AAE5B,QAAQ,MAAM;AAAA,EACZ,SAAS,YAAY,QAAQ;AAAA,EAC7B,OAAO,MAAM,YAAY,MAAM;AAAA,EAC/B,SAAS,MAAM,YAAY,QAAQ;AACrC,CAAC;AAED,QAAQ,MAAM,YAAY;AAC1B,QAAQ,MAAM;AAAA,EACZ,IAAK,OAAO,WAAW,cAAe,OAAO,UAAU,YAAY;AAAA,EACnE,QAAS,OAAO,WAAW,eAAe,OAAQ,OAAO,UAAkB,kBAAkB,cAAe,KAAK,UAAW,OAAO,UAAkB,cAAc,MAAM,IAAI;AAAA,EAC7K,WAAW,YAAY,UAAU;AAAA,EACjC,YAAY,YAAY,WAAW;AAAA,EACnC,YAAY,YAAY,WAAW;AAAA,EACnC,eAAe,YAAY,cAAc;AAC3C,CAAC;AACD,QAAQ,SAAS;",
+  "names": []
 }

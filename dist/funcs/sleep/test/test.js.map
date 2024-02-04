@@ -2,6 +2,6 @@
   "version": 3,
   "sources": ["test.ts"],
   "sourcesContent": ["import { sleep } from \"../sleep.ts\"\n\nconst test = async (msec?: number) => {\n  console.group(`Wait for ${msec} second(s).`)\n  performance.clearMarks(\"start\")\n  performance.clearMarks(\"end\")\n  performance.clearMeasures(\"perf\")\n  performance.mark(\"start\")\n  await sleep(msec)\n  performance.mark(\"end\")\n  performance.measure(\"perf\", \"start\", \"end\")\n  const perf = performance.getEntriesByName(\"perf\")\n  console.log(`elapsed: ${perf[0].duration} msec(s).`)\n  console.groupEnd()\n}\n\nawait test(1000)\nawait test(1)\nawait test()\n\nconsole.log(\"Test completed.\")"],
-  "mappings": "aAAA,OAAS,SAAAA,MAAa,cAEtB,MAAMC,EAAO,MAAOC,GAAkB,CACpC,QAAQ,MAAM,YAAYA,CAAI,aAAa,EAC3C,YAAY,WAAW,OAAO,EAC9B,YAAY,WAAW,KAAK,EAC5B,YAAY,cAAc,MAAM,EAChC,YAAY,KAAK,OAAO,EACxB,MAAMF,EAAME,CAAI,EAChB,YAAY,KAAK,KAAK,EACtB,YAAY,QAAQ,OAAQ,QAAS,KAAK,EAC1C,MAAMC,EAAO,YAAY,iBAAiB,MAAM,EAChD,QAAQ,IAAI,YAAYA,EAAK,CAAC,EAAE,QAAQ,WAAW,EACnD,QAAQ,SAAS,CACnB,EAEA,MAAMF,EAAK,GAAI,EACf,MAAMA,EAAK,CAAC,EACZ,MAAMA,EAAK,EAEX,QAAQ,IAAI,iBAAiB",
-  "names": ["sleep", "test", "msec", "perf"]
+  "mappings": ";AAAA,SAAS,aAAa;AAEtB,MAAM,OAAO,OAAO,SAAkB;AACpC,UAAQ,MAAM,YAAY,IAAI,aAAa;AAC3C,cAAY,WAAW,OAAO;AAC9B,cAAY,WAAW,KAAK;AAC5B,cAAY,cAAc,MAAM;AAChC,cAAY,KAAK,OAAO;AACxB,QAAM,MAAM,IAAI;AAChB,cAAY,KAAK,KAAK;AACtB,cAAY,QAAQ,QAAQ,SAAS,KAAK;AAC1C,QAAM,OAAO,YAAY,iBAAiB,MAAM;AAChD,UAAQ,IAAI,YAAY,KAAK,CAAC,EAAE,QAAQ,WAAW;AACnD,UAAQ,SAAS;AACnB;AAEA,MAAM,KAAK,GAAI;AACf,MAAM,KAAK,CAAC;AACZ,MAAM,KAAK;AAEX,QAAQ,IAAI,iBAAiB;",
+  "names": []
 }

@@ -1,4 +1,5 @@
-"use strict";/*!
+"use strict";
+/*!
 MIT No Attribution
 
 Copyright 2024 an(https://github.com/an-dist)
@@ -15,5 +16,27 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/import{PullPush as u,PullPushArrayQueue as i}from"../PullPush/PullPush.js";export class ArrayAccumulator extends u{constructor(e){super(new i),this.size=e}async*pullpush(e,s){await this.push(e);do{for(;this.queue.length()>=this.size;)await this.push(yield this.queue.splice(0,this.size));if(s)this.queue.more()&&await this.push(yield this.queue.splice(0));else break}while(this.queue.more())}}
+*/
+import { PullPush, PullPushArrayQueue } from "../PullPush/PullPush.js";
+export class ArrayAccumulator extends PullPush {
+  constructor(size) {
+    super(new PullPushArrayQueue());
+    this.size = size;
+  }
+  async *pullpush(data, flush) {
+    await this.push(data);
+    do {
+      while (this.queue.length() >= this.size) {
+        await this.push(yield this.queue.splice(0, this.size));
+      }
+      if (flush) {
+        if (this.queue.more()) {
+          await this.push(yield this.queue.splice(0));
+        }
+      } else {
+        break;
+      }
+    } while (this.queue.more());
+  }
+}
 //# sourceMappingURL=ArrayAccumulator.js.map

@@ -1,2 +1,34 @@
-"use strict";import{PerformanceStreamBuilder as a}from"../PerformanceStream.js";import{sleep as s}from"../../funcs/sleep/sleep.js";const m=()=>new ReadableStream({start(e){for(const r of[1,2,3,4,5])e.enqueue(r);e.close()}}),i=()=>new WritableStream({write(e){console.log(`writed: ${e}`),console.groupEnd()}}),p=()=>new TransformStream({transform(e,r){console.group(`chunk=${e}`),r.enqueue(e)}}),o=e=>new TransformStream({async transform(r,t){console.log(`chunk=${r}, name=${e}`),await s(100),t.enqueue(r)}}),n=new a("perf","start","end");await m().pipeThrough(p()).pipeThrough(n.pipe(o("transform 1")).pipe(o("transform 2")).pipe(o("transform 3")).build()).pipeTo(i()),console.table(n.result());
+"use strict";
+import { PerformanceStreamBuilder } from "../PerformanceStream.js";
+import { sleep } from "../../funcs/sleep/sleep.js";
+const source = () => new ReadableStream({
+  start(controller) {
+    for (const n of [1, 2, 3, 4, 5]) {
+      controller.enqueue(n);
+    }
+    controller.close();
+  }
+});
+const terminate = () => new WritableStream({
+  write(chunk) {
+    console.log(`writed: ${chunk}`);
+    console.groupEnd();
+  }
+});
+const grouping = () => new TransformStream({
+  transform(chunk, controller) {
+    console.group(`chunk=${chunk}`);
+    controller.enqueue(chunk);
+  }
+});
+const transform = (name) => new TransformStream({
+  async transform(chunk, controller) {
+    console.log(`chunk=${chunk}, name=${name}`);
+    await sleep(100);
+    controller.enqueue(chunk);
+  }
+});
+const builder = new PerformanceStreamBuilder("perf", "start", "end");
+await source().pipeThrough(grouping()).pipeThrough(builder.pipe(transform("transform 1")).pipe(transform("transform 2")).pipe(transform("transform 3")).build()).pipeTo(terminate());
+console.table(builder.result());
 //# sourceMappingURL=test.js.map
