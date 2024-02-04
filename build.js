@@ -4,8 +4,6 @@ import * as fs from "fs"
 
 // Collect targets.
 const tsFiles = (await glob("dist/**/*.ts")).filter(x => !x.includes("/functions/"))
-let jsFiles = tsFiles.map(x => x.replace(".ts", ".js"))
-jsFiles = jsFiles.concat(jsFiles.map(x => x.replace(".js", ".min.js")))
 
 // Transpiling.
 console.group("Transpiling.")
@@ -16,9 +14,13 @@ console.group("Transpiling.")
     sourcemap: "linked",
   }
   const context = await esbuild.context(options)
-  const result = await context.rebuild()
-  console.log(result)
-  console.log(`Transpiled ${result.outputFiles?.length} file(s).`)
+  await context.rebuild()
+
+  for (const jsFile of tsFiles.map(x => x.replace(".ts", ".js"))) {
+    let text = fs.readFileSync(jsFile, "utf-8")
+    text = text.replaceAll(".ts", ".js")
+    fs.writeFileSync(jsFile, text)
+  }
 }
 console.groupEnd()
 
@@ -35,21 +37,31 @@ console.group("Transpiling. (min)")
     sourcemap: "linked",
   }
   const context = await esbuild.context(options)
-  const result = await context.rebuild()
-  console.log(result)
-  console.log(`Transpiled ${result.outputFiles?.length} file(s).`)
+  await context.rebuild()
+
+  for (const jsFile of tsFiles.map(x => x.replace(".ts", ".min.js"))) {
+    let text = fs.readFileSync(jsFile, "utf-8")
+    text = text.replaceAll(".ts", ".min.js")
+    fs.writeFileSync(jsFile, text)
+  }
 }
 console.groupEnd()
 
-// Replace import extension.
-console.group("Replace import extension.")
+// Transpiling. (bundle)
+console.group("Transpiling. (bundle)")
 {
-  for (const jsFile of jsFiles) {
-    let text = fs.readFileSync(jsFile, "utf-8")
-    text = text.replaceAll(".ts", ".js")
-    fs.writeFileSync(jsFile, text)
+  const options = {
+    entryPoints: [
+      "dist/web.ts",
+      "dist/mod.ts",
+    ],
+    outdir: "dist/bundle",
+    bundle: true,
+    minify: true,
+    sourcemap: "linked",
   }
-  console.log(`Extension replaced ${jsFiles.length} file(s).`)
+  const context = await esbuild.context(options)
+  await context.rebuild()
 }
 console.groupEnd()
 

@@ -7,9 +7,9 @@
 
 <link rel="preload" as="style" href="/.site/site.css">
 <link rel="preload" as="style" href="/misc/DomConsole/DomConsole.css">
-<link rel="modulepreload" href="../../web.js">
-<link rel="modulepreload" href="JsonToCsv.download.js">
-<link rel="modulepreload" href="JsonToCsv.upload.js">
+<link rel="modulepreload" href="../../web.min.js">
+<link rel="modulepreload" href="JsonToCsv.download.min.js">
+<link rel="modulepreload" href="JsonToCsv.upload.min.js">
 
 <link rel="icon" href="/.site/favicon.svg" type="image/svg+xml" sizes="any">
 <link rel="icon" href="/.site/favicon.png" type="image/png" sizes="192x192">
@@ -52,7 +52,7 @@
     <label for="txtUrl">
       <h2>JSON to CSV (Download)</h2>
     </label>
-    <script type="module" src="JsonToCsv.download.js"></script>
+    <script type="module" src="JsonToCsv.download.min.js"></script>
     <input id="txtUrl" type="url">
     <button id="btnConvertUrl">Convert</button>
     <div style="display: flex; flex-direction: column;"></div>
@@ -64,7 +64,7 @@
     <label for="txtFile">
       <h2>JSON to CSV (Upload)</h2>
     </label>
-    <script type="module" src="JsonToCsv.upload.js"></script>
+    <script type="module" src="JsonToCsv.upload.min.js"></script>
     <input id="txtFile" type="file" accept=".json,.jsonl">
     <div style="display: flex; flex-direction: column;"></div>
   </section>
@@ -76,7 +76,7 @@
 </main>
 
 <script type="module">
-  import { DomConsole } from "../../web.js"
+  import { DomConsole } from "../../web.min.js"
 
   globalThis.console = new DomConsole("console", globalThis.console)
 
