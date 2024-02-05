@@ -9,6 +9,8 @@ const tsFiles = (await glob("dist/**/*.ts")).filter(x => !x.includes("/functions
 console.group("Transpiling.")
 {
   const options = {
+    platform: "browser",
+    format: "esm",
     entryPoints: tsFiles,
     outdir: "dist",
     sourcemap: "linked",
@@ -28,6 +30,8 @@ console.groupEnd()
 console.group("Transpiling. (min)")
 {
   const options = {
+    platform: "browser",
+    format: "esm",
     entryPoints: tsFiles,
     outdir: "dist",
     minify: true,
