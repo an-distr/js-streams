@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["test.ts"],
-  "sourcesContent": ["import { Environment } from \"../Environment.ts\"\n\nconsole.table({\n  runtime: Environment.runtime(),\n  brand: await Environment.brand(),\n  version: await Environment.version(),\n})\n\nconsole.group(\"Debug info\")\nconsole.table({\n  ua: (typeof window !== \"undefined\") ? window.navigator.userAgent : \"\",\n  brands: (typeof window !== \"undefined\" && typeof (window.navigator as any).userAgentData !== \"undefined\") ? JSON.stringify((window.navigator as any).userAgentData.brands) : \"\",\n  hasBunApi: Environment.hasBunApi(),\n  hasDenoApi: Environment.hasDenoApi(),\n  hasNodeApi: Environment.hasNodeApi(),\n  hasBrowserApi: Environment.hasBrowserApi(),\n})\nconsole.groupEnd()"],
-  "mappings": "AAAA,SAAS,mBAAmB;AAE5B,QAAQ,MAAM;AAAA,EACZ,SAAS,YAAY,QAAQ;AAAA,EAC7B,OAAO,MAAM,YAAY,MAAM;AAAA,EAC/B,SAAS,MAAM,YAAY,QAAQ;AACrC,CAAC;AAED,QAAQ,MAAM,YAAY;AAC1B,QAAQ,MAAM;AAAA,EACZ,IAAK,OAAO,WAAW,cAAe,OAAO,UAAU,YAAY;AAAA,EACnE,QAAS,OAAO,WAAW,eAAe,OAAQ,OAAO,UAAkB,kBAAkB,cAAe,KAAK,UAAW,OAAO,UAAkB,cAAc,MAAM,IAAI;AAAA,EAC7K,WAAW,YAAY,UAAU;AAAA,EACjC,YAAY,YAAY,WAAW;AAAA,EACnC,YAAY,YAAY,WAAW;AAAA,EACnC,eAAe,YAAY,cAAc;AAC3C,CAAC;AACD,QAAQ,SAAS;",
-  "names": []
-}

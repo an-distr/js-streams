@@ -2,12 +2,16 @@
   "type": "module",
   "scripts": {
     "build": "node build.js",
-    "debug": "npx wrangler pages dev --local-protocol=https dist"
+    "debug-web": "npx wrangler pages dev --local-protocol=https dist",
+    "debug-node": "node --experimental-default-type=module debug.js",
+    "debug-deno": "deno run --allow-all debug.ts",
+    "debug-bun": "bun debug.ts"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240129.0",
     "esbuild": "^0.20.0",
-    "glob": "^10.3.10",
+    "fast-glob": "^3.3.2",
+    "prompts": "^2.4.2",
     "wrangler": "^3.26.0"
   }
 }

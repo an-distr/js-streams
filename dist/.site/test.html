@@ -105,7 +105,7 @@
     document.getElementById("siteTheme").dispatchEvent(new Event("change"))
   }).observe(document.getElementById("isDarkMode"))
 
-  fetch([mod, "test", "test.ts"].join("/"))
+  fetch([mod, "test.ts"].join("/"))
     .then(resp => resp.text()
       .then(async (text) => {
         const { default: highlightJs } = await import("https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/es/highlight.min.js")
@@ -113,9 +113,13 @@
       }))
 
   document.getElementById("execute").onclick = e => {
+    console.clear()
     e.target.disabled = "disabled"
     e.target.textContent = "Plese waiting..."
-    setTimeout(() => import([mod, "test", "test.js"].join("/"))
-      .then(_ => e.target.textContent = "Test complete."), 1);
+    setTimeout(() => import(`${[mod, "test.js"].join("/")}?version=${Date.now()}`)
+      .then(_ => {
+        e.target.disabled = ""
+        e.target.textContent = "Execute"
+      }), 1);
   }
 </script>

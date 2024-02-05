@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["test.ts"],
+  "sourcesContent": ["import { JsonSerializer } from \"./JsonSerializer.ts\"\n\nconst source = (data: any[]) => new ReadableStream({\n  start(controller) {\n    controller.enqueue(data)\n    controller.close()\n  }\n})\n\nconst logging = () => new WritableStream({\n  write(chunk) {\n    console.log(chunk)\n  }\n})\n\nconst objs = [\n  { a: 1, b: 2 },\n  { a: 3, b: 4 },\n  { a: 5, b: 6 },\n]\n\nconsole.log(\"=== JSON ===\")\nawait source(objs)\n  .pipeThrough(new JsonSerializer().transform())\n  .pipeTo(logging())\n\nconsole.log(\"=== JSON Lines ===\")\nawait source(objs)\n  .pipeThrough(new JsonSerializer({ lineSeparated: true }).transform())\n  .pipeTo(logging())\n\nconsole.log(\"Test completed.\")"],
+  "mappings": "AAAA,SAAS,sBAAsB;AAE/B,MAAM,SAAS,CAAC,SAAgB,IAAI,eAAe;AAAA,EACjD,MAAM,YAAY;AAChB,eAAW,QAAQ,IAAI;AACvB,eAAW,MAAM;AAAA,EACnB;AACF,CAAC;AAED,MAAM,UAAU,MAAM,IAAI,eAAe;AAAA,EACvC,MAAM,OAAO;AACX,YAAQ,IAAI,KAAK;AAAA,EACnB;AACF,CAAC;AAED,MAAM,OAAO;AAAA,EACX,EAAE,GAAG,GAAG,GAAG,EAAE;AAAA,EACb,EAAE,GAAG,GAAG,GAAG,EAAE;AAAA,EACb,EAAE,GAAG,GAAG,GAAG,EAAE;AACf;AAEA,QAAQ,IAAI,cAAc;AAC1B,MAAM,OAAO,IAAI,EACd,YAAY,IAAI,eAAe,EAAE,UAAU,CAAC,EAC5C,OAAO,QAAQ,CAAC;AAEnB,QAAQ,IAAI,oBAAoB;AAChC,MAAM,OAAO,IAAI,EACd,YAAY,IAAI,eAAe,EAAE,eAAe,KAAK,CAAC,EAAE,UAAU,CAAC,EACnE,OAAO,QAAQ,CAAC;AAEnB,QAAQ,IAAI,iBAAiB;",
+  "names": []
+}
