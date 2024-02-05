@@ -1,8 +1,8 @@
-if (location.host.split(".").length > 3) {
-  document.title += ` (${location.host.split(".")[0]})`
-}
-else if (location.host.startsWith("localhost")) {
+if (location.host.startsWith("localhost") || location.host.startsWith("127.0.0.1")) {
   document.title += " (local)"
+}
+else if (location.host.split(".").length > 3) {
+  document.title += ` (${location.host.split(".")[0]})`
 }
 const h1 = document.getElementsByTagName("h1")[0]
 if (h1.textContent.length === 0) {

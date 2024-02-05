@@ -1,3 +1,5 @@
+@charset "utf-8";
+
 @media (prefers-color-scheme: dark) {
   :root:has(header select option[value="auto"]:checked) {
     color-scheme: dark;
@@ -157,6 +159,9 @@ header {
   flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 
   >a {
     display: flex;
