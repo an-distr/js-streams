@@ -18,13 +18,13 @@ siteTheme.addEventListener("change", () => {
   if (dcTheme) {
     switch (siteTheme.value) {
       case "light":
-        dcTheme.href = "/misc/DomConsole/DomConsole.theme.chrome.light.css"
+        dcTheme.href = "/misc/DomConsole/DomConsole.theme.chrome.light.min.css"
         break
       case "dark":
-        dcTheme.href = "/misc/DomConsole/DomConsole.theme.chrome.dark.css"
+        dcTheme.href = "/misc/DomConsole/DomConsole.theme.chrome.dark.min.css"
         break
       default:
-        dcTheme.href = "/misc/DomConsole/DomConsole.theme.chrome.css"
+        dcTheme.href = "/misc/DomConsole/DomConsole.theme.chrome.min.css"
     }
   }
 })

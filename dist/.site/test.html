@@ -10,8 +10,8 @@
 <link rel="modulepreload" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/es/highlight.min.js">
 
 <link rel="preload" as="style" href="/.site/site.css">
-<link rel="preload" as="style" href="/misc/DomConsole/DomConsole.css">
-<link rel="modulepreload" href="/misc/DomConsole/DomConsole.js">
+<link rel="preload" as="style" href="/misc/DomConsole/DomConsole.min.css">
+<link rel="modulepreload" href="/misc/DomConsole/DomConsole.min.js">
 
 <link rel="icon" href="/.site/favicon.svg" type="image/svg+xml" sizes="any">
 <link rel="icon" href="/.site/favicon.png" type="image/png" sizes="192x192">
@@ -39,7 +39,7 @@
   }
 </style>
 <link rel="stylesheet" href="/.site/site.css">
-<link rel="stylesheet" href="/misc/DomConsole/DomConsole.css">
+<link rel="stylesheet" href="/misc/DomConsole/DomConsole.min.css">
 <link id="dc-theme" rel="stylesheet">
 <link id="hljs-theme" rel="stylesheet">
 
@@ -73,7 +73,7 @@
 </main>
 
 <script type="module">
-  import { DomConsole } from "/misc/DomConsole/DomConsole.js"
+  import { DomConsole } from "/misc/DomConsole/DomConsole.min.js"
 
   globalThis.console = new DomConsole("console", globalThis.console)
 
@@ -87,17 +87,17 @@
     switch (siteTheme.value) {
       case "light":
         document.getElementById("hljs-theme").href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
-        document.getElementById("dc-theme").href = "/misc/DomConsole/DomConsole.theme.chrome.light.css"
+        document.getElementById("dc-theme").href = "/misc/DomConsole/DomConsole.theme.chrome.light.min.css"
         break
       case "dark":
         document.getElementById("hljs-theme").href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css"
-        document.getElementById("dc-theme").href = "/misc/DomConsole/DomConsole.theme.chrome.dark.css"
+        document.getElementById("dc-theme").href = "/misc/DomConsole/DomConsole.theme.chrome.dark.min.css"
         break
       default:
         document.getElementById("hljs-theme").href = getComputedStyle(document.getElementById("isDarkMode")).display === "block"
           ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css"
           : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
-        document.getElementById("dc-theme").href = "/misc/DomConsole/DomConsole.theme.chrome.css"
+        document.getElementById("dc-theme").href = "/misc/DomConsole/DomConsole.theme.chrome.min.css"
     }
   })
 
