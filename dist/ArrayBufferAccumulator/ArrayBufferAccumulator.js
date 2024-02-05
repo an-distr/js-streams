@@ -1,4 +1,3 @@
-"use strict";
 /*!
 MIT No Attribution
 
@@ -18,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 import { PullPush, PullPushNonQueue } from "../PullPush/PullPush.js";
-export class ArrayBufferAccumulator extends PullPush {
+class ArrayBufferAccumulator extends PullPush {
   constructor(size, options) {
     super(new PullPushNonQueue());
     this.size = size;
@@ -113,4 +112,7 @@ export class ArrayBufferAccumulator extends PullPush {
     }
   }
 }
+export {
+  ArrayBufferAccumulator
+};
 //# sourceMappingURL=ArrayBufferAccumulator.js.map

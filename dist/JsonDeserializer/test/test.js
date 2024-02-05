@@ -1,4 +1,3 @@
-"use strict";
 import { JsonDeserializer } from "../JsonDeserializer.js";
 const source = (s) => new ReadableStream({
   start(controller) {

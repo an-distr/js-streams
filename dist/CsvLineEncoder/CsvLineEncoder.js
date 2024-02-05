@@ -1,4 +1,3 @@
-"use strict";
 /*!
 MIT No Attribution
 
@@ -18,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 import { PullPush, PullPushArrayQueue } from "../PullPush/PullPush.js";
-export class CsvLineEncoder extends PullPush {
+class CsvLineEncoder extends PullPush {
   constructor(options) {
     super(new PullPushArrayQueue());
     this.keys = /* @__PURE__ */ new Map();
@@ -50,4 +49,7 @@ export class CsvLineEncoder extends PullPush {
     }
   }
 }
+export {
+  CsvLineEncoder
+};
 //# sourceMappingURL=CsvLineEncoder.js.map

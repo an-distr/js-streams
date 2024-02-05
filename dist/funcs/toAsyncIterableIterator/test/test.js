@@ -1,4 +1,3 @@
-"use strict";
 import { toAsyncIterableIterator } from "../toAsyncIterableIterator.js";
 const source = (vals) => new ReadableStream({
   start(controller) {

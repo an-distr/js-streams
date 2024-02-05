@@ -1,4 +1,3 @@
-"use strict";
 import * as pp from "../PullPush.js";
 {
   console.group("PullPushStringQueue");

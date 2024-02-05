@@ -1,4 +1,3 @@
-"use strict";
 /*!
 MIT No Attribution
 
@@ -17,7 +16,7 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-export class PullPushNonQueue {
+class PullPushNonQueue {
   length() {
     return 0;
   }
@@ -38,7 +37,7 @@ export class PullPushNonQueue {
     throw new Error("Method not implemented.");
   }
 }
-export class PullPushArrayQueue {
+class PullPushArrayQueue {
   constructor() {
     this.queue = [];
   }
@@ -68,7 +67,7 @@ export class PullPushArrayQueue {
     }
   }
 }
-export class PullPushStringQueue {
+class PullPushStringQueue {
   constructor() {
     this.queue = "";
   }
@@ -102,7 +101,7 @@ export class PullPushStringQueue {
     }
   }
 }
-export class PullPush {
+class PullPush {
   constructor(queue) {
     this.queue = queue;
   }
@@ -173,4 +172,10 @@ export class PullPush {
     });
   }
 }
+export {
+  PullPush,
+  PullPushArrayQueue,
+  PullPushNonQueue,
+  PullPushStringQueue
+};
 //# sourceMappingURL=PullPush.js.map

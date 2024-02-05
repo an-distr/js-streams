@@ -1,4 +1,3 @@
-"use strict";
 /*!
 MIT No Attribution
 
@@ -21,7 +20,10 @@ const sleep_impl = typeof Bun !== "undefined" ? (msec) => {
   Bun.sleepSync(msec ?? 0);
   return Promise.resolve();
 } : (msec) => new Promise((resolve) => setTimeout(resolve, msec ?? 0));
-export function sleep(msec) {
+function sleep(msec) {
   return sleep_impl(msec);
 }
+export {
+  sleep
+};
 //# sourceMappingURL=sleep.js.map

@@ -1,4 +1,3 @@
-"use strict";
 /*!
 MIT No Attribution
 
@@ -17,7 +16,7 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-export class Utf8DecoderStream extends TransformStream {
+class Utf8DecoderStream extends TransformStream {
   constructor() {
     const decoder = new TextDecoder();
     super({
@@ -30,7 +29,7 @@ export class Utf8DecoderStream extends TransformStream {
     this.ignoreBOM = decoder.ignoreBOM;
   }
 }
-export class Utf8EncoderStream extends TransformStream {
+class Utf8EncoderStream extends TransformStream {
   constructor() {
     const encoder = new TextEncoder();
     super({
@@ -41,4 +40,8 @@ export class Utf8EncoderStream extends TransformStream {
     this.encoding = encoder.encoding;
   }
 }
+export {
+  Utf8DecoderStream,
+  Utf8EncoderStream
+};
 //# sourceMappingURL=Utf8Streams.js.map

@@ -1,4 +1,3 @@
-"use strict";
 import { PerformanceStreamBuilder } from "../PerformanceStream.js";
 import { sleep } from "../../funcs/sleep/sleep.js";
 const source = () => new ReadableStream({

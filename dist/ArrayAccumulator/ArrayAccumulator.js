@@ -1,4 +1,3 @@
-"use strict";
 /*!
 MIT No Attribution
 
@@ -18,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 import { PullPush, PullPushArrayQueue } from "../PullPush/PullPush.js";
-export class ArrayAccumulator extends PullPush {
+class ArrayAccumulator extends PullPush {
   constructor(size) {
     super(new PullPushArrayQueue());
     this.size = size;
@@ -39,4 +38,7 @@ export class ArrayAccumulator extends PullPush {
     } while (this.queue.more());
   }
 }
+export {
+  ArrayAccumulator
+};
 //# sourceMappingURL=ArrayAccumulator.js.map

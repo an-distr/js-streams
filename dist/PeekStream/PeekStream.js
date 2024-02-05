@@ -1,4 +1,3 @@
-"use strict";
 /*!
 MIT No Attribution
 
@@ -17,7 +16,7 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-export class PeekStream extends TransformStream {
+class PeekStream extends TransformStream {
   constructor(fn) {
     let index = 0;
     super({
@@ -28,4 +27,7 @@ export class PeekStream extends TransformStream {
     });
   }
 }
+export {
+  PeekStream
+};
 //# sourceMappingURL=PeekStream.js.map

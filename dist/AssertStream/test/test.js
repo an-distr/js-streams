@@ -1,4 +1,3 @@
-"use strict";
 import { AssertStream } from "../AssertStream.js";
 const source = (data) => new ReadableStream({
   start(controller) {

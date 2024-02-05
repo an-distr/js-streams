@@ -1,4 +1,3 @@
-"use strict";
 import * as streams from "../../web.js";
 const chkDirect = document.getElementById("chkDirect");
 const txtUrl = document.getElementById("txtUrl");

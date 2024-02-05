@@ -1,4 +1,3 @@
-"use strict";
 /*!
 MIT No Attribution
 
@@ -17,7 +16,7 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-export async function* toAsyncIterableIterator(readable) {
+async function* toAsyncIterableIterator(readable) {
   const reader = readable.getReader();
   try {
     while (true) {
@@ -30,4 +29,7 @@ export async function* toAsyncIterableIterator(readable) {
     reader.releaseLock();
   }
 }
+export {
+  toAsyncIterableIterator
+};
 //# sourceMappingURL=toAsyncIterableIterator.js.map

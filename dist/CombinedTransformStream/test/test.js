@@ -1,4 +1,3 @@
-"use strict";
 import { CombinedTransformStream } from "../CombinedTransformStream.js";
 const source = () => new ReadableStream({
   start(controller) {

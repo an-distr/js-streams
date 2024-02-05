@@ -1,4 +1,3 @@
-"use strict";
 import { ArrayAccumulator } from "../ArrayAccumulator.js";
 const source = (data) => new ReadableStream({
   start(controller) {

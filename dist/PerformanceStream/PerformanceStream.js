@@ -1,4 +1,3 @@
-"use strict";
 /*!
 MIT No Attribution
 
@@ -18,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 import { CombinedTransformStream } from "../CombinedTransformStream/CombinedTransformStream.js";
-export class PerformanceStreamBuilder {
+class PerformanceStreamBuilder {
   constructor(measureName, startMark, endMark) {
     this.transforms = [];
     this.measureName = measureName;
@@ -95,4 +94,7 @@ export class PerformanceStreamBuilder {
     };
   }
 }
+export {
+  PerformanceStreamBuilder
+};
 //# sourceMappingURL=PerformanceStream.js.map

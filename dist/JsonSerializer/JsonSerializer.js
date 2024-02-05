@@ -1,4 +1,3 @@
-"use strict";
 /*!
 MIT No Attribution
 
@@ -18,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 import { PullPush, PullPushArrayQueue } from "../PullPush/PullPush.js";
-export class JsonSerializer extends PullPush {
+class JsonSerializer extends PullPush {
   constructor(options) {
     super(new PullPushArrayQueue());
     this.lineSeparated = options?.lineSeparated === true;
@@ -47,4 +46,7 @@ export class JsonSerializer extends PullPush {
     } while (this.queue.more());
   }
 }
+export {
+  JsonSerializer
+};
 //# sourceMappingURL=JsonSerializer.js.map

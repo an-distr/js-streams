@@ -1,4 +1,3 @@
-"use strict";
 /*!
 MIT No Attribution
 
@@ -18,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 import { PullPush, PullPushArrayQueue } from "../PullPush/PullPush.js";
-export class Flattener extends PullPush {
+class Flattener extends PullPush {
   constructor(limit) {
     super(new PullPushArrayQueue());
     this.limit = limit;
@@ -39,4 +38,7 @@ export class Flattener extends PullPush {
     }
   }
 }
+export {
+  Flattener
+};
 //# sourceMappingURL=Flattener.js.map

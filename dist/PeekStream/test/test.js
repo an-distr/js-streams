@@ -1,4 +1,3 @@
-"use strict";
 import { PeekStream } from "../PeekStream.js";
 const source = (data2) => new ReadableStream({
   start(controller) {

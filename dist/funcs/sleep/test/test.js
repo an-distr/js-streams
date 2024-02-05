@@ -1,4 +1,3 @@
-"use strict";
 import { sleep } from "../sleep.js";
 const test = async (msec) => {
   console.group(`Wait for ${msec} second(s).`);

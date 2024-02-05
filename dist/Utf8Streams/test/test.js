@@ -1,4 +1,3 @@
-"use strict";
 import { Utf8DecoderStream, Utf8EncoderStream } from "../Utf8Streams.js";
 const source = (s) => new ReadableStream({
   start(controller) {

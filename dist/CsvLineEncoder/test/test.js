@@ -1,4 +1,3 @@
-"use strict";
 import { CsvLineEncoder } from "../CsvLineEncoder.js";
 const source = (data2) => new ReadableStream({
   start(controller) {

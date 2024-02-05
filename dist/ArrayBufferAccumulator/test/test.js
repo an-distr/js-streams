@@ -1,4 +1,3 @@
-"use strict";
 import { ArrayBufferAccumulator } from "../ArrayBufferAccumulator.js";
 import { PerformanceStreamBuilder } from "../../PerformanceStream/PerformanceStream.js";
 import { Utf8DecoderStream, Utf8EncoderStream } from "../../Utf8Streams/Utf8Streams.js";

@@ -1,4 +1,3 @@
-"use strict";
 import { Flattener } from "../Flattener.js";
 const readable = (data) => new ReadableStream({
   start(controller) {

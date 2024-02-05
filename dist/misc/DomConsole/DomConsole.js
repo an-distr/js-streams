@@ -1,4 +1,3 @@
-"use strict";
 /*!
 MIT No Attribution
 
@@ -17,7 +16,7 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-export class DomConsole {
+class DomConsole {
   constructor(owner, redirect, parent) {
     if (typeof owner === "string") {
       this.owner = document.getElementById(owner);
@@ -327,4 +326,7 @@ export class DomConsole {
     This.redirect?.timeStamp(label);
   }
 }
+export {
+  DomConsole
+};
 //# sourceMappingURL=DomConsole.js.map

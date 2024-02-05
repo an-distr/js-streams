@@ -1,4 +1,3 @@
-"use strict";
 import { Environment } from "../Environment.js";
 console.table({
   runtime: Environment.runtime(),
