@@ -18,7 +18,7 @@ const array = [
 
 // Flatten array.
 const flattener = new Flattener({
-  // 
+  //
   limit: 1
 })
 
