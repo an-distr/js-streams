@@ -3,6 +3,14 @@ import { glob } from "glob"
 import * as fs from "fs"
 import * as path from "path"
 
+// Cleanup
+console.group("Cleanup")
+for (const file of new Set((await glob("dist/{**,.**}/*.min.*")).concat(await glob("dist/{**,.**}/*.map")))) {
+  fs.rmSync(file)
+  console.log(file)
+}
+console.groupEnd()
+
 // Transpiling. (.ts -> .js)
 console.group("Transpiling. (.ts -> .js)")
 {
