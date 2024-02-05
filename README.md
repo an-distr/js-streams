@@ -13,9 +13,8 @@ Stream utilities for JavaScript/TypeScript.
   * SpiderMonkey(FireFox)
 
 ## How to build and test
-* Node.js or Deno is required.
-* When to use Node
-  * For the first time, execute ```node_prepare.sh``` or ```node_prepare.bat```.
+* Node.js is required. (Deno/Bun is optional.)
+* For the first time, execute ```node_prepare.sh``` or ```node_prepare.bat```.
 * Run tasks.
   |Task|Node|Deno|Bun|
   |-|-|-|-|
