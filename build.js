@@ -1,20 +1,26 @@
 import * as esbuild from "esbuild"
-import { glob } from "glob"
-import * as fs from "fs"
-import * as path from "path"
+import * as fs from "node:fs"
+import FastGlob from "fast-glob"
 
 // Cleanup
 console.group("Cleanup")
-for (const file of new Set((await glob("dist/{**,.**}/*.min.*")).concat(await glob("dist/{**,.**}/*.map")))) {
-  fs.rmSync(file)
-  console.log(file)
+{
+  const files = new Set(
+    (await FastGlob("dist/{**,.**}/*.min.*"))
+      .concat(await FastGlob("dist/{**,.**}/*.map"))
+  )
+  console.log(files)
+
+  for (const file of files) {
+    fs.rmSync(file)
+  }
 }
 console.groupEnd()
 
 // Transpiling. (.ts -> .js)
 console.group("Transpiling. (.ts -> .js)")
 {
-  const files = (await glob("dist/{**,.**}/*.ts"))
+  const files = (await FastGlob("dist/{**,.**}/*.ts"))
     .filter(x => !x.includes("/functions/"))
     .filter(x => !x.includes(".min."))
   console.log(files)
@@ -27,7 +33,12 @@ console.group("Transpiling. (.ts -> .js)")
     sourcemap: "linked",
   }
   const context = await esbuild.context(options)
-  await context.rebuild()
+  try {
+    await context.rebuild()
+  }
+  finally {
+    await context.dispose()
+  }
 
   for (const file of files.map(x => x.replace(".ts", ".js"))) {
     let text = fs.readFileSync(file, "utf-8")
@@ -40,7 +51,7 @@ console.groupEnd()
 // Transpiling. (.js -> .min.js)
 console.group("Transpiling. (.js -> .min.js)")
 {
-  const files = (await glob("dist/{**,.**}/*.js"))
+  const files = (await FastGlob("dist/{**,.**}/*.js"))
     .filter(x => !x.includes("/functions/"))
     .filter(x => !x.includes(".min."))
   console.log(files)
@@ -50,7 +61,7 @@ console.group("Transpiling. (.js -> .min.js)")
       platform: "browser",
       format: "esm",
       entryPoints: [file],
-      outdir: file.split(path.sep).slice(0, -1).join(path.sep),
+      outdir: file.split("/").slice(0, -1).join("/"),
       minify: true,
       sourcemap: "linked",
       loader: {
@@ -61,7 +72,12 @@ console.group("Transpiling. (.js -> .min.js)")
       }
     }
     const context = await esbuild.context(options)
-    await context.rebuild()
+    try {
+      await context.rebuild()
+    }
+    finally {
+      await context.dispose()
+    }
 
     file = file.replace(".js", ".min.js")
     let text = fs.readFileSync(file, "utf-8")
@@ -76,7 +92,7 @@ console.groupEnd()
 // Transpiling. (.css -> .min.css)
 console.group("Transpiling. (.css -> .min.css)")
 {
-  const files = (await glob("dist/{**,.**}/*.css"))
+  const files = (await FastGlob("dist/{**,.**}/*.css"))
     .filter(x => !x.includes("/functions/"))
     .filter(x => !x.includes(".min."))
   console.log(files)
@@ -86,7 +102,7 @@ console.group("Transpiling. (.css -> .min.css)")
       platform: "browser",
       format: "esm",
       entryPoints: [file],
-      outdir: file.split(path.sep).slice(0, -1).join(path.sep),
+      outdir: file.split("/").slice(0, -1).join("/"),
       minify: true,
       sourcemap: "linked",
       loader: {
@@ -97,7 +113,12 @@ console.group("Transpiling. (.css -> .min.css)")
       }
     }
     const context = await esbuild.context(options)
-    await context.rebuild()
+    try {
+      await context.rebuild()
+    }
+    finally {
+      await context.dispose()
+    }
 
     file = file.replace(".css", ".min.css")
     let text = fs.readFileSync(file, "utf-8")
@@ -108,6 +129,3 @@ console.group("Transpiling. (.css -> .min.css)")
   }
 }
 console.groupEnd()
-
-// Exit.
-process.exit()
