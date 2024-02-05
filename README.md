@@ -12,13 +12,18 @@ Stream utilities for JavaScript/TypeScript.
   * JavaScriptCore(Safari, Browser on iOS/iPadOS, Bun)
   * SpiderMonkey(FireFox)
 
-## How to build and debug
-* For the first time, execute ```prepare.sh``` or ```prepare.bat```.
-* To build(transpiling), execute ```npm run build```.
-* To debug for browser, execute ```npm run debug-web```.
-* To debug for Node, execute ```npm run debug-node```.
-* To debug for Deno, execute ```npm run debug-deno```.
-* To debug for Bun, execute ```npm run debug-bun```.
+## How to build and test
+* Node.js or Deno is required.
+* When to use Node
+  * For the first time, execute ```node_prepare.sh``` or ```node_prepare.bat```.
+* Run tasks.
+  |Task|Node|Deno|Bun|
+  |-|-|-|-|
+  |Build|```npm run build```|```deno task build```|```bun run build-bun```|
+  |Test for browser|```npm run test-web```|```deno task test-web```|```bun run test-web```|
+  |Test for Node|```npm run test-node```|```deno task test-node```|```bun run test-node```|
+  |Test for Deno|```npm run test-deno```|```deno task test-deno```|```bun run test-deno```|
+  |Test for Bun|```npm run test-bun```|```deno task test-bun```|```bun run test-bun```|
 
 ## Modules
 |Module|Description|

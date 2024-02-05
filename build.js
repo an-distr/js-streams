@@ -17,6 +17,33 @@ console.group("Cleanup")
 }
 console.groupEnd()
 
+// Transpiling. (test_runner.ts -> test_runner.js)
+console.group("Transpiling. (test_runner.ts -> test_runner.js)")
+{
+  let file = "test_runner.ts"
+
+  const options = {
+    platform: "browser",
+    format: "esm",
+    entryPoints: [file],
+    outdir: ".",
+  }
+  const context = await esbuild.context(options)
+  try {
+    await context.rebuild()
+  }
+  finally {
+    await context.dispose()
+  }
+
+  file = file.replace(".ts", ".js")
+
+  let text = fs.readFileSync(file, "utf-8")
+  text = text.replaceAll(".ts", ".js")
+  fs.writeFileSync(file, text)
+}
+console.groupEnd()
+
 // Transpiling. (.ts -> .js)
 console.group("Transpiling. (.ts -> .js)")
 {

@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "build": "deno run --allow-all build.js",
+    "test-web": "npx wrangler pages dev --local-protocol=https dist",
+    "test-node": "node --experimental-default-type=module test_runner.js",
+    "test-deno": "deno run --allow-all test_runner.ts",
+    "test-bun": "bun test_runner.ts"
+  }
+}
