@@ -63,7 +63,7 @@
 <div id="isDarkMode"></div>
 
 <main>
-  <button id="execute">Execute</button>
+  <button id="execute" disabled="disabled">Loading...</button>
   <hr>
   <section>
     <pre><code id="source"></pre>
@@ -77,10 +77,11 @@
 
   globalThis.console = new DomConsole("console", globalThis.console)
 
-  let mod = "/" + location.hash.replace("#", "").split("/").join("/")
-
+  const hash = location.hash.replace("#", "")
+  const mod = "/" + hash.split("/").join("/")
   document.title = `${mod.split("/").slice(-1)[0]}${document.title}`
-  document.getElementsByTagName("h1")[0].textContent = document.title
+  const title = document.getElementsByTagName("h1")[0]
+  title.textContent = document.title
 
   const toHome = document.querySelector("header>a")
   toHome.href = `/#${mod.split("/").filter(Boolean).join("_")}`
@@ -108,21 +109,39 @@
     document.getElementById("siteTheme").dispatchEvent(new Event("change"))
   }).observe(document.getElementById("isDarkMode"))
 
+  const execute = document.getElementById("execute")
+
   fetch([mod, "test.ts"].join("/"))
-    .then(resp => resp.text()
-      .then(async (text) => {
+    .then(async (resp) => {
+      if (resp.ok) {
+        const text = await resp.text()
         const { default: highlightJs } = await import("https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/es/highlight.min.js")
         document.getElementById("source").innerHTML = highlightJs.highlight(text, { language: "typescript" }).value
-      }))
+        execute.disabled = ""
+        execute.textContent = "Execute"
+      }
+      else {
+        console.warn(resp.status, resp.statusText)
+        document.title = resp.statusText
+        title.textContent = document.title
+        toHome.href = "/"
+      }
+    })
+    .catch(reason => {
+      console.error(reason)
+      document.title = reason
+      title.textContent = document.title
+      toHome.href = "/"
+    })
 
-  document.getElementById("execute").onclick = e => {
+  execute.onclick = () => {
     console.clear()
-    e.target.disabled = "disabled"
-    e.target.textContent = "Plese waiting..."
+    execute.disabled = "disabled"
+    execute.textContent = "Executing..."
     setTimeout(() => import(`${[mod, "test.js"].join("/")}?version=${Date.now()}`)
       .then(_ => {
-        e.target.disabled = ""
-        e.target.textContent = "Execute"
+        execute.disabled = ""
+        execute.textContent = "Execute"
       }), 1);
   }
 </script>
