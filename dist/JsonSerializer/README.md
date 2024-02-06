@@ -4,7 +4,7 @@
 Convert the object to a JSON/JSON Lines string.
 
 ## Example
-https://an-js-streams.pages.dev/.site/test?mod=JsonSerializer
+https://an-js-streams.pages.dev/mod#JsonSerializer
 
 ## Usage
 ```ts

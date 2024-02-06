@@ -4,7 +4,7 @@
 Measure the processing time of the Stream.
 
 ## Example
-https://an-js-streams.pages.dev/.site/test?mod=PerformanceStream
+https://an-js-streams.pages.dev/mod#PerformanceStream
 
 ## Usage
 ```ts

@@ -9,13 +9,13 @@
 
 <link rel="modulepreload" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/es/highlight.min.js">
 
-<link rel="preload" as="style" href="/.site/site.min.css">
+<link rel="preload" as="style" href="/site/site.min.css">
 <link rel="preload" as="style" href="/misc/DomConsole/DomConsole.min.css">
 <link rel="modulepreload" href="/misc/DomConsole/DomConsole.min.js">
 
-<link rel="icon" href="/.site/favicon.svg" type="image/svg+xml" sizes="any">
-<link rel="icon" href="/.site/favicon.png" type="image/png" sizes="192x192">
-<link rel="apple-touch-icon" href="/.site/apple-touch-icon.png" sizes="192x192">
+<link rel="icon" href="/site/favicon.svg" type="image/svg+xml" sizes="any">
+<link rel="icon" href="/site/favicon.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/site/apple-touch-icon.png" sizes="192x192">
 
 <style>
   #isDarkMode {
@@ -38,16 +38,16 @@
     overflow-y: scroll;
   }
 </style>
-<link rel="stylesheet" href="/.site/site.min.css">
+<link rel="stylesheet" href="/site/site.min.css">
 <link rel="stylesheet" href="/misc/DomConsole/DomConsole.min.css">
 <link id="dc-theme" rel="stylesheet">
 <link id="hljs-theme" rel="stylesheet">
 
-<script defer src="/.site/site.min.js"></script>
+<script defer src="/site/site.min.js"></script>
 
 <header>
   <a href="/">
-    <img src="/.site/favicon.svg" alt="favicon" loading="lazy" width="32" height="32">
+    <img src="/site/favicon.svg" alt="favicon" loading="lazy" width="32" height="32">
     <h1></h1>
   </a>
   <div>
@@ -77,10 +77,13 @@
 
   globalThis.console = new DomConsole("console", globalThis.console)
 
-  let mod = "/" + (new URL(location).searchParams.get("mod") ?? "").split("/").join("/")
+  let mod = "/" + location.hash.replace("#", "").split("/").join("/")
 
   document.title = `${mod.split("/").slice(-1)[0]}${document.title}`
   document.getElementsByTagName("h1")[0].textContent = document.title
+
+  const toHome = document.querySelector("header>a")
+  toHome.href = `/#${mod.split("/").filter(Boolean).join("_")}`
 
   const siteTheme = document.getElementById("siteTheme")
   siteTheme.addEventListener("change", () => {

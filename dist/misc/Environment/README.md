@@ -4,7 +4,7 @@
 Get environment values.
 
 ## Example
-https://an-js-streams.pages.dev/.site/test?mod=misc/Environment
+https://an-js-streams.pages.dev/mod#misc/Environment
 
 ## Usage
 ```ts

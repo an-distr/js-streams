@@ -4,7 +4,7 @@
 ReadableStream to AsyncIterableIterator.
 
 ## Example
-https://an-js-streams.pages.dev/.site/test?mod=funcs/toAsyncIterableIterator
+https://an-js-streams.pages.dev/mod#funcs/toAsyncIterableIterator
 
 ## Usage
 ```ts

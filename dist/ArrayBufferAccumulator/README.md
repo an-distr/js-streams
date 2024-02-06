@@ -6,7 +6,7 @@ Accumulate the ArrayBuffer stream and emit it at a constant size or condition.
 **If you can set a "[highWaterMark](https://developer.mozilla.org/en-US/docs/Web/API/ByteLengthQueuingStrategy/highWaterMark)" for "[ReadableStream](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)", it is more efficient.**
 
 ## Example
-https://an-js-streams.pages.dev/.site/test?mod=ArrayBufferAccumulator
+https://an-js-streams.pages.dev/mod#ArrayBufferAccumulator
 
 ## Usage
 ```ts
