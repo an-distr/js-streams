@@ -28,6 +28,11 @@ export class DomConsole implements Console {
     if (typeof owner === "string") {
       this.owner = document.getElementById(owner)!
       this.owner.append(this.createContextMenu(this.owner))
+    }
+    else {
+      this.owner = owner
+    }
+    if (!("owner" in (owner as any))) {
       const scopedStyle = document.createElement("style")
       scopedStyle.setAttribute("scoped", "")
       scopedStyle.textContent = `
@@ -43,9 +48,6 @@ export class DomConsole implements Console {
           }
         }`
       this.owner.append(scopedStyle)
-    }
-    else {
-      this.owner = owner
     }
     this.redirect = redirect
     this.parent = parent

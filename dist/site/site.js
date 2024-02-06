@@ -61,8 +61,10 @@ toTop.style.right = "0"
 toTop.style.marginBottom = "1rem"
 toTop.style.marginRight = "1rem"
 toTop.style.cursor = "pointer"
+toTop.href = "#"
 toTop.textContent = "Top"
-toTop.onclick = () => {
+toTop.onclick = e => {
+  e.preventDefault()
   window.scroll({ top: 0 })
 }
 document.body.append(toTop)
