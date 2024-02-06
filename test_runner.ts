@@ -1,33 +1,32 @@
 // @ts-ignore
 import FastGlob from "fast-glob"
 // @ts-ignore
-import prompts from "prompts"
+import { intro, outro, select, isCancel } from "@clack/prompts"
 
-const files = (await FastGlob("./dist/**/test.ts")).sort()
-
-while (true) {
-
-  console.group("Choose test index.")
+const tests = (await FastGlob("./dist/**/test.ts"))
+  .sort()
   // @ts-ignore
-  for (const x of files.map((file, index) => { return { file, index } })) {
-    const title = x.file.split("/").slice(-2, -1)[0]
-    console.log(`${x.index + 1}: ${title}`)
-  }
-  console.groupEnd()
-
-  const inputIndex = await prompts({
-    type: "number",
-    name: "index",
-    message: `[1-${files.length}, otherwise exit.]:`,
+  .map((file, index) => {
+    return {
+      value: file,
+      label: `${index + 1}: ${file.split("/").slice(-2, -1)[0]}`,
+    }
   })
 
-  const index = inputIndex.index
-  if (!index || index <= 0 || index > files.length) {
+intro("Test runner.")
+
+while (true) {
+  const test = await select({
+    message: "Choose test.",
+    options: tests,
+  })
+
+  if (isCancel(test)) {
+    outro("Bye.")
     break
   }
 
-  console.group(`Invoke ${files[index - 1]}`)
-  await import(`${files[index - 1]}?version=${Date.now()}`)
+  console.group(`Invoke ${test}`)
+  await import(`${test}?version=${Date.now()}`)
   console.groupEnd()
-
 }

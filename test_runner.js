@@ -1,25 +1,22 @@
 import FastGlob from "fast-glob";
-import prompts from "prompts";
-const files = (await FastGlob("./dist/**/test.js")).sort();
+import { intro, outro, select, isCancel } from "@clack/prompts";
+const tests = (await FastGlob("./dist/**/test.js")).sort().map((file, index) => {
+  return {
+    value: file,
+    label: `${index + 1}: ${file.split("/").slice(-2, -1)[0]}`
+  };
+});
+intro("Test runner.");
 while (true) {
-  console.group("Choose test index.");
-  for (const x of files.map((file, index2) => {
-    return { file, index: index2 };
-  })) {
-    const title = x.file.split("/").slice(-2, -1)[0];
-    console.log(`${x.index + 1}: ${title}`);
-  }
-  console.groupEnd();
-  const inputIndex = await prompts({
-    type: "number",
-    name: "index",
-    message: `[1-${files.length}, otherwise exit.]:`
+  const test = await select({
+    message: "Choose test.",
+    options: tests
   });
-  const index = inputIndex.index;
-  if (!index || index <= 0 || index > files.length) {
+  if (isCancel(test)) {
+    outro("Bye.");
     break;
   }
-  console.group(`Invoke ${files[index - 1]}`);
-  await import(`${files[index - 1]}?version=${Date.now()}`);
+  console.group(`Invoke ${test}`);
+  await import(`${test}?version=${Date.now()}`);
   console.groupEnd();
 }
