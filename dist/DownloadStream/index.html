@@ -1,68 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description"
-  content="Streams(https://github.com/an-dist/js-streams) for JavaScript/TypeScript Demos and Examples">
 
-<link rel="preload" as="style" href="/site/site.min.css">
-<link rel="preload" as="style" href="/misc/DomConsole/DomConsole.min.css">
-<link rel="modulepreload" href="./DownloadStream.js">
-<link rel="modulepreload" href="/misc/DomConsole/DomConsole.min.js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="description"
+    content="Streams(https://github.com/an-dist/js-streams) for JavaScript/TypeScript Demos and Examples">
 
-<link rel="icon" href="/site/favicon.svg" type="image/svg+xml" sizes="any">
-<link rel="icon" href="/site/favicon.png" type="image/png" sizes="192x192">
-<link rel="apple-touch-icon" href="/site/apple-touch-icon.png" sizes="192x192">
+  <link rel="preload" as="style" href="/site/site.min.css">
+  <link rel="preload" as="style" href="/misc/DomConsole/DomConsole.min.css">
+  <link rel="modulepreload" href="./DownloadStream.js">
+  <link rel="modulepreload" href="/misc/DomConsole/DomConsole.min.js">
 
-<link rel="stylesheet" href="/site/site.min.css">
-<link rel="stylesheet" href="/misc/DomConsole/DomConsole.min.css">
-<link id="dc-theme" rel="stylesheet">
+  <link rel="icon" href="/site/favicon.svg" type="image/svg+xml" sizes="any">
+  <link rel="icon" href="/site/favicon.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/site/apple-touch-icon.png" sizes="192x192">
 
-<script defer src="/site/site.min.js"></script>
+  <link rel="stylesheet" href="/site/site.min.css">
+  <link rel="stylesheet" href="/misc/DomConsole/DomConsole.min.css">
+  <link id="dc-theme" rel="stylesheet">
 
-<title>DownloadStream</title>
+  <script defer src="/site/site.min.js"></script>
 
-<header>
-  <a href="/#DownloadStream">
-    <img src="/site/favicon.svg" alt="favicon" loading="lazy" width="32" height="32">
-    <h1></h1>
-  </a>
-  <div>
-    <label for="siteTheme">Theme</label>
-    <select id="siteTheme">
-      <option value="auto">Auto</option>
-      <option value="light">Light</option>
-      <option value="dark">Dark</option>
-    </select>
-  </div>
-</header>
+  <title>DownloadStream</title>
+</head>
 
-<main>
-  <section>
-    <label for="url">
-      <h2>URL</h2>
-    </label>
-    <input id="url" type="url">
-    <button id="download">Download</button>
-  </section>
-  <hr>
-  <section id="console"></section>
-</main>
+<body>
+  <header>
+    <a href="/#DownloadStream">
+      <img src="/site/favicon.svg" alt="favicon" loading="lazy" width="32" height="32">
+      <h1></h1>
+    </a>
+    <div>
+      <label for="siteTheme">Theme</label>
+      <select id="siteTheme">
+        <option value="auto">Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </div>
+  </header>
 
-<script type="module">
-  import { DownloadStream } from "./DownloadStream.js"
-  import { DomConsole } from "/misc/DomConsole/DomConsole.min.js"
+  <main>
+    <section>
+      <label for="url">
+        <h2>URL</h2>
+      </label>
+      <input id="url" type="url">
+      <button id="download">Download</button>
+    </section>
+    <hr>
+    <section id="console"></section>
+  </main>
 
-  globalThis.console = new DomConsole("console", globalThis.console)
+  <script type="module">
+    import { DownloadStream } from "./DownloadStream.js"
+    import { DomConsole } from "/misc/DomConsole/DomConsole.min.js"
 
-  document.getElementById("url").value = location.href.split("/").slice(0, 3).join("/") + "/site/sample.json"
+    globalThis.console = new DomConsole("console", globalThis.console)
 
-  document.getElementById("download").onclick = async () => {
-    const url = document.getElementById("url")
-    const response = await fetch(url.value, { credentials: "include" })
-    if (!response.ok) {
-      return
+    document.getElementById("url").value = location.href.split("/").slice(0, 3).join("/") + "/site/sample.json"
+
+    document.getElementById("download").onclick = async () => {
+      const url = document.getElementById("url")
+      const response = await fetch(url.value, { credentials: "include" })
+      if (!response.ok) {
+        return
+      }
+      await response.body.pipeTo(new DownloadStream("download.json"))
     }
-    await response.body.pipeTo(new DownloadStream("download.json"))
-  }
-</script>
+  </script>
+</body>
