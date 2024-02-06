@@ -29,3 +29,16 @@ siteTheme.addEventListener("change", () => {
   }
 })
 siteTheme.dispatchEvent(new Event("change"))
+
+const toTop = document.createElement("a")
+toTop.style.position = "fixed"
+toTop.style.bottom = "0"
+toTop.style.right = "0"
+toTop.style.marginBottom = "1rem"
+toTop.style.marginRight = "1rem"
+toTop.style.cursor = "pointer"
+toTop.textContent = "Top"
+toTop.onclick = () => {
+  window.scroll({ top: 0 })
+}
+document.body.append(toTop)
