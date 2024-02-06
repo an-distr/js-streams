@@ -1,8 +1,3 @@
-const siteStyle = document.createElement("link")
-siteStyle.rel = "stylesheet"
-siteStyle.href = "/site/site.min.css"
-document.head.appendChild(siteStyle)
-
 const siteTheme = document.getElementById("siteTheme")
 siteTheme.value = localStorage.getItem("theme.site") ?? "auto"
 siteTheme.addEventListener("change", () => {

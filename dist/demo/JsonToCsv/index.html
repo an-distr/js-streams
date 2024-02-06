@@ -18,6 +18,7 @@
   <link rel="icon" href="/site/favicon.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/site/apple-touch-icon.png" sizes="192x192">
 
+  <link rel="stylesheet" href="/site/site.min.css">
   <script defer src="/site/site.min.js"></script>
 
   <title>Json to CSV</title>
@@ -77,7 +78,7 @@
   </main>
 
   <script type="module">
-    import { DomConsole } from "../../web.min.js"
+    import { DomConsole } from "/web.min.js"
 
     globalThis.console = new DomConsole("console", globalThis.console)
 
