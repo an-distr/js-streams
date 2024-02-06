@@ -1,10 +1,10 @@
-import * as streams from "../../web.ts"
+import * as streams from "/web.ts"
 
 const chkDirect = document.getElementById("chkDirect") as HTMLInputElement
 const txtFile = document.getElementById("txtFile") as HTMLInputElement
 const linkHolder = txtFile.parentElement!.lastElementChild as HTMLDivElement
 
-txtFile.onchange = async () => {
+txtFile.onchange = () => {
   if (!txtFile.files) {
     return
   }

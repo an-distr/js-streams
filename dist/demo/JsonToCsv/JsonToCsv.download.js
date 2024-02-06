@@ -1,9 +1,9 @@
-import * as streams from "../../web.js";
+import * as streams from "/web.js";
 const chkDirect = document.getElementById("chkDirect");
 const txtUrl = document.getElementById("txtUrl");
 const btnConvertUrl = document.getElementById("btnConvertUrl");
 const linkHolder = btnConvertUrl.parentElement.lastElementChild;
-btnConvertUrl.onclick = async () => {
+btnConvertUrl.onclick = () => {
   fetch(txtUrl.value, { credentials: "include" }).then(async (response) => {
     if (!response.ok) {
       console.warn(`${txtUrl.value} responded status code ${response.status}.`, await response.text());

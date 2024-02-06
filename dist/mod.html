@@ -8,12 +8,10 @@
     content="Streams(https://github.com/an-dist/js-streams) for JavaScript/TypeScript Demos and Examples">
 
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-
   <link rel="modulepreload" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/es/highlight.min.js">
 
+  <link rel="preload" as="script" href="/site/site.min.js">
   <link rel="preload" as="style" href="/site/site.min.css">
-  <link rel="preload" as="style" href="/misc/DomConsole/DomConsole.min.css">
-  <link rel="modulepreload" href="/misc/DomConsole/DomConsole.min.js">
 
   <link rel="icon" href="/site/favicon.svg" type="image/svg+xml" sizes="any">
   <link rel="icon" href="/site/favicon.png" type="image/png" sizes="192x192">
@@ -40,9 +38,6 @@
       overflow-y: scroll;
     }
   </style>
-  <link rel="stylesheet" href="/site/site.min.css">
-  <link rel="stylesheet" href="/misc/DomConsole/DomConsole.min.css">
-  <link id="dc-theme" rel="stylesheet">
   <link id="hljs-theme" rel="stylesheet">
 
   <script defer src="/site/site.min.js"></script>
@@ -76,14 +71,11 @@
     <section id="console"></section>
   </main>
 
-  <script type="module">
-    import { DomConsole } from "/misc/DomConsole/DomConsole.min.js"
-
-    globalThis.console = new DomConsole("console", globalThis.console)
-
+  <script defer>
     const hash = location.hash.replace("#", "")
     const mod = "/" + hash.split("/").join("/")
     document.title = `${mod.split("/").slice(-1)[0]}${document.title}`
+
     const title = document.getElementsByTagName("h1")[0]
     title.textContent = document.title
 
@@ -95,20 +87,16 @@
       switch (siteTheme.value) {
         case "light":
           document.getElementById("hljs-theme").href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
-          document.getElementById("dc-theme").href = "/misc/DomConsole/DomConsole.theme.chrome.light.min.css"
           break
         case "dark":
           document.getElementById("hljs-theme").href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css"
-          document.getElementById("dc-theme").href = "/misc/DomConsole/DomConsole.theme.chrome.dark.min.css"
           break
         default:
           document.getElementById("hljs-theme").href = getComputedStyle(document.getElementById("isDarkMode")).display === "block"
             ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css"
             : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
-          document.getElementById("dc-theme").href = "/misc/DomConsole/DomConsole.theme.chrome.min.css"
       }
     })
-
     new IntersectionObserver(entries => {
       document.getElementById("siteTheme").dispatchEvent(new Event("change"))
     }).observe(document.getElementById("isDarkMode"))

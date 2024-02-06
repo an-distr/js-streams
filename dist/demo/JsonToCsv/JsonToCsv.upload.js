@@ -1,8 +1,8 @@
-import * as streams from "../../web.js";
+import * as streams from "/web.js";
 const chkDirect = document.getElementById("chkDirect");
 const txtFile = document.getElementById("txtFile");
 const linkHolder = txtFile.parentElement.lastElementChild;
-txtFile.onchange = async () => {
+txtFile.onchange = () => {
   if (!txtFile.files) {
     return;
   }

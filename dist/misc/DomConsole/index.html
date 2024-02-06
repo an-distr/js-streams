@@ -7,6 +7,7 @@
   <meta name="description"
     content="Streams(https://github.com/an-dist/js-streams) for JavaScript/TypeScript Demos and Examples">
 
+  <link rel="preload" as="script" href="/site/site.min.js">
   <link rel="preload" as="style" href="/site/site.min.css">
   <link rel="preload" as="style" href="./DomConsole.css">
   <link rel="modulepreload" href="./DomConsole.js">
@@ -22,7 +23,6 @@
       top: 0;
     }
   </style>
-  <link rel="stylesheet" href="/site/site.min.css">
   <link rel="stylesheet" href="./DomConsole.css">
   <link id="theme" rel="stylesheet" href="./DomConsole.theme.chrome.css">
 
@@ -102,13 +102,13 @@
 
     </section>
 
-    <section id="console"></section>
+    <section id="dom-console"></section>
 
   </main>
 
   <script type="module">
     import { DomConsole } from "./DomConsole.js"
-    const console = new DomConsole("console", globalThis.console)
+    const console = new DomConsole("dom-console", globalThis.console)
 
     document.getElementById("themes").onchange = e => {
       document.getElementById("theme").href = e.target.value
