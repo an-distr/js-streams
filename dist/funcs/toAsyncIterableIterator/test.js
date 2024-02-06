@@ -9,6 +9,7 @@ const source = (vals) => new ReadableStream({
 });
 const test = async (vals) => {
   console.group("vals:", vals.length > 10 ? `${vals.splice(0, 10)}...` : vals);
+  console.log("Asserting...");
   const readable = source(vals);
   let i = 0;
   for await (const val of toAsyncIterableIterator(readable)) {
