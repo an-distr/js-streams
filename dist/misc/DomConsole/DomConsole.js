@@ -24,7 +24,7 @@ class DomConsole {
     } else {
       this.owner = owner;
     }
-    if (!("owner" in owner)) {
+    if (!("owner" in this.owner)) {
       const scopedStyle = document.createElement("style");
       scopedStyle.setAttribute("scoped", "");
       scopedStyle.textContent = `

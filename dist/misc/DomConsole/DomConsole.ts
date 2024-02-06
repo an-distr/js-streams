@@ -32,7 +32,7 @@ export class DomConsole implements Console {
     else {
       this.owner = owner
     }
-    if (!("owner" in (owner as any))) {
+    if (!("owner" in (this.owner as any))) {
       const scopedStyle = document.createElement("style")
       scopedStyle.setAttribute("scoped", "")
       scopedStyle.textContent = `

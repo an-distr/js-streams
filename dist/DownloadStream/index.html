@@ -48,11 +48,16 @@
     <section id="console"></section>
   </main>
 
+  <script>
+    const siteTheme = document.getElementById("siteTheme")
+    siteTheme.value = localStorage.getItem("theme.site") ?? "auto"
+    siteTheme.addEventListener("change", () => {
+      localStorage.setItem("theme.site", siteTheme.value)
+    })
+  </script>
+
   <script type="module">
     import { DownloadStream } from "./DownloadStream.js"
-    import { DomConsole } from "/misc/DomConsole/DomConsole.min.js"
-
-    globalThis.console = new DomConsole("console", globalThis.console)
 
     document.getElementById("url").value = location.href.split("/").slice(0, 3).join("/") + "/site/sample.json"
 
@@ -60,9 +65,11 @@
       const url = document.getElementById("url")
       const response = await fetch(url.value, { credentials: "include" })
       if (!response.ok) {
+        console.warn(response.status, response.statusText)
         return
       }
       await response.body.pipeTo(new DownloadStream("download.json"))
     }
   </script>
+
 </body>

@@ -1,9 +1,3 @@
-const siteTheme = document.getElementById("siteTheme")
-siteTheme.value = localStorage.getItem("theme.site") ?? "auto"
-siteTheme.addEventListener("change", () => {
-  localStorage.setItem("theme.site", siteTheme.value)
-})
-
 const console = document.getElementById("console")
 if (console) {
   import("/misc/DomConsole/DomConsole.min.js").then(mod => {

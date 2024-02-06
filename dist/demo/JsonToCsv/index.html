@@ -77,6 +77,14 @@
 
   </main>
 
+  <script>
+    const siteTheme = document.getElementById("siteTheme")
+    siteTheme.value = localStorage.getItem("theme.site") ?? "auto"
+    siteTheme.addEventListener("change", () => {
+      localStorage.setItem("theme.site", siteTheme.value)
+    })
+  </script>
+
   <script type="module">
     import { DomConsole } from "/web.min.js"
 
@@ -84,4 +92,5 @@
 
     document.getElementById("txtUrl").value = location.href.split("/").slice(0, 3).join("/") + "/site/sample.json"
   </script>
+
 </body>

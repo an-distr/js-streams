@@ -106,6 +106,14 @@
 
   </main>
 
+  <script>
+    const siteTheme = document.getElementById("siteTheme")
+    siteTheme.value = localStorage.getItem("theme.site") ?? "auto"
+    siteTheme.addEventListener("change", () => {
+      localStorage.setItem("theme.site", siteTheme.value)
+    })
+  </script>
+
   <script type="module">
     import { DomConsole } from "./DomConsole.js"
     const console = new DomConsole("dom-console", globalThis.console)
@@ -158,4 +166,5 @@
       scrollTo(0, document.documentElement.scrollHeight - document.documentElement.clientHeight)
     }))
   </script>
+
 </body>

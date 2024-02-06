@@ -71,6 +71,14 @@
     <section id="console"></section>
   </main>
 
+  <script>
+    const siteTheme = document.getElementById("siteTheme")
+    siteTheme.value = localStorage.getItem("theme.site") ?? "auto"
+    siteTheme.addEventListener("change", () => {
+      localStorage.setItem("theme.site", siteTheme.value)
+    })
+  </script>
+
   <script defer>
     const hash = location.hash.replace("#", "")
     const mod = "/" + hash.split("/").join("/")
@@ -82,7 +90,6 @@
     const toHome = document.querySelector("header>a")
     toHome.href = `/#${mod.split("/").filter(Boolean).join("_")}`
 
-    const siteTheme = document.getElementById("siteTheme")
     siteTheme.addEventListener("change", () => {
       switch (siteTheme.value) {
         case "light":
@@ -137,4 +144,5 @@
         }), 1);
     }
   </script>
+
 </body>
