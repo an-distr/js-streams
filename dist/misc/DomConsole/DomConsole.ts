@@ -28,12 +28,13 @@ export class DomConsole implements Console {
   constructor(owner: HTMLElement | string, redirect?: Console, parent?: DomConsole) {
     if (typeof owner === "string") {
       this.owner = document.getElementById(owner)!
-      this.owner.append(this.createContextMenu(this.owner))
     }
     else {
       this.owner = owner
     }
     if (!("owner" in (this.owner as any))) {
+      this.owner.append(this.createContextMenu(this.owner))
+
       const scopedStyle = document.createElement("style")
       scopedStyle.setAttribute("scoped", "")
       scopedStyle.textContent = `

@@ -20,11 +20,11 @@ class DomConsole {
   constructor(owner, redirect, parent) {
     if (typeof owner === "string") {
       this.owner = document.getElementById(owner);
-      this.owner.append(this.createContextMenu(this.owner));
     } else {
       this.owner = owner;
     }
     if (!("owner" in this.owner)) {
+      this.owner.append(this.createContextMenu(this.owner));
       const scopedStyle = document.createElement("style");
       scopedStyle.setAttribute("scoped", "");
       scopedStyle.textContent = `
