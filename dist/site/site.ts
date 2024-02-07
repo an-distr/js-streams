@@ -1,4 +1,5 @@
 const con = document.getElementById("console")
+
 if (con) {
   // @ts-ignore
   import("/misc/DomConsole/DomConsole.min.js").then((mod) => {
@@ -34,15 +35,18 @@ if (con) {
 } else {
   document.getElementById("siteTheme")!.dispatchEvent(new Event("change"))
 }
+
 if (location.host.startsWith("localhost") || location.host.startsWith("127.0.0.1")) {
   document.title += " (local)"
 } else if (location.host.split(".").length > 3) {
   document.title += ` (${location.host.split(".")[0]})`
 }
+
 const h1 = document.getElementsByTagName("h1")[0]
 if (!h1.textContent || h1.textContent.length === 0) {
   h1.textContent = document.title
 }
+
 const toTop = document.createElement("a")
 toTop.style.position = "fixed"
 toTop.style.bottom = "0"
