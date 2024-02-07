@@ -38,12 +38,6 @@ console.group("Transpiling. (build.ts -> build.js)")
   finally {
     await context.dispose()
   }
-
-  file = file.replace(".ts", ".js")
-
-  let text = fs.readFileSync(file, "utf-8")
-  text = text.replaceAll(".ts", ".js")
-  fs.writeFileSync(file, text)
 }
 console.groupEnd()
 

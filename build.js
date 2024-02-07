@@ -12,9 +12,9 @@ console.group("Cleanup");
   }
 }
 console.groupEnd();
-console.group("Transpiling. (build.js -> build.js)");
+console.group("Transpiling. (build.ts -> build.js)");
 {
-  let file = "build.js";
+  let file = "build.ts";
   console.log([file]);
   const options = {
     platform: "browser",
@@ -29,15 +29,11 @@ console.group("Transpiling. (build.js -> build.js)");
   } finally {
     await context.dispose();
   }
-  file = file.replace(".js", ".js");
-  let text = fs.readFileSync(file, "utf-8");
-  text = text.replaceAll(".js", ".js");
-  fs.writeFileSync(file, text);
 }
 console.groupEnd();
-console.group("Transpiling. (test_runner.js -> test_runner.js)");
+console.group("Transpiling. (test_runner.ts -> test_runner.js)");
 {
-  let file = "test_runner.js";
+  let file = "test_runner.ts";
   console.log([file]);
   const options = {
     platform: "browser",
@@ -52,15 +48,15 @@ console.group("Transpiling. (test_runner.js -> test_runner.js)");
   } finally {
     await context.dispose();
   }
-  file = file.replace(".js", ".js");
+  file = file.replace(".ts", ".js");
   let text = fs.readFileSync(file, "utf-8");
-  text = text.replaceAll(".js", ".js");
+  text = text.replaceAll(".ts", ".js");
   fs.writeFileSync(file, text);
 }
 console.groupEnd();
-console.group("Transpiling. (.js -> .js)");
+console.group("Transpiling. (.ts -> .js)");
 {
-  const files = (await FastGlob("dist/{**,.**}/*.js")).filter((x) => !x.includes("/functions/")).filter((x) => !x.includes(".min."));
+  const files = (await FastGlob("dist/{**,.**}/*.ts")).filter((x) => !x.includes("/functions/")).filter((x) => !x.includes(".min."));
   console.log(files);
   const options = {
     platform: "browser",
@@ -76,9 +72,9 @@ console.group("Transpiling. (.js -> .js)");
   } finally {
     await context.dispose();
   }
-  for (const file of files.map((x) => x.replace(".js", ".js"))) {
+  for (const file of files.map((x) => x.replace(".ts", ".js"))) {
     let text = fs.readFileSync(file, "utf-8");
-    text = text.replaceAll(".js", ".js");
+    text = text.replaceAll(".ts", ".js");
     fs.writeFileSync(file, text);
   }
 }
