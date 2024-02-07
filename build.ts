@@ -1,6 +1,6 @@
 /// <reference lib="es2021" />
-import * as esbuild from "esbuild"
-import * as fs from "node:fs"
+import esbuild from "esbuild"
+import fs from "node:fs"
 import FastGlob from "fast-glob"
 
 // Cleanup
