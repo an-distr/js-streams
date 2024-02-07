@@ -1,9 +1,9 @@
 import FastGlob from "fast-glob";
 import { intro, outro, select, isCancel } from "@clack/prompts";
-const tests = [{
-  value: void 0,
+const tests = Array.from([{
+  value: "",
   label: "quit"
-}].concat((await FastGlob("./dist/**/test.js")).sort().map((file, index) => {
+}]).concat((await FastGlob("./dist/**/test.js")).sort().map((file, index) => {
   return {
     value: file,
     label: `${index + 1}: ${file.split("/").slice(2, -1).join("/")}`
@@ -15,7 +15,7 @@ while (true) {
     message: "Choose test.",
     options: tests
   });
-  if (isCancel(test) || !test) {
+  if (isCancel(test) || test === "") {
     outro("Bye.");
     break;
   }
