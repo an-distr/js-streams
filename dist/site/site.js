@@ -1,14 +1,14 @@
-const console = document.getElementById("console");
-if (console) {
+const con = document.getElementById("console");
+if (con) {
   import("/misc/DomConsole/DomConsole.min.js").then((mod) => {
     const { DomConsole } = mod;
-    globalThis.console = new DomConsole(console, globalThis.console);
+    globalThis.console = new DomConsole(con, globalThis.console);
     const dcStyle = document.createElement("link");
     dcStyle.rel = "stylesheet";
     dcStyle.href = "/misc/DomConsole/DomConsole.min.css";
     document.head.appendChild(dcStyle);
-    const siteTheme2 = document.getElementById("siteTheme");
-    siteTheme2.addEventListener("change", () => {
+    const siteTheme = document.getElementById("siteTheme");
+    siteTheme.addEventListener("change", () => {
       const dcTheme = document.getElementById("dc-theme") ?? (() => {
         const dcTheme2 = document.createElement("link");
         dcTheme2.rel = "stylesheet";
@@ -16,7 +16,7 @@ if (console) {
         return dcTheme2;
       })();
       if (dcTheme) {
-        switch (siteTheme2.value) {
+        switch (siteTheme.value) {
           case "light":
             dcTheme.href = "/misc/DomConsole/DomConsole.theme.chrome.light.min.css";
             break;
@@ -28,10 +28,10 @@ if (console) {
         }
       }
     });
-    siteTheme2.dispatchEvent(new Event("change"));
+    siteTheme.dispatchEvent(new Event("change"));
   });
 } else {
-  siteTheme.dispatchEvent(new Event("change"));
+  document.getElementById("siteTheme").dispatchEvent(new Event("change"));
 }
 if (location.host.startsWith("localhost") || location.host.startsWith("127.0.0.1")) {
   document.title += " (local)";
@@ -39,7 +39,7 @@ if (location.host.startsWith("localhost") || location.host.startsWith("127.0.0.1
   document.title += ` (${location.host.split(".")[0]})`;
 }
 const h1 = document.getElementsByTagName("h1")[0];
-if (h1.textContent.length === 0) {
+if (!h1.textContent || h1.textContent.length === 0) {
   h1.textContent = document.title;
 }
 const toTop = document.createElement("a");
