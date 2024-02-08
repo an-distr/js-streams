@@ -19,21 +19,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import { PullPush, PullPushStringQueue, PullPushTypes } from "../PullPush/PullPush.ts"
 
-const native = new WebAssembly.Instance(
-  new WebAssembly.Module(
-    await (await fetch(
-      new URL("./JsonDeserializer.wasm", import.meta.url)
-    )).arrayBuffer()),
-  {
-    env: {
-      abort: () => { throw new Error() }
-    }
-  }).exports
-
 export interface JsonDeserializerOptions {
   lineSeparated?: boolean
   parse?: (text: string) => any
-  native?: boolean
 }
 
 export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStringQueue> {
@@ -47,84 +35,88 @@ export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStrin
     this.lineSeparated = options?.lineSeparated === true
     this.parse = options?.parse ?? JSON.parse
 
-    if (options?.native) {
-      // @ts-ignore
-      this.sanitize = value => native.sanitize(value, this.lineSeparated)
-      // @ts-ignore
-      this.indexOfLastSeparator = value => native.indexOfLastSeparator(value, this.lineSeparated)
-    }
-    else {
-      const sanitizeForJson: (value: string) => string = value => {
-        let b = true
-        while (b) {
-          switch (value.slice(0, 1)) {
-            case ",":
-            case "[":
-            case " ":
-            case "\r":
-            case "\n":
-            case "\t":
-              value = value.slice(1)
-              break
-            default:
-              b = false
-          }
+    const sanitizeForJson: (value: string) => string = value => {
+      let b = true
+      while (b) {
+        switch (value.slice(0, 1)) {
+          case ",":
+          case "[":
+          case " ":
+          case "\r":
+          case "\n":
+          case "\t":
+            value = value.slice(1)
+            break
+          default:
+            b = false
         }
-        b = true
-        while (b) {
-          switch (value.slice(-1)) {
-            case ",":
-            case "]":
-            case " ":
-            case "\r":
-            case "\n":
-            case "\t":
-              value = value.slice(0, -1)
-              break
-            default:
-              b = false
-          }
-        }
-        return value
       }
-
-      this.sanitize = this.lineSeparated
-        ? value => sanitizeForJson(value
-          .split("\r\n").filter(Boolean).join("\n")
-          .split("\n").filter(Boolean).join(",")
-        )
-        : sanitizeForJson
-
-      this.indexOfLastSeparator = this.lineSeparated
-        ? value => {
-          for (let i = value.length - 1; i >= 0; i--) {
-            if (value[i] === "\n") {
-              return i
-            }
-          }
-          return -1
+      b = true
+      while (b) {
+        switch (value.slice(-1)) {
+          case ",":
+          case "]":
+          case " ":
+          case "\r":
+          case "\n":
+          case "\t":
+            value = value.slice(0, -1)
+            break
+          default:
+            b = false
         }
-        : value => {
-          let nextStart = -1
-          let separator = -1
-          for (let i = value.length - 1; i >= 0; i--) {
-            switch (value[i]) {
-              case "{":
-                nextStart = i
-                break
-              case ",":
-                separator = i
-                break
-              case "}":
-                if (nextStart > separator && separator > i) {
-                  return separator
-                }
-                break
-            }
-          }
-          return -1
-        }
+      }
+      return value
     }
+
+    this.sanitize = this.lineSeparated
+      ? value => sanitizeForJson(value
+        .split("\r\n").filter(Boolean).join("\n")
+        .split("\n").filter(Boolean).join(",")
+      )
+      : sanitizeForJson
+
+    this.indexOfLastSeparator = this.lineSeparated
+      ? value => {
+        for (let i = value.length - 1; i >= 0; i--) {
+          if (value[i] === "\n") {
+            return i
+          }
+        }
+        return -1
+      }
+      : value => {
+        let nextStart = -1
+        let separator = -1
+        for (let i = value.length - 1; i >= 0; i--) {
+          switch (value[i]) {
+            case "{":
+              nextStart = i
+              break
+            case ",":
+              separator = i
+              break
+            case "}":
+              if (nextStart > separator && separator > i) {
+                return separator
+              }
+              break
+          }
+        }
+        return -1
+      }
+  }
+
+  async nativization() {
+    const { Loader } = await import("./JsonDeserializer.wasm.loader.ts")
+    const instance = Loader.instance()
+
+    // @ts-ignore
+    this.sanitize = value => instance.sanitize(value, this.lineSeparated)
+    // @ts-ignore
+    this.indexOfLastSeparator = value => instance.indexOfLastSeparator(value, this.lineSeparated)
+
+    return this
   }
 
   async *pullpush(data?: PullPushTypes<string>, flush?: boolean) {

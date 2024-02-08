@@ -20,7 +20,7 @@ const time = async (fn) => {
   performance.mark("end");
   performance.measure("perf", "start", "end");
   const perf = performance.getEntriesByName("perf")[0];
-  console.table(perf);
+  console.log(perf.duration);
 };
 console.group("JSON");
 let json = '[{"a":1,"b":2},{"a":3,"b":4},{"a":5,"b":6}]';
@@ -32,16 +32,29 @@ await source(jsonl).pipeThrough(new JsonDeserializer({ lineSeparated: true }).tr
 console.groupEnd();
 console.group("Performance tests");
 {
-  console.group("JSON");
-  json = `[${'{"a":1,"b":2}'.repeat(100)}]`;
+  const count = 1e5;
+  console.log("count", count);
+  json = "[" + '{"a":1,"b":2},'.repeat(count);
+  json = json.slice(0, -1) + "]";
+  jsonl = '{"a":1,"b":2}\n'.repeat(count);
+  console.group("JSON(js)");
   await time(async () => {
-    await source(json).pipeThrough(new JsonDeserializer({ native: true }).transform()).pipeTo(terminate());
+    await source(json).pipeThrough(new JsonDeserializer().transform()).pipeTo(terminate());
   });
   console.groupEnd();
-  console.group("JSON Lines");
-  json = '{"a":1,"b":2}\n'.repeat(100);
+  console.group("JSON Lines(js)");
   await time(async () => {
-    await source(json).pipeThrough(new JsonDeserializer({ native: true, lineSeparated: true }).transform()).pipeTo(terminate());
+    await source(json).pipeThrough(new JsonDeserializer({ lineSeparated: true }).transform()).pipeTo(terminate());
+  });
+  console.groupEnd();
+  console.group("JSON(wasm)");
+  await time(async () => {
+    await source(json).pipeThrough((await new JsonDeserializer().nativization()).transform()).pipeTo(terminate());
+  });
+  console.groupEnd();
+  console.group("JSON Lines(wasm)");
+  await time(async () => {
+    await source(json).pipeThrough((await new JsonDeserializer({ lineSeparated: true }).nativization()).transform()).pipeTo(terminate());
   });
   console.groupEnd();
 }

@@ -1,6 +1,7 @@
 import esbuild from "esbuild";
 import fs from "node:fs";
 import FastGlob from "fast-glob";
+import asc from "assemblyscript/dist/asc.js";
 console.group("Cleanup");
 {
   const files = new Set(
@@ -73,9 +74,43 @@ console.group("Transpiling. (test_runner.ts -> test_runner.js)");
   fs.writeFileSync(file, text);
 }
 console.groupEnd();
+console.group("Transpiling. (.wasm.ts -> .wasm -> .wasm.loader.ts)");
+{
+  const files = (await FastGlob("dist/{**,.**}/*.wasm.ts")).filter((x) => !x.includes("/functions/")).filter((x) => !x.includes(".min."));
+  const license = `/*!
+${fs.readFileSync("LICENSE", "utf-8")}
+*/`;
+  for (const file of files) {
+    const wasm = file.replaceAll(".wasm.ts", ".wasm");
+    const loader = wasm.replaceAll(".wasm", ".wasm.loader.ts");
+    const args = [file, "-o", wasm, "-Ospeed"];
+    console.log(file, args);
+    const { error } = await asc.main(args);
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+    const binary = Array.from(new Uint8Array(fs.readFileSync(wasm).buffer));
+    fs.writeFileSync(loader, [license, `
+export class Loader {
+  private static binary = [${binary.join(", ")}]
+
+  static instance() {
+    return new WebAssembly.Instance(
+      new WebAssembly.Module(new Uint8Array(Loader.binary)),
+      {
+        env: {
+          abort: () => { throw new Error() }
+        }
+      }).exports
+  }
+}`].join("\n"), "utf-8");
+  }
+}
+console.groupEnd();
 console.group("Transpiling. (.ts -> .js)");
 {
-  const files = (await FastGlob("dist/{**,.**}/*.ts")).filter((x) => !x.includes("/functions/")).filter((x) => !x.includes(".min.")).filter((x) => !x.includes(".native."));
+  const files = (await FastGlob("dist/{**,.**}/*.ts")).filter((x) => !x.includes("/functions/")).filter((x) => !x.includes(".min.")).filter((x) => !x.includes(".wasm.") || x.includes(".wasm.loader."));
   console.log(files);
   const options = {
     platform: "browser",
