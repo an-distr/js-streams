@@ -1,4 +1,4 @@
-user-agent: *
-allow: /
+User-agent: *
+Allow: /
 
-sitemap: https://an-js-streams.pages.dev/sitemap-index.xml
+Sitemap: https://an-js-streams.pages.dev/sitemap-index.xml
