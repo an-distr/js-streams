@@ -26,7 +26,7 @@ const lastmod = [
 
 console.group(`Detect ${urls.length} URL(s)`)
 
-let xml = `<?xml version="1.0" encoding="UTF-8"?>
+let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`
 for (const url of urls.sort()) {
   let priority: number | undefined
@@ -47,7 +47,7 @@ for (const url of urls.sort()) {
     changefreq: changefreq,
   }
 
-  xml += `
+  sitemap += `
   <url>
     <loc>${item.url}</loc>
     <lastmod>${item.lastmod}</lastmod>${item.priority ? `
@@ -57,9 +57,20 @@ for (const url of urls.sort()) {
 
   console.log(item)
 }
-xml += `
+sitemap += `
 </urlset>`
 
 console.groupEnd()
 
-fs.writeFileSync("dist/sitemap.xml", xml, { encoding: "utf-8" })
+fs.writeFileSync("dist/sitemap.xml", sitemap, { encoding: "utf-8" })
+
+const sitemapPath = new URL(base)
+sitemapPath.pathname = "/sitemap.xml"
+const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>${sitemapPath.href}</loc>
+  </sitemap>
+</sitemapindex>`
+
+fs.writeFileSync("dist/sitemap-index.xml", sitemapIndex, { encoding: "utf-8" })
