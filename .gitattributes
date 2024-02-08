@@ -1,3 +1,3 @@
 * linguist-vendored
-*.ts linguist-vendored=false
-*.wasm linguist-vendored=false
+dist/**/*.ts linguist-vendored=false
+dist/**/*.wasm linguist-vendored=false
