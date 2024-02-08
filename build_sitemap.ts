@@ -15,7 +15,6 @@ for (const link of [...doc.querySelectorAll("a")].map(a => a.href)) {
     continue
   }
   urls.push(url)
-  console.log(url.href)
 }
 
 const today = new Date()
@@ -25,7 +24,7 @@ const lastmod = [
   today.getUTCDate().toString().padStart(2, "0"),
 ].join("-")
 
-console.group("Detect URLs")
+console.group(`Detect ${urls.length} URL(s)`)
 
 let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`

@@ -11,7 +11,6 @@ for (const link of [...doc.querySelectorAll("a")].map((a) => a.href)) {
     continue;
   }
   urls.push(url);
-  console.log(url.href);
 }
 const today = /* @__PURE__ */ new Date();
 const lastmod = [
@@ -19,7 +18,7 @@ const lastmod = [
   (today.getUTCMonth() + 1).toString().padStart(2, "0"),
   today.getUTCDate().toString().padStart(2, "0")
 ].join("-");
-console.group("Detect URLs");
+console.group(`Detect ${urls.length} URL(s)`);
 let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
 for (const url of urls.sort()) {
