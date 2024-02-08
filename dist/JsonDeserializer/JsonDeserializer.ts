@@ -108,13 +108,13 @@ export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStrin
   }
 
   async nativization() {
-    const { Loader } = await import("./JsonDeserializer.wasm.loader.ts")
-    const instance = Loader.instance()
+    // const { Loader } = await import("./JsonDeserializer.wasm.loader.ts")
+    // const instance = Loader.instance()
 
-    // @ts-ignore
-    this.sanitize = value => instance.sanitize(value, this.lineSeparated)
-    // @ts-ignore
-    this.indexOfLastSeparator = value => instance.indexOfLastSeparator(value, this.lineSeparated)
+    // // @ts-ignore
+    // this.sanitize = value => instance.sanitize(value, this.lineSeparated)
+    // // @ts-ignore
+    // this.indexOfLastSeparator = value => instance.indexOfLastSeparator(value, this.lineSeparated)
 
     return this
   }
