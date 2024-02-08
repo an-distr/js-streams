@@ -16,6 +16,6 @@
     "esbuild": "^0.20.0",
     "fast-glob": "^3.3.2",
     "jsdom": "^24.0.0",
-    "wrangler": "^3.26.0"
+    "wrangler": "^3.27.0"
   }
 }
