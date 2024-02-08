@@ -99,6 +99,7 @@ console.group("Transpiling. (.ts -> .js)")
   const files = (await FastGlob("dist/{**,.**}/*.ts"))
     .filter(x => !x.includes("/functions/"))
     .filter(x => !x.includes(".min."))
+    .filter(x => !x.includes(".native."))
   console.log(files)
 
   const options: esbuild.BuildOptions = {

@@ -75,7 +75,7 @@ console.group("Transpiling. (test_runner.ts -> test_runner.js)");
 console.groupEnd();
 console.group("Transpiling. (.ts -> .js)");
 {
-  const files = (await FastGlob("dist/{**,.**}/*.ts")).filter((x) => !x.includes("/functions/")).filter((x) => !x.includes(".min."));
+  const files = (await FastGlob("dist/{**,.**}/*.ts")).filter((x) => !x.includes("/functions/")).filter((x) => !x.includes(".min.")).filter((x) => !x.includes(".native."));
   console.log(files);
   const options = {
     platform: "browser",
