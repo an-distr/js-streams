@@ -2,6 +2,7 @@
   "type": "module",
   "scripts": {
     "build": "node build.js",
+    "build-sitemap": "node build_sitemap.js",
     "test-web": "npx wrangler pages dev --local-protocol=https dist",
     "test-node": "node --experimental-default-type=module test_runner.js",
     "test-deno": "deno run --allow-all test_runner.ts",
@@ -10,8 +11,11 @@
   "devDependencies": {
     "@clack/prompts": "^0.7.0",
     "@cloudflare/workers-types": "^4.20240129.0",
+    "@types/jsdom": "^21.1.6",
+    "assemblyscript": "^0.27.24",
     "esbuild": "^0.20.0",
     "fast-glob": "^3.3.2",
-    "wrangler": "^3.26.0"
+    "jsdom": "^24.0.0",
+    "wrangler": "^3.27.0"
   }
 }

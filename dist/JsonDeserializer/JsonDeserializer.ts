@@ -28,7 +28,7 @@ export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStrin
   private lineSeparated: boolean
   private parse: (text: string) => any
   private sanitize: (value: string) => string
-  private indexOfLastSeparator: (value: string) => number | undefined
+  private indexOfLastSeparator: (value: string) => number
 
   constructor(options?: JsonDeserializerOptions) {
     super(new PullPushStringQueue)
@@ -83,6 +83,7 @@ export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStrin
             return i
           }
         }
+        return -1
       }
       : value => {
         let nextStart = -1
@@ -102,7 +103,20 @@ export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStrin
               break
           }
         }
+        return -1
       }
+  }
+
+  async nativization() {
+    const { Loader } = await import("./JsonDeserializer.wasm.loader.ts")
+    const instance = Loader.instance()
+
+    // @ts-ignore
+    this.sanitize = value => instance.sanitize(value, this.lineSeparated)
+    // @ts-ignore
+    this.indexOfLastSeparator = value => instance.indexOfLastSeparator(value, this.lineSeparated)
+
+    return this
   }
 
   async *pullpush(data?: PullPushTypes<string>, flush?: boolean) {
@@ -110,7 +124,7 @@ export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStrin
 
     do {
       const lastSeparator = this.indexOfLastSeparator(this.queue.all())
-      if (lastSeparator) {
+      if (lastSeparator >= 0) {
         const json = "[" + this.sanitize(this.queue.splice(0, lastSeparator)) + "]"
         await this.push(yield* this.parse(json))
       }

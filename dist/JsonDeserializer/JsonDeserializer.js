@@ -64,6 +64,7 @@ class JsonDeserializer extends PullPush {
           return i;
         }
       }
+      return -1;
     } : (value) => {
       let nextStart = -1;
       let separator = -1;
@@ -82,13 +83,21 @@ class JsonDeserializer extends PullPush {
             break;
         }
       }
+      return -1;
     };
+  }
+  async nativization() {
+    const { Loader } = await import("./JsonDeserializer.wasm.loader.js");
+    const instance = Loader.instance();
+    this.sanitize = (value) => instance.sanitize(value, this.lineSeparated);
+    this.indexOfLastSeparator = (value) => instance.indexOfLastSeparator(value, this.lineSeparated);
+    return this;
   }
   async *pullpush(data, flush) {
     await this.push(data);
     do {
       const lastSeparator = this.indexOfLastSeparator(this.queue.all());
-      if (lastSeparator) {
+      if (lastSeparator >= 0) {
         const json = "[" + this.sanitize(this.queue.splice(0, lastSeparator)) + "]";
         await this.push(yield* this.parse(json));
       }

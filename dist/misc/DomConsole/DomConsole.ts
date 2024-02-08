@@ -17,6 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+// @ts-ignore: Ignore it because the interface is different from the console of node.
 export class DomConsole implements Console {
   private owner: HTMLElement
   private redirect?: Console
@@ -27,12 +28,13 @@ export class DomConsole implements Console {
   constructor(owner: HTMLElement | string, redirect?: Console, parent?: DomConsole) {
     if (typeof owner === "string") {
       this.owner = document.getElementById(owner)!
-      this.owner.append(this.createContextMenu(this.owner))
     }
     else {
       this.owner = owner
     }
     if (!("owner" in (this.owner as any))) {
+      this.owner.append(this.createContextMenu(this.owner))
+
       const scopedStyle = document.createElement("style")
       scopedStyle.setAttribute("scoped", "")
       scopedStyle.textContent = `
