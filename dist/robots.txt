@@ -1,2 +1,3 @@
 User-Agent: *
 Allow: /
+Sitemap: https://an-js-streams.pages.dev/sitemap.xml

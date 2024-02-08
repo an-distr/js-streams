@@ -31,6 +31,25 @@ console.group("Transpiling. (build.ts -> build.js)");
   }
 }
 console.groupEnd();
+console.group("Transpiling. (build_sitemap.ts -> build_sitemap.js)");
+{
+  let file = "build_sitemap.ts";
+  console.log([file]);
+  const options = {
+    platform: "browser",
+    format: "esm",
+    entryPoints: [file],
+    outdir: ".",
+    allowOverwrite: true
+  };
+  const context = await esbuild.context(options);
+  try {
+    await context.rebuild();
+  } finally {
+    await context.dispose();
+  }
+}
+console.groupEnd();
 console.group("Transpiling. (test_runner.ts -> test_runner.js)");
 {
   let file = "test_runner.ts";
