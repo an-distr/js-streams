@@ -1,4 +1,4 @@
-*.sh   linguist-documentation
-*.bat  linguist-documentation
-*.js   linguist-documentation
-*.html linguist-documentation
+*.sh   linguist-documentation=true
+*.bat  linguist-documentation=true
+*.js   linguist-documentation=true
+*.html linguist-documentation=true
