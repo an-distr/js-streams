@@ -101,8 +101,6 @@ console.group("Transpiling. (Native.ts -> Native.wasm)")
     .filter(x => !x.includes("/functions/"))
     .filter(x => !x.includes(".min."))
 
-  const license = `/*!\n${fs.readFileSync("LICENSE", "utf-8")}\n*/`
-
   for (const file of files) {
     const wasm = file.replaceAll("Native.ts", "Native.wasm")
 

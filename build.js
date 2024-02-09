@@ -77,9 +77,6 @@ console.groupEnd();
 console.group("Transpiling. (Native.ts -> Native.wasm)");
 {
   const files = (await FastGlob("dist/{**,.**}/*Native.ts")).filter((x) => !x.includes("/functions/")).filter((x) => !x.includes(".min."));
-  const license = `/*!
-${fs.readFileSync("LICENSE", "utf-8")}
-*/`;
   for (const file of files) {
     const wasm = file.replaceAll("Native.ts", "Native.wasm");
     const args = [

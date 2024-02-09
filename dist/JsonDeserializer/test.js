@@ -24,16 +24,30 @@ const time = async (fn) => {
   console.log(perf.duration);
 };
 const deserializer = async (options, native) => native ? (await new JsonDeserializer(options).nativization()).transform() : new JsonDeserializer(options).transform();
+const json = '[	\r\n{"a":1,"b":2}	,\r\n{"a":3,"b":4},{"a":5,"b":6}	,\r\n]';
+const jsonl = '{"a":1,"b":2}\n{"a":3	,"b":4}\r\n{"a":5,"b":6}';
+const bigJson = (count) => {
+  const a = [];
+  for (let i = 0; i < count; ++i) {
+    a.push('{"a":1,"b":2}');
+  }
+  return "[" + a.join(",") + "]";
+};
+const bigJsonLine = (count) => {
+  const a = [];
+  for (let i = 0; i < count; ++i) {
+    a.push('{"a":1,"b":2}');
+  }
+  return a.join("\n");
+};
 const test = async (native) => {
   console.group("JSON");
   {
-    const json = '[{"a":1,"b":2},{"a":3,"b":4},{"a":5,"b":6}]';
     await source(json).pipeThrough(await deserializer(void 0, native)).pipeTo(logging());
   }
   console.groupEnd();
   console.group("JSON Lines");
   {
-    const jsonl = '{"a":1,"b":2}\n{"a":3,"b":4}\n{"a":5,"b":6}';
     await source(jsonl).pipeThrough(await deserializer({ lineSeparated: true }, native)).pipeTo(logging());
   }
   console.groupEnd();
@@ -42,18 +56,17 @@ const test = async (native) => {
   {
     const count = 1e5;
     console.log("count", count);
-    let json = "[" + '{"a":1,"b":2},'.repeat(count);
-    json = json.slice(0, -1) + "]";
-    const jsonl = '{"a":1,"b":2}\n'.repeat(count);
+    const json2 = bigJson(count);
+    const jsonl2 = bigJsonLine(count);
     console.group("JSON");
     await time(async () => {
-      await source(json).pipeThrough(await deserializer(void 0, native)).pipeTo(terminate());
+      await source(json2).pipeThrough(await deserializer(void 0, native)).pipeTo(terminate());
     });
     console.groupEnd();
     await sleep(0);
     console.group("JSON Lines");
     await time(async () => {
-      await source(jsonl).pipeThrough(await deserializer({ lineSeparated: true }, native)).pipeTo(terminate());
+      await source(jsonl2).pipeThrough(await deserializer({ lineSeparated: true }, native)).pipeTo(terminate());
     });
     console.groupEnd();
   }
