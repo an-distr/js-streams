@@ -1,4 +1,5 @@
 import { JsonDeserializer, JsonDeserializerOptions } from "./JsonDeserializer.ts"
+import { sleep } from "../funcs/sleep/sleep.ts"
 
 const source = (s: string) => new ReadableStream({
   start(controller) {
@@ -51,6 +52,8 @@ const test = async (native: boolean) => {
   }
   console.groupEnd()
 
+  await sleep(0)
+
   console.group("Performance test")
   {
     const count = 100000
@@ -69,6 +72,8 @@ const test = async (native: boolean) => {
     })
     console.groupEnd()
 
+    await sleep(0)
+
     console.group("JSON Lines")
     await time(async () => {
       await source(jsonl)
@@ -78,6 +83,8 @@ const test = async (native: boolean) => {
     console.groupEnd()
   }
   console.groupEnd()
+
+  await sleep(0)
 }
 
 console.group("Pure JavaScript")

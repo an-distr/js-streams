@@ -74,9 +74,14 @@ class JsonDeserializer extends PullPush {
     };
   }
   async nativization() {
-    const wasm = await import("./JsonDeserializerNative.js");
-    this.sanitize = (value) => wasm.sanitize(value, this.lineSeparated);
-    this.indexOfLastSeparator = (value) => wasm.indexOfLastSeparator(value, this.lineSeparated);
+    const {
+      sanitize_jsonl,
+      sanitize_json,
+      indexOfLastSeparator_jsonl,
+      indexOfLastSeparator_json
+    } = await import("./JsonDeserializerNative.js");
+    this.sanitize = (value) => this.lineSeparated ? sanitize_jsonl(value) : sanitize_json(value);
+    this.indexOfLastSeparator = (value) => this.lineSeparated ? indexOfLastSeparator_jsonl(value) : indexOfLastSeparator_json(value);
     return this;
   }
   async *pullpush(data, flush) {

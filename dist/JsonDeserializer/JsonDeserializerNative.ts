@@ -43,45 +43,43 @@ function sanitizeForJson(value: string): string {
   return value
 }
 
-export function sanitize(value: string, lineSeparated: bool): string {
-  if (lineSeparated) {
-    return sanitizeForJson(value
-      .split("\r\n").filter(x => x.length > 0).join("\n")
-      .split("\n").filter(x => x.length > 0).join(","))
-  }
-  else {
-    return sanitizeForJson(value)
-  }
+export function sanitize_json(value: string): string {
+  return sanitizeForJson(value)
 }
 
-export function indexOfLastSeparator(value: string, lineSeparated: bool): i32 {
-  if (lineSeparated) {
-    const length = value.length - 1
-    for (let i = length; i >= 0; i--) {
-      if (value[i] === "\n") {
-        return i
+export function sanitize_jsonl(value: string): string {
+  return sanitizeForJson(value
+    .split("\r\n").filter(x => x.length > 0).join("\n")
+    .split("\n").filter(x => x.length > 0).join(","))
+}
+
+export function indexOfLastSeparator_json(value: string): i32 {
+  const length = value.length - 1
+  let nextStart = -1
+  let separator = -1
+  for (let i = length; i >= 0; i--) {
+    const s = value[i]
+    if (s === "{") {
+      nextStart = i
+    }
+    else if (s === ",") {
+      separator = i
+    }
+    else if (s === "}") {
+      if (nextStart > separator && separator > i) {
+        return separator
       }
     }
-    return -1
   }
-  else {
-    const length = value.length - 1
-    let nextStart = -1
-    let separator = -1
-    for (let i = length; i >= 0; i--) {
-      const s = value[i]
-      if (s === "{") {
-        nextStart = i
-      }
-      else if (s === ",") {
-        separator = i
-      }
-      else if (s === "}") {
-        if (nextStart > separator && separator > i) {
-          return separator
-        }
-      }
+  return -1
+}
+
+export function indexOfLastSeparator_jsonl(value: string): i32 {
+  const length = value.length - 1
+  for (let i = length; i >= 0; i--) {
+    if (value[i] === "\n") {
+      return i
     }
-    return -1
   }
+  return -1
 }

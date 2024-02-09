@@ -1,4 +1,5 @@
 import { JsonDeserializer } from "./JsonDeserializer.js";
+import { sleep } from "../funcs/sleep/sleep.js";
 const source = (s) => new ReadableStream({
   start(controller) {
     controller.enqueue(s);
@@ -36,6 +37,7 @@ const test = async (native) => {
     await source(jsonl).pipeThrough(await deserializer({ lineSeparated: true }, native)).pipeTo(logging());
   }
   console.groupEnd();
+  await sleep(0);
   console.group("Performance test");
   {
     const count = 1e5;
@@ -48,6 +50,7 @@ const test = async (native) => {
       await source(json).pipeThrough(await deserializer(void 0, native)).pipeTo(terminate());
     });
     console.groupEnd();
+    await sleep(0);
     console.group("JSON Lines");
     await time(async () => {
       await source(jsonl).pipeThrough(await deserializer({ lineSeparated: true }, native)).pipeTo(terminate());
@@ -55,6 +58,7 @@ const test = async (native) => {
     console.groupEnd();
   }
   console.groupEnd();
+  await sleep(0);
 };
 console.group("Pure JavaScript");
 await test(false);

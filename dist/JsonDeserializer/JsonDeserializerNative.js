@@ -17,17 +17,25 @@ async function instantiate(module, imports = {}) {
   const { exports } = await WebAssembly.instantiate(module, adaptedImports);
   const memory = exports.memory || imports.env.memory;
   const adaptedExports = Object.setPrototypeOf({
-    sanitize(value, lineSeparated) {
-      // dist/JsonDeserializer/JsonDeserializerNative/sanitize(~lib/string/String, bool) => ~lib/string/String
+    sanitize_json(value) {
+      // dist/JsonDeserializer/JsonDeserializerNative/sanitize_json(~lib/string/String) => ~lib/string/String
       value = __lowerString(value) || __notnull();
-      lineSeparated = lineSeparated ? 1 : 0;
-      return __liftString(exports.sanitize(value, lineSeparated) >>> 0);
+      return __liftString(exports.sanitize_json(value) >>> 0);
     },
-    indexOfLastSeparator(value, lineSeparated) {
-      // dist/JsonDeserializer/JsonDeserializerNative/indexOfLastSeparator(~lib/string/String, bool) => i32
+    sanitize_jsonl(value) {
+      // dist/JsonDeserializer/JsonDeserializerNative/sanitize_jsonl(~lib/string/String) => ~lib/string/String
       value = __lowerString(value) || __notnull();
-      lineSeparated = lineSeparated ? 1 : 0;
-      return exports.indexOfLastSeparator(value, lineSeparated);
+      return __liftString(exports.sanitize_jsonl(value) >>> 0);
+    },
+    indexOfLastSeparator_json(value) {
+      // dist/JsonDeserializer/JsonDeserializerNative/indexOfLastSeparator_json(~lib/string/String) => i32
+      value = __lowerString(value) || __notnull();
+      return exports.indexOfLastSeparator_json(value);
+    },
+    indexOfLastSeparator_jsonl(value) {
+      // dist/JsonDeserializer/JsonDeserializerNative/indexOfLastSeparator_jsonl(~lib/string/String) => i32
+      value = __lowerString(value) || __notnull();
+      return exports.indexOfLastSeparator_jsonl(value);
     },
   }, exports);
   function __liftString(pointer) {
@@ -57,8 +65,10 @@ async function instantiate(module, imports = {}) {
 }
 export const {
   memory,
-  sanitize,
-  indexOfLastSeparator,
+  sanitize_json,
+  sanitize_jsonl,
+  indexOfLastSeparator_json,
+  indexOfLastSeparator_jsonl,
 } = await (async url => instantiate(
   await (async () => {
     try { return await globalThis.WebAssembly.compileStreaming(globalThis.fetch(url)); }
