@@ -22,7 +22,7 @@ console.groupEnd()
 // Transpiling. (build.ts -> build.js)
 console.group("Transpiling. (build.ts -> build.js)")
 {
-  let file = "build.ts"
+  const file = "build.ts"
   console.log([file])
 
   const options: esbuild.BuildOptions = {
@@ -45,7 +45,7 @@ console.groupEnd()
 // Transpiling. (build_sitemap.ts -> build_sitemap.js)
 console.group("Transpiling. (build_sitemap.ts -> build_sitemap.js)")
 {
-  let file = "build_sitemap.ts"
+  const file = "build_sitemap.ts"
   console.log([file])
 
   const options: esbuild.BuildOptions = {

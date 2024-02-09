@@ -10,10 +10,12 @@ const tests = Array.from([{
   };
 }));
 intro("Test runner.");
+let prevTest = "";
 while (true) {
   const test = await select({
     message: "Choose test.",
-    options: tests
+    options: tests,
+    initialValue: prevTest
   });
   if (isCancel(test) || test === "") {
     outro("Bye.");
@@ -22,4 +24,5 @@ while (true) {
   console.group(`Invoke ${test}`);
   await import(`${test}?version=${Date.now()}`);
   console.groupEnd();
+  prevTest = test;
 }

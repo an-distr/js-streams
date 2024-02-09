@@ -17,13 +17,13 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export class Utf8DecoderStream extends TransformStream<AllowSharedBufferSource | undefined, string> {
+export class Utf8DecoderStream extends TransformStream<BufferSource | undefined, string> {
   readonly encoding: string
   readonly fatal: boolean
   readonly ignoreBOM: boolean
 
   constructor() {
-    const decoder = new TextDecoder
+    const decoder = new TextDecoder()
     super({
       transform(chunk, controller) {
         controller.enqueue(decoder.decode(chunk, { stream: true }))
@@ -39,7 +39,7 @@ export class Utf8EncoderStream extends TransformStream<string | undefined, Uint8
   readonly encoding: string
 
   constructor() {
-    const encoder = new TextEncoder
+    const encoder = new TextEncoder()
     super({
       transform(chunk, controller) {
         controller.enqueue(encoder.encode(chunk))

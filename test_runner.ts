@@ -21,10 +21,12 @@ const tests = Array.from<Test>([{
 
 intro("Test runner.")
 
+let prevTest = ""
 while (true) {
   const test = await select<Test[], string>({
     message: "Choose test.",
     options: tests,
+    initialValue: prevTest,
   })
 
   if (isCancel(test) || test === "") {
@@ -35,4 +37,6 @@ while (true) {
   console.group(`Invoke ${test as string}`)
   await import(`${test as string}?version=${Date.now()}`)
   console.groupEnd()
+
+  prevTest = test
 }
