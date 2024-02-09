@@ -1,4 +1,4 @@
-import { JsonDeserializer } from "./JsonDeserializer.ts"
+import { JsonDeserializer, JsonDeserializerOptions } from "./JsonDeserializer.ts"
 
 const source = (s: string) => new ReadableStream({
   start(controller) {
@@ -28,62 +28,64 @@ const time = async (fn: () => Promise<void>) => {
   console.log(perf.duration)
 }
 
-console.group("JSON")
-let json = '[{"a":1,"b":2},{"a":3,"b":4},{"a":5,"b":6}]'
-await source(json)
-  .pipeThrough(new JsonDeserializer().transform())
-  .pipeTo(logging())
-console.groupEnd()
+const deserializer = async (options?: JsonDeserializerOptions, native?: boolean) => native
+  ? (await new JsonDeserializer(options).nativization()).transform()
+  : new JsonDeserializer(options).transform()
 
-console.group("JSON Lines")
-let jsonl = '{"a":1,"b":2}\n{"a":3,"b":4}\n{"a":5,"b":6}'
-await source(jsonl)
-  .pipeThrough(new JsonDeserializer({ lineSeparated: true }).transform())
-  .pipeTo(logging())
-console.groupEnd()
-
-console.group("Performance tests")
-{
-  const count = 100000
-  console.log("count", count)
-
-  json = "[" + '{"a":1,"b":2},'.repeat(count)
-  json = json.slice(0, -1) + "]"
-
-  jsonl = '{"a":1,"b":2}\n'.repeat(count)
-
-  console.group("JSON(js)")
-  await time(async () => {
+const test = async (native: boolean) => {
+  console.group("JSON")
+  {
+    const json = '[{"a":1,"b":2},{"a":3,"b":4},{"a":5,"b":6}]'
     await source(json)
-      .pipeThrough(new JsonDeserializer().transform())
-      .pipeTo(terminate())
-  })
+      .pipeThrough(await deserializer(undefined, native))
+      .pipeTo(logging())
+  }
   console.groupEnd()
 
-  console.group("JSON Lines(js)")
-  await time(async () => {
-    await source(json)
-      .pipeThrough(new JsonDeserializer({ lineSeparated: true }).transform())
-      .pipeTo(terminate())
-  })
+  console.group("JSON Lines")
+  {
+    const jsonl = '{"a":1,"b":2}\n{"a":3,"b":4}\n{"a":5,"b":6}'
+    await source(jsonl)
+      .pipeThrough(await deserializer({ lineSeparated: true }, native))
+      .pipeTo(logging())
+  }
   console.groupEnd()
 
-  console.group("JSON(wasm)")
-  await time(async () => {
-    await source(json)
-      .pipeThrough((await new JsonDeserializer().nativization()).transform())
-      .pipeTo(terminate())
-  })
-  console.groupEnd()
+  console.group("Performance test")
+  {
+    const count = 100000
+    console.log("count", count)
 
-  console.group("JSON Lines(wasm)")
-  await time(async () => {
-    await source(json)
-      .pipeThrough((await new JsonDeserializer({ lineSeparated: true }).nativization()).transform())
-      .pipeTo(terminate())
-  })
+    let json = "[" + '{"a":1,"b":2},'.repeat(count)
+    json = json.slice(0, -1) + "]"
+
+    const jsonl = '{"a":1,"b":2}\n'.repeat(count)
+
+    console.group("JSON")
+    await time(async () => {
+      await source(json)
+        .pipeThrough(await deserializer(undefined, native))
+        .pipeTo(terminate())
+    })
+    console.groupEnd()
+
+    console.group("JSON Lines")
+    await time(async () => {
+      await source(jsonl)
+        .pipeThrough(await deserializer({ lineSeparated: true }, native))
+        .pipeTo(terminate())
+    })
+    console.groupEnd()
+  }
   console.groupEnd()
 }
+
+console.group("Pure JavaScript")
+await test(false)
+console.groupEnd()
+
+console.group("WebAssembly")
+await test(true)
 console.groupEnd()
 
 console.log("Test completed.")

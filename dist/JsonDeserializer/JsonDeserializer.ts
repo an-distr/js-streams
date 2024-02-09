@@ -38,32 +38,22 @@ export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStrin
     const sanitizeForJson: (value: string) => string = value => {
       let b = true
       while (b) {
-        switch (value.slice(0, 1)) {
-          case ",":
-          case "[":
-          case " ":
-          case "\r":
-          case "\n":
-          case "\t":
-            value = value.slice(1)
-            break
-          default:
-            b = false
+        const s = value.slice(0, 1)
+        if ([",", "[", " ", "\r", "\n", "\t"].includes(s)) {
+          value = value.slice(1)
+        }
+        else {
+          b = false
         }
       }
       b = true
       while (b) {
-        switch (value.slice(-1)) {
-          case ",":
-          case "]":
-          case " ":
-          case "\r":
-          case "\n":
-          case "\t":
-            value = value.slice(0, -1)
-            break
-          default:
-            b = false
+        const s = value.slice(-1)
+        if ([",", "]", " ", "\r", "\n", "\t"].includes(s)) {
+          value = value.slice(0, -1)
+        }
+        else {
+          b = false
         }
       }
       return value
@@ -71,14 +61,15 @@ export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStrin
 
     this.sanitize = this.lineSeparated
       ? value => sanitizeForJson(value
-        .split("\r\n").filter(Boolean).join("\n")
-        .split("\n").filter(Boolean).join(",")
+        .split("\r\n").filter(x => x.length > 0).join("\n")
+        .split("\n").filter(x => x.length > 0).join(",")
       )
       : sanitizeForJson
 
     this.indexOfLastSeparator = this.lineSeparated
       ? value => {
-        for (let i = value.length - 1; i >= 0; i--) {
+        const length = value.length - 1
+        for (let i = length; i >= 0; i--) {
           if (value[i] === "\n") {
             return i
           }
@@ -86,21 +77,21 @@ export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStrin
         return -1
       }
       : value => {
+        const length = value.length - 1
         let nextStart = -1
         let separator = -1
-        for (let i = value.length - 1; i >= 0; i--) {
-          switch (value[i]) {
-            case "{":
-              nextStart = i
-              break
-            case ",":
-              separator = i
-              break
-            case "}":
-              if (nextStart > separator && separator > i) {
-                return separator
-              }
-              break
+        for (let i = length; i >= 0; i--) {
+          const s = value[i]
+          if (s === "{") {
+            nextStart = i
+          }
+          else if (s === ",") {
+            separator = i
+          }
+          else if (s === "}") {
+            if (nextStart > separator && separator > i) {
+              return separator
+            }
           }
         }
         return -1
@@ -108,14 +99,9 @@ export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStrin
   }
 
   async nativization() {
-    // const { Loader } = await import("./JsonDeserializer.wasm.loader.ts")
-    // const instance = Loader.instance()
-
-    // // @ts-ignore
-    // this.sanitize = value => instance.sanitize(value, this.lineSeparated)
-    // // @ts-ignore
-    // this.indexOfLastSeparator = value => instance.indexOfLastSeparator(value, this.lineSeparated)
-
+    const wasm = await import("./JsonDeserializerNative.ts")
+    this.sanitize = value => wasm.sanitize(value, this.lineSeparated)
+    this.indexOfLastSeparator = value => wasm.indexOfLastSeparator(value, this.lineSeparated)
     return this
   }
 

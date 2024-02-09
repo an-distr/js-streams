@@ -19,24 +19,11 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /// <reference types="assemblyscript/std/assembly" />
 
-const CODE_COMMA: i32 = ",".charCodeAt(0)
-const CODE_LEFT_CURLY_BRACKET: i32 = "{".charCodeAt(0)
-const CODE_RIGHT_CURLY_BRACKET: i32 = "}".charCodeAt(0)
-const CODE_LEFT_SQUARE_BRACKET: i32 = "[".charCodeAt(0)
-const CODE_RIGHT_SQUARE_BRACKET: i32 = "]".charCodeAt(0)
-const CODE_CARRIAGE_RETURN: i32 = "\r".charCodeAt(0)
-const CODE_LINE_FEED: i32 = "\n".charCodeAt(0)
-const CODE_TAB: i32 = "\t".charCodeAt(0)
-
 function sanitizeForJson(value: string): string {
-  let b: bool = true
+  let b = true
   while (b) {
-    const c = value.charCodeAt(0)
-    if (c === CODE_COMMA ||
-      c === CODE_LEFT_SQUARE_BRACKET ||
-      c === CODE_CARRIAGE_RETURN ||
-      c === CODE_LINE_FEED ||
-      c === CODE_TAB) {
+    const s = value.slice(0, 1)
+    if ([",", "[", " ", "\r", "\n", "\t"].includes(s)) {
       value = value.slice(1)
     }
     else {
@@ -45,13 +32,8 @@ function sanitizeForJson(value: string): string {
   }
   b = true
   while (b) {
-    const len: i32 = value.length
-    const c: i32 = value.charCodeAt(len-1)
-    if (c === CODE_COMMA ||
-      c === CODE_RIGHT_SQUARE_BRACKET ||
-      c === CODE_CARRIAGE_RETURN ||
-      c === CODE_LINE_FEED ||
-      c === CODE_TAB) {
+    const s = value.slice(-1)
+    if ([",", "]", " ", "\r", "\n", "\t"].includes(s)) {
       value = value.slice(0, -1)
     }
     else {
@@ -64,8 +46,8 @@ function sanitizeForJson(value: string): string {
 export function sanitize(value: string, lineSeparated: bool): string {
   if (lineSeparated) {
     return sanitizeForJson(value
-      .split("\r\n").filter(x => !x).join("\n")
-      .split("\n").filter(x => !x).join(","))
+      .split("\r\n").filter(x => x.length > 0).join("\n")
+      .split("\n").filter(x => x.length > 0).join(","))
   }
   else {
     return sanitizeForJson(value)
@@ -74,32 +56,32 @@ export function sanitize(value: string, lineSeparated: bool): string {
 
 export function indexOfLastSeparator(value: string, lineSeparated: bool): i32 {
   if (lineSeparated) {
-    let len: i32 = value.length
-    for (let i: i32 = len- 1; i >= 0; i--) {
-      if (value.charCodeAt(i) === CODE_LINE_FEED) {
+    const length = value.length - 1
+    for (let i = length; i >= 0; i--) {
+      if (value[i] === "\n") {
         return i
       }
     }
+    return -1
   }
   else {
-    let nextStart: i32 = -1
-    let separator: i32 = -1
-    let len: i32 = value.length
-    for (let i: i32 = len- 1; i >= 0; i--) {
-      const c: i32 = value.charCodeAt(i)
-      if (c === CODE_LEFT_CURLY_BRACKET) {
+    const length = value.length - 1
+    let nextStart = -1
+    let separator = -1
+    for (let i = length; i >= 0; i--) {
+      const s = value[i]
+      if (s === "{") {
         nextStart = i
       }
-      else if (c === CODE_COMMA) {
+      else if (s === ",") {
         separator = i
       }
-      else if (c === CODE_RIGHT_CURLY_BRACKET) {
+      else if (s === "}") {
         if (nextStart > separator && separator > i) {
           return separator
         }
       }
     }
+    return -1
   }
-
-  return -1
 }

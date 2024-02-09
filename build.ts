@@ -94,44 +94,41 @@ console.group("Transpiling. (test_runner.ts -> test_runner.js)")
 }
 console.groupEnd()
 
-// Transpiling. (.wasm.ts -> .wasm -> .wasm.loader.ts)
-console.group("Transpiling. (.wasm.ts -> .wasm -> .wasm.loader.ts)")
+// Transpiling. (Native.ts -> Native.wasm)
+console.group("Transpiling. (Native.ts -> Native.wasm)")
 {
-  const files = (await FastGlob("dist/{**,.**}/*.wasm.ts"))
+  const files = (await FastGlob("dist/{**,.**}/*Native.ts"))
     .filter(x => !x.includes("/functions/"))
     .filter(x => !x.includes(".min."))
 
   const license = `/*!\n${fs.readFileSync("LICENSE", "utf-8")}\n*/`
 
   for (const file of files) {
-    const wasm = file.replaceAll(".wasm.ts", ".wasm")
-    const loader = wasm.replaceAll(".wasm", ".wasm.loader.ts")
+    const wasm = file.replaceAll("Native.ts", "Native.wasm")
 
-    const args = [file, "-o", wasm, "-Ospeed"]
+    const args = [
+      file,
+      "--outFile", wasm,
+      "--bindings", "esm",
+      "--sourceMap",
+
+      "--target", "release",
+      "--optimizeLevel", "3",
+      "--shrinkLevel", "0",
+      "--converge",
+      "--noAssert",
+
+      // "--target", "debug",
+    ]
+
     console.log(file, args)
 
-    const { error } = await asc.main(args)
+    const { error, stderr } = await asc.main(args)
+
     if (error) {
-      console.error(error)
+      console.error(stderr.toString())
       throw error
     }
-
-    const binary = Array.from(new Uint8Array(fs.readFileSync(wasm).buffer))
-
-    fs.writeFileSync(loader, [license, `
-export class Loader {
-  private static binary = [${binary.join(", ")}]
-
-  static instance() {
-    return new WebAssembly.Instance(
-      new WebAssembly.Module(new Uint8Array(Loader.binary)),
-      {
-        env: {
-          abort: () => { throw new Error() }
-        }
-      }).exports
-  }
-}`].join("\n"), "utf-8")
   }
 }
 console.groupEnd()
@@ -142,7 +139,7 @@ console.group("Transpiling. (.ts -> .js)")
   const files = (await FastGlob("dist/{**,.**}/*.ts"))
     .filter(x => !x.includes("/functions/"))
     .filter(x => !x.includes(".min."))
-    .filter(x => !x.includes(".wasm.") || x.includes(".wasm.loader."))
+    .filter(x => !x.includes("Native."))
   console.log(files)
 
   const options: esbuild.BuildOptions = {

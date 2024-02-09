@@ -18,6 +18,7 @@ const deserializer = new JsonDeserializer({
 })
 
 // You can also switch to the WebAssembly implementation if you want.
+// Note: Caution should be exercised when using it for experimental implementation.
 await deserializer.nativization()
 
 // Push the JSON/JSON Lines data.

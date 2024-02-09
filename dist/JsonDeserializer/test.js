@@ -22,42 +22,45 @@ const time = async (fn) => {
   const perf = performance.getEntriesByName("perf")[0];
   console.log(perf.duration);
 };
-console.group("JSON");
-let json = '[{"a":1,"b":2},{"a":3,"b":4},{"a":5,"b":6}]';
-await source(json).pipeThrough(new JsonDeserializer().transform()).pipeTo(logging());
+const deserializer = async (options, native) => native ? (await new JsonDeserializer(options).nativization()).transform() : new JsonDeserializer(options).transform();
+const test = async (native) => {
+  console.group("JSON");
+  {
+    const json = '[{"a":1,"b":2},{"a":3,"b":4},{"a":5,"b":6}]';
+    await source(json).pipeThrough(await deserializer(void 0, native)).pipeTo(logging());
+  }
+  console.groupEnd();
+  console.group("JSON Lines");
+  {
+    const jsonl = '{"a":1,"b":2}\n{"a":3,"b":4}\n{"a":5,"b":6}';
+    await source(jsonl).pipeThrough(await deserializer({ lineSeparated: true }, native)).pipeTo(logging());
+  }
+  console.groupEnd();
+  console.group("Performance test");
+  {
+    const count = 1e5;
+    console.log("count", count);
+    let json = "[" + '{"a":1,"b":2},'.repeat(count);
+    json = json.slice(0, -1) + "]";
+    const jsonl = '{"a":1,"b":2}\n'.repeat(count);
+    console.group("JSON");
+    await time(async () => {
+      await source(json).pipeThrough(await deserializer(void 0, native)).pipeTo(terminate());
+    });
+    console.groupEnd();
+    console.group("JSON Lines");
+    await time(async () => {
+      await source(jsonl).pipeThrough(await deserializer({ lineSeparated: true }, native)).pipeTo(terminate());
+    });
+    console.groupEnd();
+  }
+  console.groupEnd();
+};
+console.group("Pure JavaScript");
+await test(false);
 console.groupEnd();
-console.group("JSON Lines");
-let jsonl = '{"a":1,"b":2}\n{"a":3,"b":4}\n{"a":5,"b":6}';
-await source(jsonl).pipeThrough(new JsonDeserializer({ lineSeparated: true }).transform()).pipeTo(logging());
-console.groupEnd();
-console.group("Performance tests");
-{
-  const count = 1e5;
-  console.log("count", count);
-  json = "[" + '{"a":1,"b":2},'.repeat(count);
-  json = json.slice(0, -1) + "]";
-  jsonl = '{"a":1,"b":2}\n'.repeat(count);
-  console.group("JSON(js)");
-  await time(async () => {
-    await source(json).pipeThrough(new JsonDeserializer().transform()).pipeTo(terminate());
-  });
-  console.groupEnd();
-  console.group("JSON Lines(js)");
-  await time(async () => {
-    await source(json).pipeThrough(new JsonDeserializer({ lineSeparated: true }).transform()).pipeTo(terminate());
-  });
-  console.groupEnd();
-  console.group("JSON(wasm)");
-  await time(async () => {
-    await source(json).pipeThrough((await new JsonDeserializer().nativization()).transform()).pipeTo(terminate());
-  });
-  console.groupEnd();
-  console.group("JSON Lines(wasm)");
-  await time(async () => {
-    await source(json).pipeThrough((await new JsonDeserializer({ lineSeparated: true }).nativization()).transform()).pipeTo(terminate());
-  });
-  console.groupEnd();
-}
+console.group("WebAssembly");
+await test(true);
 console.groupEnd();
 console.log("Test completed.");
 //# sourceMappingURL=test.js.map
