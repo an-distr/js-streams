@@ -1,5 +1,16 @@
 {
+  "name": "js-streams",
+  "license": "MIT-0",
+  "version": "0.0.1",
+  "description": "Stream utilities for JavaScript/TypeScript.",
+  "author": {
+    "name": "an",
+    "url": "https://github.com/an-dist/js-streams"
+  },
   "type": "module",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "node build.js",
     "build-sitemap": "node build_sitemap.js",

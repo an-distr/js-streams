@@ -1,0 +1,12 @@
+.DS_Store
+.vscode
+.wrangler
+package-lock.json
+node_modules
+deno.lock
+
+*.html
+*.xml
+*.sh
+*.bat
+*.json
