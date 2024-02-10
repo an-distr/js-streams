@@ -1,4 +1,4 @@
-dist   linguist-detectable
+dist/* linguist-detectable
 *.sh   linguist-documentation
 *.bat  linguist-documentation
 *.html linguist-documentation
