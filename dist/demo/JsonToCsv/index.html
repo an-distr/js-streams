@@ -46,6 +46,15 @@
       <h2>Options</h2>
       <input id="chkDirect" type="checkbox">
       <label for="chkDirect">Direct download</label>
+      <section>
+        <h3>Format</h3>
+        <input id="rdoFormatJSON" type="radio" name="format" value="json" checked>
+        <label for="rdoFormatJSON">JSON</label>
+        <input id="rdoFormatJSONL" type="radio" name="format" value="jsonl">
+        <label for="rdoFormatJSONL">JSON Lines</label>
+        <input id="rdoFormatJSONC" type="radio" name="format" value="jsonc">
+        <label for="rdoFormatJSONC">JSON with comments</label>
+      </section>
     </section>
 
     <hr>
@@ -67,7 +76,7 @@
         <h2>JSON to CSV (Upload)</h2>
       </label>
       <script type="module" src="JsonToCsv.upload.min.js"></script>
-      <input id="txtFile" type="file" accept=".json,.jsonl">
+      <input id="txtFile" type="file" accept=".json,.jsonl,.jsonc">
       <div style="display: flex; flex-direction: column;"></div>
     </section>
 

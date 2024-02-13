@@ -6,12 +6,16 @@ txtFile.onchange = () => {
   if (!txtFile.files) {
     return;
   }
-  let options;
+  let downloadOptions;
   if (!chkDirect.checked) {
-    options = {
+    downloadOptions = {
       linkHolder
     };
   }
-  txtFile.files[0].stream().pipeThrough(new streams.Utf8DecoderStream()).pipeThrough(new streams.JsonDeserializer({ lineSeparated: txtFile.name.includes(".jsonl") }).transform()).pipeThrough(new streams.CsvLineEncoder({ withNewLine: true }).transform()).pipeTo(new streams.DownloadStream("download.csv", options));
+  const deserializeOptions = {
+    lineSeparated: document.getElementById("rdoFormatJSONL").checked,
+    withComments: document.getElementById("rdoFormatJSONC").checked
+  };
+  txtFile.files[0].stream().pipeThrough(new streams.Utf8DecoderStream()).pipeThrough(new streams.JsonDeserializer(deserializeOptions).transform()).pipeThrough(new streams.CsvLineEncoder({ withNewLine: true }).transform()).pipeTo(new streams.DownloadStream("download.csv", downloadOptions));
 };
 //# sourceMappingURL=JsonToCsv.upload.js.map

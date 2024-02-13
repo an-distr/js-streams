@@ -9,13 +9,17 @@ btnConvertUrl.onclick = () => {
       console.warn(`${txtUrl.value} responded status code ${response.status}.`, await response.text());
       return;
     }
-    let options;
+    let downloadOptions;
     if (!chkDirect.checked) {
-      options = {
+      downloadOptions = {
         linkHolder
       };
     }
-    response.body.pipeThrough(new streams.Utf8DecoderStream()).pipeThrough(new streams.JsonDeserializer({ lineSeparated: response.headers.get("content-type")?.includes("jsonl") }).transform()).pipeThrough(new streams.CsvLineEncoder({ withNewLine: true }).transform()).pipeTo(new streams.DownloadStream("download.csv", options));
+    const deserializeOptions = {
+      lineSeparated: document.getElementById("rdoFormatJSONL").checked,
+      withComments: document.getElementById("rdoFormatJSONC").checked
+    };
+    response.body.pipeThrough(new streams.Utf8DecoderStream()).pipeThrough(new streams.JsonDeserializer(deserializeOptions).transform()).pipeThrough(new streams.CsvLineEncoder({ withNewLine: true }).transform()).pipeTo(new streams.DownloadStream("download.csv", downloadOptions));
   });
 };
 //# sourceMappingURL=JsonToCsv.download.js.map

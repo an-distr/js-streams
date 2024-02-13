@@ -9,16 +9,21 @@ txtFile.onchange = () => {
     return
   }
 
-  let options: streams.DownloadStreamOptions | undefined
+  let downloadOptions: streams.DownloadStreamOptions | undefined
   if (!chkDirect.checked) {
-    options = {
+    downloadOptions = {
       linkHolder
     }
   }
 
+  const deserializeOptions = {
+    lineSeparated: (document.getElementById("rdoFormatJSONL") as HTMLInputElement).checked,
+    withComments: (document.getElementById("rdoFormatJSONC") as HTMLInputElement).checked,
+  }
+
   txtFile.files![0].stream()
     .pipeThrough(new streams.Utf8DecoderStream())
-    .pipeThrough(new streams.JsonDeserializer({ lineSeparated: txtFile.name.includes(".jsonl") }).transform())
+    .pipeThrough(new streams.JsonDeserializer(deserializeOptions).transform())
     .pipeThrough(new streams.CsvLineEncoder({ withNewLine: true }).transform())
-    .pipeTo(new streams.DownloadStream("download.csv", options))
+    .pipeTo(new streams.DownloadStream("download.csv", downloadOptions))
 }
