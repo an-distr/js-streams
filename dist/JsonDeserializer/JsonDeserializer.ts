@@ -21,11 +21,13 @@ import { PullPush, PullPushStringQueue, PullPushTypes } from "../PullPush/PullPu
 
 export interface JsonDeserializerOptions {
   lineSeparated?: boolean
+  withComments?: boolean
   parse?: (text: string) => any
 }
 
 export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStringQueue> {
   private lineSeparated: boolean
+  private withComments: boolean
   private parse: (text: string) => any
   private sanitize: (value: string) => string
   private indexOfLastSeparator: (value: string) => number
@@ -33,6 +35,7 @@ export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStrin
   constructor(options?: JsonDeserializerOptions) {
     super(new PullPushStringQueue)
     this.lineSeparated = options?.lineSeparated === true
+    this.withComments = options?.withComments === true
     this.parse = options?.parse ?? JSON.parse
 
     const SANITIZE_FOR_JSON_STARTS = [",", "[", " ", "\r", "\n", "\t"]
@@ -53,12 +56,18 @@ export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStrin
       return value.slice(s, e + 1)
     }
 
+    const replace: (source: string, pattern: RegExp, replacement: string) => string
+      = (source, pattern, replacement) => source.split(pattern).join(replacement)
+
+    const removeComments: (value: string) => string = this.withComments
+      ? value => replace(replace(replace(value, /\/\*.*\*\//, ""), /\/\/.*\n/, ""), /\/\/.*$/, "")
+      : value => value
+
     this.sanitize = this.lineSeparated
-      ? value => sanitizeForJson(value
+      ? value => removeComments(sanitizeForJson(value
         .split("\r\n").join("\n")
-        .split("\n").join(",")
-      )
-      : sanitizeForJson
+        .split("\n").join(",")))
+      : value => removeComments(sanitizeForJson(value))
 
     this.indexOfLastSeparator = this.lineSeparated
       ? value => value.lastIndexOf("\n")

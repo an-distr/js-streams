@@ -33,6 +33,8 @@ const deserializer = async (options?: JsonDeserializerOptions) => new JsonDeseri
 
 const json = '[\t\r\n{"a":1,"b":2}\t,\r\n{"a":3,"b":4},{"a":5,"b":6}\t,\r\n]'
 const jsonl = '{"a":1,"b":2}\n{"a":3\t,"b":4}\r\n{"a":5,"b":6}'
+const jsonc = `[\t\r\n{"a":1,"b":2/* test */}\t,\r\n{"a":3,"b":4}, // test
+{"a":5,"b":6}\t,\r\n]`
 
 const bigJson = (count: number) => {
   const a: string[] = []
@@ -42,12 +44,21 @@ const bigJson = (count: number) => {
   return "[" + a.join(",") + "]"
 }
 
-const bigJsonLine = (count: number) => {
+const bigJsonLines = (count: number) => {
   const a: string[] = []
   for (let i = 0; i < count; ++i) {
     a.push('{"a":1,"b":2}')
   }
   return a.join("\n")
+}
+
+const bigJsonWithComments = (count: number) => {
+  const a: string[] = []
+  for (let i = 0; i < count; ++i) {
+    a.push(`{"a":1/* test */,"b":2} // test
+    `)
+  }
+  return "[" + a.join(",") + "]"
 }
 
 const test = async () => {
@@ -67,6 +78,14 @@ const test = async () => {
   }
   console.groupEnd()
 
+  console.group("JSON with comments")
+  {
+    await source(jsonc)
+      .pipeThrough(await deserializer({ withComments: true }))
+      .pipeTo(logging())
+  }
+  console.groupEnd()
+
   await sleep(0)
 
   console.group("Performance test")
@@ -75,7 +94,8 @@ const test = async () => {
     console.log("count", count)
 
     const json = bigJson(count)
-    const jsonl = bigJsonLine(count)
+    const jsonl = bigJsonLines(count)
+    const jsonc = bigJsonWithComments(count)
 
     console.group("JSON")
     await time(async () => {
@@ -91,6 +111,16 @@ const test = async () => {
     await time(async () => {
       await source(jsonl)
         .pipeThrough(await deserializer({ lineSeparated: true }))
+        .pipeTo(terminate())
+    })
+    console.groupEnd()
+
+    await sleep(0)
+
+    console.group("JSON with comments")
+    await time(async () => {
+      await source(jsonc)
+        .pipeThrough(await deserializer({ withComments: true }))
         .pipeTo(terminate())
     })
     console.groupEnd()

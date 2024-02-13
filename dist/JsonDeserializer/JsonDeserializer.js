@@ -21,6 +21,7 @@ class JsonDeserializer extends PullPush {
   constructor(options) {
     super(new PullPushStringQueue());
     this.lineSeparated = options?.lineSeparated === true;
+    this.withComments = options?.withComments === true;
     this.parse = options?.parse ?? JSON.parse;
     const SANITIZE_FOR_JSON_STARTS = [",", "[", " ", "\r", "\n", "	"];
     const SANITIZE_FOR_JSON_ENDS = [",", "]", " ", "\r", "\n", "	"];
@@ -39,9 +40,9 @@ class JsonDeserializer extends PullPush {
       }
       return value.slice(s, e + 1);
     };
-    this.sanitize = this.lineSeparated ? (value) => sanitizeForJson(
-      value.split("\r\n").join("\n").split("\n").join(",")
-    ) : sanitizeForJson;
+    const replace = (source, pattern, replacement) => source.split(pattern).join(replacement);
+    const removeComments = this.withComments ? (value) => replace(replace(replace(value, /\/\*.*\*\//, ""), /\/\/.*\n/, ""), /\/\/.*$/, "") : (value) => value;
+    this.sanitize = this.lineSeparated ? (value) => removeComments(sanitizeForJson(value.split("\r\n").join("\n").split("\n").join(","))) : (value) => removeComments(sanitizeForJson(value));
     this.indexOfLastSeparator = this.lineSeparated ? (value) => value.lastIndexOf("\n") : (value) => {
       const length = value.length - 1;
       let nextStart = -1;

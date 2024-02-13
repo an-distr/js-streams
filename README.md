@@ -34,7 +34,7 @@ Stream utilities for JavaScript/TypeScript.
 |[CsvLineEncoder](dist/CsvLineEncoder/README.md)|Convert the object to a CSV line.|
 |[DownloadStream](dist/DownloadStream/README.md)|Download the stream.|
 |[Flattener](dist/Flattener/README.md)|Flatten the array.|
-|[JsonDeserializer](dist/JsonDeserializer/README.md)|Convert the string to a JSON/JSON Lines array.|
+|[JsonDeserializer](dist/JsonDeserializer/README.md)|Convert the string to a JSON/JSON Lines/JSON with comments array.|
 |[JsonSerializer](dist/JsonSerializer/README.md)|Convert the object to a JSON/JSON Lines string.|
 |[PeekStream](dist/PeekStream/README.md)|Peeking chunk of stream.|
 |[PerformanceStream](dist/PerformanceStream/README.md)|Measure the processing time of the Stream.|
