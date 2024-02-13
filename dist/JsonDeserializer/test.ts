@@ -29,9 +29,7 @@ const time = async (fn: () => Promise<void>) => {
   console.log(perf.duration)
 }
 
-const deserializer = async (options?: JsonDeserializerOptions, native?: boolean) => native
-  ? (await new JsonDeserializer(options).nativization()).transform()
-  : new JsonDeserializer(options).transform()
+const deserializer = async (options?: JsonDeserializerOptions) => new JsonDeserializer(options).transform()
 
 const json = '[\t\r\n{"a":1,"b":2}\t,\r\n{"a":3,"b":4},{"a":5,"b":6}\t,\r\n]'
 const jsonl = '{"a":1,"b":2}\n{"a":3\t,"b":4}\r\n{"a":5,"b":6}'
@@ -52,11 +50,11 @@ const bigJsonLine = (count: number) => {
   return a.join("\n")
 }
 
-const test = async (native: boolean) => {
+const test = async () => {
   console.group("JSON")
   {
     await source(json)
-      .pipeThrough(await deserializer(undefined, native))
+      .pipeThrough(await deserializer(undefined))
       .pipeTo(logging())
   }
   console.groupEnd()
@@ -64,7 +62,7 @@ const test = async (native: boolean) => {
   console.group("JSON Lines")
   {
     await source(jsonl)
-      .pipeThrough(await deserializer({ lineSeparated: true }, native))
+      .pipeThrough(await deserializer({ lineSeparated: true }))
       .pipeTo(logging())
   }
   console.groupEnd()
@@ -82,7 +80,7 @@ const test = async (native: boolean) => {
     console.group("JSON")
     await time(async () => {
       await source(json)
-        .pipeThrough(await deserializer(undefined, native))
+        .pipeThrough(await deserializer(undefined))
         .pipeTo(terminate())
     })
     console.groupEnd()
@@ -92,7 +90,7 @@ const test = async (native: boolean) => {
     console.group("JSON Lines")
     await time(async () => {
       await source(jsonl)
-        .pipeThrough(await deserializer({ lineSeparated: true }, native))
+        .pipeThrough(await deserializer({ lineSeparated: true }))
         .pipeTo(terminate())
     })
     console.groupEnd()
@@ -102,12 +100,8 @@ const test = async (native: boolean) => {
   await sleep(0)
 }
 
-console.group("Pure JavaScript")
-await test(false)
-console.groupEnd()
-
-console.group("WebAssembly")
-await test(true)
+console.group("JsonDeserializer")
+await test()
 console.groupEnd()
 
 console.log("Test completed.")

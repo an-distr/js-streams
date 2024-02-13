@@ -93,7 +93,9 @@ console.group("Transpiling. (Native.ts -> Native.wasm)");
       "--shrinkLevel",
       "0",
       "--converge",
-      "--noAssert"
+      "--noAssert",
+      "--runtime",
+      "stub"
       // "--target", "debug",
     ];
     console.log(file, args);

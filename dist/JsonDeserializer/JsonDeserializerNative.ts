@@ -19,28 +19,29 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /// <reference types="assemblyscript/std/assembly" />
 
+const SANITIZE_FOR_JSON_STARTS = [",", "[", " ", "\r", "\n", "\t"]
+const SANITIZE_FOR_JSON_ENDS = [",", "]", " ", "\r", "\n", "\t"]
+const JSON_S: i32 = 123 // {
+const JSON_M: i32 = 44 // ,
+const JSON_E: i32 = 125 // }
+const JSONL_E: u8 = 10 // \n
+
+// @ts-ignore
+@inline
 function sanitizeForJson(value: string): string {
-  let b = true
-  while (b) {
-    const s = value.slice(0, 1)
-    if ([",", "[", " ", "\r", "\n", "\t"].includes(s)) {
-      value = value.slice(1)
-    }
-    else {
-      b = false
+  let l = value.length - 1
+  let s: i32, e: i32
+  for (s = 0; s < l; ++s) {
+    if (!SANITIZE_FOR_JSON_STARTS.includes(value[s])) {
+      break
     }
   }
-  b = true
-  while (b) {
-    const s = value.slice(-1)
-    if ([",", "]", " ", "\r", "\n", "\t"].includes(s)) {
-      value = value.slice(0, -1)
-    }
-    else {
-      b = false
+  for (e = l; e >= 0; --e) {
+    if (!SANITIZE_FOR_JSON_ENDS.includes(value[e])) {
+      break
     }
   }
-  return value
+  return value.slice(s, e + 1)
 }
 
 export function sanitize_json(value: string): string {
@@ -49,36 +50,27 @@ export function sanitize_json(value: string): string {
 
 export function sanitize_jsonl(value: string): string {
   return sanitizeForJson(value
-    .split("\r\n").filter(x => x.length > 0).join("\n")
-    .split("\n").filter(x => x.length > 0).join(","))
+    .split("\r\n").join("\n")
+    .split("\n").join(",")
+  )
 }
 
-export function indexOfLastSeparator_json(value: string): i32 {
-  const length = value.length - 1
+export function indexOfLastSeparator_json(value: Uint8Array): i32 {
+  const length = value.byteLength - 1
   let nextStart = -1
   let separator = -1
   for (let i = length; i >= 0; i--) {
-    const s = value[i]
-    if (s === "{") {
+    const s: i32 = value[i]
+    if (s === JSON_S) {
       nextStart = i
     }
-    else if (s === ",") {
+    else if (s === JSON_M) {
       separator = i
     }
-    else if (s === "}") {
+    else if (s === JSON_E) {
       if (nextStart > separator && separator > i) {
         return separator
       }
-    }
-  }
-  return -1
-}
-
-export function indexOfLastSeparator_jsonl(value: string): i32 {
-  const length = value.length - 1
-  for (let i = length; i >= 0; i--) {
-    if (value[i] === "\n") {
-      return i
     }
   }
   return -1

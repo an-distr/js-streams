@@ -22,43 +22,31 @@ class JsonDeserializer extends PullPush {
     super(new PullPushStringQueue());
     this.lineSeparated = options?.lineSeparated === true;
     this.parse = options?.parse ?? JSON.parse;
+    const SANITIZE_FOR_JSON_STARTS = [",", "[", " ", "\r", "\n", "	"];
+    const SANITIZE_FOR_JSON_ENDS = [",", "]", " ", "\r", "\n", "	"];
     const sanitizeForJson = (value) => {
-      let b = true;
-      while (b) {
-        const s = value.slice(0, 1);
-        if ([",", "[", " ", "\r", "\n", "	"].includes(s)) {
-          value = value.slice(1);
-        } else {
-          b = false;
+      const l = value.length - 1;
+      let s, e;
+      for (s = 0; s < l; ++s) {
+        if (!SANITIZE_FOR_JSON_STARTS.includes(value[s])) {
+          break;
         }
       }
-      b = true;
-      while (b) {
-        const s = value.slice(-1);
-        if ([",", "]", " ", "\r", "\n", "	"].includes(s)) {
-          value = value.slice(0, -1);
-        } else {
-          b = false;
+      for (e = l; e >= 0; --e) {
+        if (!SANITIZE_FOR_JSON_ENDS.includes(value[e])) {
+          break;
         }
       }
-      return value;
+      return value.slice(s, e + 1);
     };
     this.sanitize = this.lineSeparated ? (value) => sanitizeForJson(
-      value.split("\r\n").filter((x) => x.length > 0).join("\n").split("\n").filter((x) => x.length > 0).join(",")
+      value.split("\r\n").join("\n").split("\n").join(",")
     ) : sanitizeForJson;
-    this.indexOfLastSeparator = this.lineSeparated ? (value) => {
-      const length = value.length - 1;
-      for (let i = length; i >= 0; i--) {
-        if (value[i] === "\n") {
-          return i;
-        }
-      }
-      return -1;
-    } : (value) => {
+    this.indexOfLastSeparator = this.lineSeparated ? (value) => value.lastIndexOf("\n") : (value) => {
       const length = value.length - 1;
       let nextStart = -1;
       let separator = -1;
-      for (let i = length; i >= 0; i--) {
+      for (let i = length; i >= 0; --i) {
         const s = value[i];
         if (s === "{") {
           nextStart = i;
@@ -73,29 +61,18 @@ class JsonDeserializer extends PullPush {
       return -1;
     };
   }
-  async nativization() {
-    const {
-      sanitize_jsonl,
-      sanitize_json,
-      indexOfLastSeparator_jsonl,
-      indexOfLastSeparator_json
-    } = await import("./JsonDeserializerNative.js");
-    this.sanitize = (value) => this.lineSeparated ? sanitize_jsonl(value) : sanitize_json(value);
-    this.indexOfLastSeparator = (value) => this.lineSeparated ? indexOfLastSeparator_jsonl(value) : indexOfLastSeparator_json(value);
-    return this;
-  }
   async *pullpush(data, flush) {
     await this.push(data);
     do {
       const lastSeparator = this.indexOfLastSeparator(this.queue.all());
       if (lastSeparator >= 0) {
-        const json = "[" + this.sanitize(this.queue.splice(0, lastSeparator)) + "]";
-        await this.push(yield* this.parse(json));
+        const json = this.sanitize(this.queue.splice(0, lastSeparator));
+        await this.push(yield* this.parse("[" + json + "]"));
       }
       if (flush) {
         if (this.queue.more()) {
-          const json = "[" + this.sanitize(this.queue.all()) + "]";
-          await this.push(yield* this.parse(json));
+          const json = this.sanitize(this.queue.all());
+          await this.push(yield* this.parse("[" + json + "]"));
           this.queue.empty();
         }
       } else {

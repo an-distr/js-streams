@@ -115,6 +115,7 @@ console.group("Transpiling. (Native.ts -> Native.wasm)")
       "--shrinkLevel", "0",
       "--converge",
       "--noAssert",
+      "--runtime", "stub",
 
       // "--target", "debug",
     ]

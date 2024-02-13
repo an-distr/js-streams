@@ -28,14 +28,9 @@ async function instantiate(module, imports = {}) {
       return __liftString(exports.sanitize_jsonl(value) >>> 0);
     },
     indexOfLastSeparator_json(value) {
-      // dist/JsonDeserializer/JsonDeserializerNative/indexOfLastSeparator_json(~lib/string/String) => i32
-      value = __lowerString(value) || __notnull();
+      // dist/JsonDeserializer/JsonDeserializerNative/indexOfLastSeparator_json(~lib/typedarray/Uint8Array) => i32
+      value = __lowerTypedArray(Uint8Array, 6, 0, value) || __notnull();
       return exports.indexOfLastSeparator_json(value);
-    },
-    indexOfLastSeparator_jsonl(value) {
-      // dist/JsonDeserializer/JsonDeserializerNative/indexOfLastSeparator_jsonl(~lib/string/String) => i32
-      value = __lowerString(value) || __notnull();
-      return exports.indexOfLastSeparator_jsonl(value);
     },
   }, exports);
   function __liftString(pointer) {
@@ -58,8 +53,30 @@ async function instantiate(module, imports = {}) {
     for (let i = 0; i < length; ++i) memoryU16[(pointer >>> 1) + i] = value.charCodeAt(i);
     return pointer;
   }
+  function __lowerTypedArray(constructor, id, align, values) {
+    if (values == null) return 0;
+    const
+      length = values.length,
+      buffer = exports.__pin(exports.__new(length << align, 1)) >>> 0,
+      header = exports.__new(12, id) >>> 0;
+    __setU32(header + 0, buffer);
+    __dataview.setUint32(header + 4, buffer, true);
+    __dataview.setUint32(header + 8, length << align, true);
+    new constructor(memory.buffer, buffer, length).set(values);
+    exports.__unpin(buffer);
+    return header;
+  }
   function __notnull() {
     throw TypeError("value must not be null");
+  }
+  let __dataview = new DataView(memory.buffer);
+  function __setU32(pointer, value) {
+    try {
+      __dataview.setUint32(pointer, value, true);
+    } catch {
+      __dataview = new DataView(memory.buffer);
+      __dataview.setUint32(pointer, value, true);
+    }
   }
   return adaptedExports;
 }
@@ -68,7 +85,6 @@ export const {
   sanitize_json,
   sanitize_jsonl,
   indexOfLastSeparator_json,
-  indexOfLastSeparator_jsonl,
 } = await (async url => instantiate(
   await (async () => {
     try { return await globalThis.WebAssembly.compileStreaming(globalThis.fetch(url)); }

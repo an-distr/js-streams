@@ -1,4 +1,5 @@
 {
+  "deno.lint": false,
   "tasks": {
     "build": "deno run --allow-all build.ts",
     "build-sitemap": "deno run --allow-all build_sitemap.ts",
