@@ -41,19 +41,36 @@ class JsonDeserializer extends PullPush {
       return value.slice(s, e + 1);
     };
     const replace = (source, pattern, replacement) => source.split(pattern).join(replacement);
-    const removeComments = this.withComments ? (value) => replace(replace(replace(value, /\/\*.*\*\//, ""), /\/\/.*\n/, ""), /\/\/.*$/, "") : (value) => value;
-    this.sanitize = this.lineSeparated ? (value) => removeComments(sanitizeForJson(value.split("\r\n").join("\n").split("\n").join(","))) : (value) => removeComments(sanitizeForJson(value));
+    const REMOVE_COMMENTS_PATTERN_1 = /\/\*.*\*\//g;
+    const REMOVE_COMMENTS_PATTERN_2 = /\/\/.*\n/g;
+    const REMOVE_COMMENTS_PATTERN_3 = /\/\/.*$/g;
+    const removeComments = this.withComments ? (value) => replace(
+      replace(
+        replace(
+          value,
+          REMOVE_COMMENTS_PATTERN_1,
+          ""
+        ),
+        REMOVE_COMMENTS_PATTERN_2,
+        ""
+      ),
+      REMOVE_COMMENTS_PATTERN_3,
+      ""
+    ) : (value) => value;
+    const SANITIZE_CRLF = /\r\n/g;
+    const SANITIZE_LF = /\n/g;
+    this.sanitize = this.lineSeparated ? (value) => removeComments(sanitizeForJson(value.replace(SANITIZE_CRLF, "\n").replace(SANITIZE_LF, ","))) : (value) => removeComments(sanitizeForJson(value));
     this.indexOfLastSeparator = this.lineSeparated ? (value) => value.lastIndexOf("\n") : (value) => {
       const length = value.length - 1;
       let nextStart = -1;
       let separator = -1;
       for (let i = length; i >= 0; --i) {
-        const s = value[i];
-        if (s === "{") {
+        const c = value[i];
+        if (c === "{") {
           nextStart = i;
-        } else if (s === ",") {
+        } else if (c === ",") {
           separator = i;
-        } else if (s === "}") {
+        } else if (c === "}") {
           if (nextStart > separator && separator > i) {
             return separator;
           }
@@ -67,13 +84,16 @@ class JsonDeserializer extends PullPush {
     do {
       const lastSeparator = this.indexOfLastSeparator(this.queue.all());
       if (lastSeparator >= 0) {
-        const json = this.sanitize(this.queue.splice(0, lastSeparator));
-        await this.push(yield* this.parse("[" + json + "]"));
+        const range = this.queue.splice(0, lastSeparator);
+        const json = this.sanitize(range);
+        const pushed = yield* this.parse("[" + json + "]");
+        await this.push(pushed);
       }
       if (flush) {
         if (this.queue.more()) {
-          const json = this.sanitize(this.queue.all());
-          await this.push(yield* this.parse("[" + json + "]"));
+          const range = this.queue.all();
+          const json = this.sanitize(range);
+          yield* this.parse("[" + json + "]");
           this.queue.empty();
         }
       } else {

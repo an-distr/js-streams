@@ -18,25 +18,25 @@ const data = [
   { "a": 7, "b": 8, "c": 9 },
   { "c1": "a", "c2": "b", "c3": "c", "c4": "d" }
 ];
-console.groupCollapsed("=== escape: all ===");
+console.group("=== escape: all ===");
 await source(data).pipeThrough(new CsvLineEncoder({ escape: "all" }).transform()).pipeThrough(logging()).pipeTo(terminate());
 console.groupEnd();
-console.groupCollapsed("=== escape: auto ===");
+console.group("=== escape: auto ===");
 await source(data).pipeThrough(new CsvLineEncoder({ escape: "auto" }).transform()).pipeThrough(logging()).pipeTo(terminate());
 console.groupEnd();
-console.groupCollapsed("=== escape: none ===");
+console.group("=== escape: none ===");
 await source(data).pipeThrough(new CsvLineEncoder({ escape: "none" }).transform()).pipeThrough(logging()).pipeTo(terminate());
 console.groupEnd();
-console.groupCollapsed("=== escape: custom ===");
+console.group("=== escape: custom ===");
 await source(data).pipeThrough(new CsvLineEncoder({ escape: (s) => `[${s}]` }).transform()).pipeThrough(logging()).pipeTo(terminate());
 console.groupEnd();
-console.groupCollapsed("=== delimiter: custom ===");
+console.group("=== delimiter: custom ===");
 await source(data).pipeThrough(new CsvLineEncoder({ delimiter: "|" }).transform()).pipeThrough(logging()).pipeTo(terminate());
 console.groupEnd();
-console.groupCollapsed("=== newLine: custom ===");
+console.group("=== newLine: custom ===");
 await source(data).pipeThrough(new CsvLineEncoder({ newLine: "|" }).transform()).pipeThrough(logging()).pipeTo(terminate());
 console.groupEnd();
-console.groupCollapsed("\n=== no new line ===");
+console.group("=== no new line ===");
 let text = "";
 await source(data).pipeThrough(new CsvLineEncoder({ withNewLine: false }).transform()).pipeTo(new WritableStream({
   write(chunk) {
@@ -44,6 +44,23 @@ await source(data).pipeThrough(new CsvLineEncoder({ withNewLine: false }).transf
   }
 }));
 console.log(text);
+console.groupEnd();
+console.group("Performance test");
+{
+  const count = 1e5;
+  console.log("count", count);
+  const array = [];
+  for (let i = 0; i < count; ++i) {
+    array.push(`{ "a": ${i + 1}, "b": ${i + 2}, "c": "aaa
+bbb,ccc" }`);
+  }
+  performance.mark("start");
+  await source(array).pipeThrough(new CsvLineEncoder().transform()).pipeTo(terminate());
+  performance.mark("end");
+  performance.measure("perf", "start", "end");
+  const perf = performance.getEntriesByName("perf")[0];
+  console.log("duration: ", perf.duration);
+}
 console.groupEnd();
 console.log("\nTest completed.");
 //# sourceMappingURL=test.js.map
