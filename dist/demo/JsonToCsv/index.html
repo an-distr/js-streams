@@ -47,13 +47,20 @@
       <input id="chkDirect" type="checkbox">
       <label for="chkDirect">Direct download</label>
       <section>
-        <h3>Format</h3>
-        <input id="rdoFormatJSON" type="radio" name="format" value="json" checked>
-        <label for="rdoFormatJSON">JSON</label>
-        <input id="rdoFormatJSONL" type="radio" name="format" value="jsonl">
-        <label for="rdoFormatJSONL">JSON Lines</label>
-        <input id="rdoFormatJSONC" type="radio" name="format" value="jsonc">
-        <label for="rdoFormatJSONC">JSON with comments</label>
+        <h3>Input Format</h3>
+        <input id="rdoInputFormatJSON" type="radio" name="inputFormat" value="json" checked>
+        <label for="rdoInputFormatJSON">JSON</label>
+        <input id="rdoInputFormatJSONL" type="radio" name="inputFormat" value="jsonl">
+        <label for="rdoInputFormatJSONL">JSON Lines</label>
+        <input id="rdoInputFormatJSONC" type="radio" name="inputFormat" value="jsonc">
+        <label for="rdoInputFormatJSONC">JSON with comments</label>
+      </section>
+      <section>
+        <h3>Output Format</h3>
+        <input id="rdoOutputFormatCSV" type="radio" name="outputFormat" value="csv" checked>
+        <label for="rdoOutputFormatCSV">CSV</label>
+        <input id="rdoOutputFormatTSV" type="radio" name="outputFormat" value="tsv">
+        <label for="rdoOutputFormatTSV">TSV</label>
       </section>
     </section>
 

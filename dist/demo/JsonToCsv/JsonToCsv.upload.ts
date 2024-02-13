@@ -1,6 +1,9 @@
 import * as streams from "/web.ts"
 
 const chkDirect = document.getElementById("chkDirect") as HTMLInputElement
+const rdoInputFormatJSONL = document.getElementById("rdoInputFormatJSONL") as HTMLInputElement
+const rdoInputFormatJSONC = document.getElementById("rdoInputFormatJSONC") as HTMLInputElement
+const rdoOutputFormatCSV = document.getElementById("rdoOutputFormatCSV") as HTMLInputElement
 const txtFile = document.getElementById("txtFile") as HTMLInputElement
 const linkHolder = txtFile.parentElement!.lastElementChild as HTMLDivElement
 
@@ -9,21 +12,32 @@ txtFile.onchange = () => {
     return
   }
 
-  let downloadOptions: streams.DownloadStreamOptions | undefined
+  let downloadStreamOptions: streams.DownloadStreamOptions | undefined
   if (!chkDirect.checked) {
-    downloadOptions = {
-      linkHolder
+    downloadStreamOptions = {
+      linkHolder,
     }
   }
 
-  const deserializeOptions = {
-    lineSeparated: (document.getElementById("rdoFormatJSONL") as HTMLInputElement).checked,
-    withComments: (document.getElementById("rdoFormatJSONC") as HTMLInputElement).checked,
+  const jsonDeserializeOptions = {
+    lineSeparated: rdoInputFormatJSONL.checked,
+    withComments: rdoInputFormatJSONC.checked,
   }
+
+  const csvLineEncoderOptions = {
+    delimiter: rdoOutputFormatCSV.checked
+      ? ","
+      : "\t",
+    withNewLine: true,
+  }
+
+  const downloadName = rdoOutputFormatCSV.checked
+    ? "download.csv"
+    : "download.tsv"
 
   txtFile.files![0].stream()
     .pipeThrough(new streams.Utf8DecoderStream())
-    .pipeThrough(new streams.JsonDeserializer(deserializeOptions).transform())
-    .pipeThrough(new streams.CsvLineEncoder({ withNewLine: true }).transform())
-    .pipeTo(new streams.DownloadStream("download.csv", downloadOptions))
+    .pipeThrough(new streams.JsonDeserializer(jsonDeserializeOptions).transform())
+    .pipeThrough(new streams.CsvLineEncoder(csvLineEncoderOptions).transform())
+    .pipeTo(new streams.DownloadStream(downloadName, downloadStreamOptions))
 }

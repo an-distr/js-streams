@@ -1,5 +1,8 @@
 import * as streams from "/web.js";
 const chkDirect = document.getElementById("chkDirect");
+const rdoInputFormatJSONL = document.getElementById("rdoInputFormatJSONL");
+const rdoInputFormatJSONC = document.getElementById("rdoInputFormatJSONC");
+const rdoOutputFormatCSV = document.getElementById("rdoOutputFormatCSV");
 const txtUrl = document.getElementById("txtUrl");
 const btnConvertUrl = document.getElementById("btnConvertUrl");
 const linkHolder = btnConvertUrl.parentElement.lastElementChild;
@@ -9,17 +12,22 @@ btnConvertUrl.onclick = () => {
       console.warn(`${txtUrl.value} responded status code ${response.status}.`, await response.text());
       return;
     }
-    let downloadOptions;
+    let downloadStreamOptions;
     if (!chkDirect.checked) {
-      downloadOptions = {
+      downloadStreamOptions = {
         linkHolder
       };
     }
-    const deserializeOptions = {
-      lineSeparated: document.getElementById("rdoFormatJSONL").checked,
-      withComments: document.getElementById("rdoFormatJSONC").checked
+    const jsonDeserializeOptions = {
+      lineSeparated: rdoInputFormatJSONL.checked,
+      withComments: rdoInputFormatJSONC.checked
     };
-    response.body.pipeThrough(new streams.Utf8DecoderStream()).pipeThrough(new streams.JsonDeserializer(deserializeOptions).transform()).pipeThrough(new streams.CsvLineEncoder({ withNewLine: true }).transform()).pipeTo(new streams.DownloadStream("download.csv", downloadOptions));
+    const csvLineEncoderOptions = {
+      delimiter: rdoOutputFormatCSV.checked ? "," : "	",
+      withNewLine: true
+    };
+    const downloadName = rdoOutputFormatCSV.checked ? "download.csv" : "download.jsv";
+    response.body.pipeThrough(new streams.Utf8DecoderStream()).pipeThrough(new streams.JsonDeserializer(jsonDeserializeOptions).transform()).pipeThrough(new streams.CsvLineEncoder(csvLineEncoderOptions).transform()).pipeTo(new streams.DownloadStream(downloadName, downloadStreamOptions));
   });
 };
 //# sourceMappingURL=JsonToCsv.download.js.map
