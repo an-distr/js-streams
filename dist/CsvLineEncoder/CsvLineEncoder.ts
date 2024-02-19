@@ -40,19 +40,17 @@ export class CsvLineEncoder<I = any> extends PullPush<I, string> {
     this.withNewLine = options?.withNewLine ?? true
     this.newLine = this.withNewLine ? (options?.newLine ?? "\n") : ""
 
+    const DO_ESCAPE_TARGETS = ["\"", "\n"]
     const DO_ESCAPE_ENCLOSURE = /\"/g
+    const escapeImpl: (s: string) => string =
+      s => "\"" + s.replace(DO_ESCAPE_ENCLOSURE, "\"\"") + "\""
     this.doEscape =
       typeof this.escape !== "string"
         ? this.escape
         : this.escape === "auto"
-          ? s => {
-            if (s.includes("\"") || s.includes("\n")) {
-              return "\"" + s.replace(DO_ESCAPE_ENCLOSURE, "\"\"") + "\""
-            }
-            return s
-          }
+          ? s => DO_ESCAPE_TARGETS.includes(s) ? escapeImpl(s) : s
           : this.escape === "all"
-            ? s => "\"" + s.replace(DO_ESCAPE_ENCLOSURE, "\"\"") + "\""
+            ? escapeImpl
             : s => s;
   }
 
