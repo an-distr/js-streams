@@ -127,7 +127,7 @@ console.group("Transpiling. (.ts -> .js)");
   }
   for (const file of files.map((x) => x.replace(".ts", ".js"))) {
     let text = fs.readFileSync(file, "utf-8");
-    text = text.replaceAll(".ts", ".js");
+    text = text.replaceAll('.ts"', '.js"');
     fs.writeFileSync(file, text);
   }
 }
@@ -161,7 +161,7 @@ console.group("Transpiling. (.js -> .min.js)");
     file = file.replace(".js", ".min.js");
     let text = fs.readFileSync(file, "utf-8");
     text = text.replaceAll(".min.js", ".min.xx");
-    text = text.replaceAll(".js", ".min.js");
+    text = text.replaceAll('.js"', '.min.js"');
     text = text.replaceAll(".min.xx", ".min.js");
     fs.writeFileSync(file, text);
   }

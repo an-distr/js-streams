@@ -106,7 +106,8 @@
 
     globalThis.console = new DomConsole("console", globalThis.console)
 
-    document.getElementById("txtUrl").value = location.href.split("/").slice(0, 3).join("/") + "/site/sample.json"
+    document.getElementById("txtUrl").value =
+      new URL("sample.json", location.href).href
   </script>
 
 </body>

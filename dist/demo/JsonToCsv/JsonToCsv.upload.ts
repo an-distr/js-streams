@@ -1,3 +1,4 @@
+// @ts-ignore
 import * as streams from "/web.ts"
 
 const chkDirect = document.getElementById("chkDirect") as HTMLInputElement

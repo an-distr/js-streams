@@ -59,7 +59,8 @@
   <script type="module">
     import { DownloadStream } from "./DownloadStream.js"
 
-    document.getElementById("url").value = location.href.split("/").slice(0, 3).join("/") + "/site/sample.json"
+    document.getElementById("url").value =
+      new URL("sample.json", location.href).href
 
     document.getElementById("download").onclick = async () => {
       const url = document.getElementById("url")

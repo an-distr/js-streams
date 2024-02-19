@@ -23,7 +23,7 @@ txtFile.onchange = () => {
     delimiter: rdoOutputFormatCSV.checked ? "," : "	",
     withNewLine: true
   };
-  const downloadName = rdoOutputFormatCSV.checked ? "download.csv" : "download.jsv";
+  const downloadName = rdoOutputFormatCSV.checked ? "download.csv" : "download.tsv";
   txtFile.files[0].stream().pipeThrough(new streams.Utf8DecoderStream()).pipeThrough(new streams.JsonDeserializer(jsonDeserializeOptions).transform()).pipeThrough(new streams.CsvLineEncoder(csvLineEncoderOptions).transform()).pipeTo(new streams.DownloadStream(downloadName, downloadStreamOptions));
 };
 //# sourceMappingURL=JsonToCsv.upload.js.map

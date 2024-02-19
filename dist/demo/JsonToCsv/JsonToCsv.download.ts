@@ -1,12 +1,29 @@
+// @ts-ignore
 import * as streams from "/web.ts"
 
 const chkDirect = document.getElementById("chkDirect") as HTMLInputElement
+const rdoInputFormatJSON = document.getElementById("rdoInputFormatJSON") as HTMLInputElement
 const rdoInputFormatJSONL = document.getElementById("rdoInputFormatJSONL") as HTMLInputElement
 const rdoInputFormatJSONC = document.getElementById("rdoInputFormatJSONC") as HTMLInputElement
 const rdoOutputFormatCSV = document.getElementById("rdoOutputFormatCSV") as HTMLInputElement
 const txtUrl = document.getElementById("txtUrl") as HTMLInputElement
 const btnConvertUrl = document.getElementById("btnConvertUrl") as HTMLButtonElement
 const linkHolder = btnConvertUrl.parentElement!.lastElementChild as HTMLDivElement
+
+const onChangeInputFromat = () => {
+  if (rdoInputFormatJSON.checked) {
+    txtUrl.value = new URL("sample.json", location.href).href
+  }
+  else if (rdoInputFormatJSONL.checked) {
+    txtUrl.value = new URL("sample.jsonl", location.href).href
+  }
+  else if (rdoInputFormatJSONC.checked) {
+    txtUrl.value = new URL("sample.jsonc", location.href).href
+  }
+}
+rdoInputFormatJSON.addEventListener("change", onChangeInputFromat)
+rdoInputFormatJSONL.addEventListener("change", onChangeInputFromat)
+rdoInputFormatJSONC.addEventListener("change", onChangeInputFromat)
 
 btnConvertUrl.onclick = () => {
   fetch(txtUrl.value, { credentials: "include" }).then(async response => {
