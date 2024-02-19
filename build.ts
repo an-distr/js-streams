@@ -242,7 +242,7 @@ console.group("Transpiling. (.css -> .min.css)")
     file = file.replace(".css", ".min.css")
     let text = fs.readFileSync(file, "utf-8")
     text = text.replaceAll(".min.css", ".min.xx")
-    text = text.replaceAll(".css", ".min.css")
+    text = text.replaceAll(".css\"", ".min.css\"")
     text = text.replaceAll(".min.xx", ".min.css")
     fs.writeFileSync(file, text)
   }
