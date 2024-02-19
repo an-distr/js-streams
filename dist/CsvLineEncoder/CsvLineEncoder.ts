@@ -27,7 +27,6 @@ export interface CsvLineEncoderOptions {
 }
 
 export class CsvLineEncoder<I = any> extends PullPush<I, string> {
-  private keys = new Map<string, Extract<keyof any, string>[]>()
   private delimiter: string
   private escape: string | ((s: string) => string)
   private withNewLine: boolean
@@ -61,24 +60,14 @@ export class CsvLineEncoder<I = any> extends PullPush<I, string> {
     await this.push(data)
 
     while (this.queue.more()) {
-      const value = this.queue.pop() as I
-      const key_ = Object.keys(value as object).join(",")
+      const value = this.queue.pop() as any
 
-      if (!this.keys.has(key_)) {
-        const keys_: Extract<keyof I, string>[] = []
-        for (const key in value) {
-          keys_.push(key)
-        }
-        this.keys.set(key_, keys_)
-      }
-
-      const line = this.keys.get(key_)!
-        .map(key => (value as any)[key] as object)
-        .map(o => o?.toString() ?? "")
-        .map(this.doEscape)
+      const line = Object.keys(value)
+        .map(k => this.doEscape(value[k]?.toString() ?? ""))
         .join(this.delimiter)
 
-      await this.push(yield line + this.newLine)
+      const pushed: I = yield line + this.newLine
+      await this.push(pushed)
     }
   }
 }

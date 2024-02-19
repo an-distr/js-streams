@@ -156,13 +156,19 @@ export abstract class PullPush<I = any, O = any, Q extends PullPushQueue<I, any>
         this.queue.push(data)
       }
       else if (Array.isArray(data)) {
-        for (const value of data) this.queue.push(value)
+        for (const value of data) {
+          this.queue.push(value)
+        }
       }
       else if (typeof (data as Iterable<I>)[Symbol.iterator] === "function") {
-        for (const value of data as Iterable<I>) this.queue.push(value)
+        for (const value of data as Iterable<I>) {
+          this.queue.push(value)
+        }
       }
       else if (typeof (data as AsyncIterable<I>)[Symbol.asyncIterator] === "function") {
-        for await (const value of data as AsyncIterable<I>) this.queue.push(value)
+        for await (const value of data as AsyncIterable<I>) {
+          this.queue.push(value)
+        }
       }
       else {
         this.queue.push(data as I)

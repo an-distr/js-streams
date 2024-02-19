@@ -20,7 +20,6 @@ import { PullPush, PullPushArrayQueue } from "../PullPush/PullPush.js";
 class CsvLineEncoder extends PullPush {
   constructor(options) {
     super(new PullPushArrayQueue());
-    this.keys = /* @__PURE__ */ new Map();
     this.delimiter = options?.delimiter ?? ",";
     this.escape = options?.escape ?? "auto";
     this.withNewLine = options?.withNewLine ?? true;
@@ -37,16 +36,9 @@ class CsvLineEncoder extends PullPush {
     await this.push(data);
     while (this.queue.more()) {
       const value = this.queue.pop();
-      const key_ = Object.keys(value).join(",");
-      if (!this.keys.has(key_)) {
-        const keys_ = [];
-        for (const key in value) {
-          keys_.push(key);
-        }
-        this.keys.set(key_, keys_);
-      }
-      const line = this.keys.get(key_).map((key) => value[key]).map((o) => o?.toString() ?? "").map(this.doEscape).join(this.delimiter);
-      await this.push(yield line + this.newLine);
+      const line = Object.keys(value).map((k) => this.doEscape(value[k]?.toString() ?? "")).join(this.delimiter);
+      const pushed = yield line + this.newLine;
+      await this.push(pushed);
     }
   }
 }

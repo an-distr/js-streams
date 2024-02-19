@@ -117,8 +117,9 @@ export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStrin
         if (this.queue.more()) {
           const range = this.queue.all()
           const json = this.sanitize(range)
-          yield* this.parse("[" + json + "]")
+          const pushed = yield* this.parse("[" + json + "]")
           this.queue.empty()
+          await this.push(pushed)
         }
       }
       else {

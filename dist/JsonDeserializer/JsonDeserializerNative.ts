@@ -21,10 +21,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 const SANITIZE_FOR_JSON_STARTS = [",", "[", " ", "\r", "\n", "\t"]
 const SANITIZE_FOR_JSON_ENDS = [",", "]", " ", "\r", "\n", "\t"]
-const JSON_S: i32 = 123 // {
-const JSON_M: i32 = 44 // ,
-const JSON_E: i32 = 125 // }
-const JSONL_E: u8 = 10 // \n
+const JSON_S: u8 = 123 // {
+const JSON_M: u8 = 44 // ,
+const JSON_E: u8 = 125 // }
 
 // @ts-ignore
 @inline
@@ -60,7 +59,7 @@ export function indexOfLastSeparator_json(value: Uint8Array): i32 {
   let nextStart = -1
   let separator = -1
   for (let i = length; i >= 0; i--) {
-    const s: i32 = value[i]
+    const s: u8 = value[i]
     if (s === JSON_S) {
       nextStart = i
     }

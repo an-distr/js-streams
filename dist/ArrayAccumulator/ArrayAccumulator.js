@@ -26,11 +26,13 @@ class ArrayAccumulator extends PullPush {
     await this.push(data);
     do {
       while (this.queue.length() >= this.size) {
-        await this.push(yield this.queue.splice(0, this.size));
+        const pushed = yield this.queue.splice(0, this.size);
+        await this.push(pushed);
       }
       if (flush) {
         if (this.queue.more()) {
-          await this.push(yield this.queue.splice(0));
+          const pushed = yield this.queue.splice(0);
+          await this.push(pushed);
         }
       } else {
         break;
