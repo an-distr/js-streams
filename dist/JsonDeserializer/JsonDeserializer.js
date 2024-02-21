@@ -17,33 +17,33 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 import { PullPush, PullPushStringQueue } from "../PullPush/PullPush.js";
-const ARRAY_JSON_START = [",", "[", " ", "\r", "\n", "	"];
-const ARRAY_JSON_END = [",", "]", " ", "\r", "\n", "	"];
-const REGEX_COMMENTS = /\/\*[^\/]*\*\/|\/\/.*[\r|\n]|\/\/.*$/gm;
-const REGEX_NEW_LINES = /\r\n|\n|\r/g;
 class JsonDeserializer extends PullPush {
   constructor(options) {
     super(new PullPushStringQueue());
     this.lineSeparated = options?.lineSeparated === true;
     this.withComments = options?.withComments === true;
     this.parse = options?.parse ?? JSON.parse;
-    const sanitizeForJson = (value) => {
-      const l = value.length - 1;
+    const ARRAY_JSON_START = [",", "[", " ", "\r", "\n", "	"];
+    const ARRAY_JSON_END = [",", "]", " ", "\r", "\n", "	"];
+    const REGEX_COMMENTS = /\/\*[^\/]*\*\/|\/\/.*[\r|\n]|\/\/.*$/gm;
+    const REGEX_NEW_LINES = /\r\n|\n|\r/g;
+    const innerSanitize = (value) => {
+      const v = value;
+      const l = v.length - 1;
       let s, e;
       for (s = 0; s < l; ++s) {
-        if (!ARRAY_JSON_START.includes(value[s])) {
+        if (!ARRAY_JSON_START.includes(v[s])) {
           break;
         }
       }
       for (e = l; e >= 0; --e) {
-        if (!ARRAY_JSON_END.includes(value[e])) {
+        if (!ARRAY_JSON_END.includes(v[e])) {
           break;
         }
       }
-      return value.slice(s, e + 1);
+      return v.slice(s, e + 1);
     };
-    const removeComments = this.withComments ? (value) => value.replace(REGEX_COMMENTS, "") : (value) => value;
-    this.sanitize = this.lineSeparated ? (value) => removeComments(sanitizeForJson(value.replace(REGEX_NEW_LINES, ","))) : (value) => removeComments(sanitizeForJson(value));
+    this.sanitize = this.lineSeparated ? (value) => innerSanitize(value.replace(REGEX_NEW_LINES, ",")) : this.withComments ? (value) => innerSanitize(value).replace(REGEX_COMMENTS, "") : (value) => innerSanitize(value);
     this.indexOfLastSeparator = this.lineSeparated ? (value) => value.lastIndexOf("\n") : (value) => {
       const length = value.length - 1;
       let nextStart = -1;

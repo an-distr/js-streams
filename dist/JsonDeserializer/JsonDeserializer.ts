@@ -25,11 +25,6 @@ export interface JsonDeserializerOptions {
   parse?: (text: string) => any
 }
 
-const ARRAY_JSON_START = [",", "[", " ", "\r", "\n", "\t"]
-const ARRAY_JSON_END = [",", "]", " ", "\r", "\n", "\t"]
-const REGEX_COMMENTS = /\/\*[^\/]*\*\/|\/\/.*[\r|\n]|\/\/.*$/gm
-const REGEX_NEW_LINES = /\r\n|\n|\r/g
-
 export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStringQueue> {
   private lineSeparated: boolean
   private withComments: boolean
@@ -43,29 +38,33 @@ export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStrin
     this.withComments = options?.withComments === true
     this.parse = options?.parse ?? JSON.parse
 
-    const sanitizeForJson: (value: string) => string = value => {
-      const l = value.length - 1
+    const ARRAY_JSON_START = [",", "[", " ", "\r", "\n", "\t"]
+    const ARRAY_JSON_END = [",", "]", " ", "\r", "\n", "\t"]
+    const REGEX_COMMENTS = /\/\*[^\/]*\*\/|\/\/.*[\r|\n]|\/\/.*$/gm
+    const REGEX_NEW_LINES = /\r\n|\n|\r/g
+
+    const innerSanitize: (value: string) => string = value => {
+      const v = value
+      const l = v.length - 1
       let s, e
       for (s = 0; s < l; ++s) {
-        if (!ARRAY_JSON_START.includes(value[s])) {
+        if (!ARRAY_JSON_START.includes(v[s])) {
           break
         }
       }
       for (e = l; e >= 0; --e) {
-        if (!ARRAY_JSON_END.includes(value[e])) {
+        if (!ARRAY_JSON_END.includes(v[e])) {
           break
         }
       }
-      return value.slice(s, e + 1)
+      return v.slice(s, e + 1)
     }
 
-    const removeComments: (value: string) => string = this.withComments
-      ? value => value.replace(REGEX_COMMENTS, "")
-      : value => value
-
     this.sanitize = this.lineSeparated
-      ? value => removeComments(sanitizeForJson(value.replace(REGEX_NEW_LINES, ",")))
-      : value => removeComments(sanitizeForJson(value))
+      ? value => innerSanitize(value.replace(REGEX_NEW_LINES, ","))
+      : this.withComments
+        ? value => innerSanitize(value).replace(REGEX_COMMENTS, "")
+        : value => innerSanitize(value)
 
     this.indexOfLastSeparator = this.lineSeparated
       ? value => value.lastIndexOf("\n")
