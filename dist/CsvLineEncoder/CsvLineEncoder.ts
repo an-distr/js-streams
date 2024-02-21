@@ -26,6 +26,9 @@ export interface CsvLineEncoderOptions {
   newLine?: string
 }
 
+const ARRAY_ESCAPE_TARGETS = ["\"", "\n"]
+const REGEX_ENCLOSURE = /\"/g
+
 export class CsvLineEncoder<I = any> extends PullPush<I, string> {
   private delimiter: string
   private escape: string | ((s: string) => string)
@@ -40,15 +43,13 @@ export class CsvLineEncoder<I = any> extends PullPush<I, string> {
     this.withNewLine = options?.withNewLine ?? true
     this.newLine = this.withNewLine ? (options?.newLine ?? "\n") : ""
 
-    const DO_ESCAPE_TARGETS = ["\"", "\n"]
-    const DO_ESCAPE_ENCLOSURE = /\"/g
     const escapeImpl: (s: string) => string =
-      s => "\"" + s.replace(DO_ESCAPE_ENCLOSURE, "\"\"") + "\""
+      s => "\"" + s.replace(REGEX_ENCLOSURE, "\"\"") + "\""
     this.doEscape =
       typeof this.escape !== "string"
         ? this.escape
         : this.escape === "auto"
-          ? s => DO_ESCAPE_TARGETS.includes(s) ? escapeImpl(s) : s
+          ? s => ARRAY_ESCAPE_TARGETS.includes(s) ? escapeImpl(s) : s
           : this.escape === "all"
             ? escapeImpl
             : s => s;

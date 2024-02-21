@@ -17,49 +17,33 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 import { PullPush, PullPushStringQueue } from "../PullPush/PullPush.js";
+const ARRAY_JSON_START = [",", "[", " ", "\r", "\n", "	"];
+const ARRAY_JSON_END = [",", "]", " ", "\r", "\n", "	"];
+const REGEX_COMMENTS = /\/\*[^\/]*\*\/|\/\/.*[\r|\n]|\/\/.*$/gm;
+const REGEX_NEW_LINES = /\r\n|\n|\r/g;
 class JsonDeserializer extends PullPush {
   constructor(options) {
     super(new PullPushStringQueue());
     this.lineSeparated = options?.lineSeparated === true;
     this.withComments = options?.withComments === true;
     this.parse = options?.parse ?? JSON.parse;
-    const SANITIZE_FOR_JSON_STARTS = [",", "[", " ", "\r", "\n", "	"];
-    const SANITIZE_FOR_JSON_ENDS = [",", "]", " ", "\r", "\n", "	"];
     const sanitizeForJson = (value) => {
       const l = value.length - 1;
       let s, e;
       for (s = 0; s < l; ++s) {
-        if (!SANITIZE_FOR_JSON_STARTS.includes(value[s])) {
+        if (!ARRAY_JSON_START.includes(value[s])) {
           break;
         }
       }
       for (e = l; e >= 0; --e) {
-        if (!SANITIZE_FOR_JSON_ENDS.includes(value[e])) {
+        if (!ARRAY_JSON_END.includes(value[e])) {
           break;
         }
       }
       return value.slice(s, e + 1);
     };
-    const replace = (source, pattern, replacement) => source.split(pattern).join(replacement);
-    const REMOVE_COMMENTS_PATTERN_1 = /\/\*.*\*\//g;
-    const REMOVE_COMMENTS_PATTERN_2 = /\/\/.*\n/g;
-    const REMOVE_COMMENTS_PATTERN_3 = /\/\/.*$/g;
-    const removeComments = this.withComments ? (value) => replace(
-      replace(
-        replace(
-          value,
-          REMOVE_COMMENTS_PATTERN_1,
-          ""
-        ),
-        REMOVE_COMMENTS_PATTERN_2,
-        ""
-      ),
-      REMOVE_COMMENTS_PATTERN_3,
-      ""
-    ) : (value) => value;
-    const SANITIZE_CRLF = /\r\n/g;
-    const SANITIZE_LF = /\n/g;
-    this.sanitize = this.lineSeparated ? (value) => removeComments(sanitizeForJson(value.replace(SANITIZE_CRLF, "\n").replace(SANITIZE_LF, ","))) : (value) => removeComments(sanitizeForJson(value));
+    const removeComments = this.withComments ? (value) => value.replace(REGEX_COMMENTS, "") : (value) => value;
+    this.sanitize = this.lineSeparated ? (value) => removeComments(sanitizeForJson(value.replace(REGEX_NEW_LINES, ","))) : (value) => removeComments(sanitizeForJson(value));
     this.indexOfLastSeparator = this.lineSeparated ? (value) => value.lastIndexOf("\n") : (value) => {
       const length = value.length - 1;
       let nextStart = -1;

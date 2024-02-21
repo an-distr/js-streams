@@ -25,6 +25,11 @@ export interface JsonDeserializerOptions {
   parse?: (text: string) => any
 }
 
+const ARRAY_JSON_START = [",", "[", " ", "\r", "\n", "\t"]
+const ARRAY_JSON_END = [",", "]", " ", "\r", "\n", "\t"]
+const REGEX_COMMENTS = /\/\*[^\/]*\*\/|\/\/.*[\r|\n]|\/\/.*$/gm
+const REGEX_NEW_LINES = /\r\n|\n|\r/g
+
 export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStringQueue> {
   private lineSeparated: boolean
   private withComments: boolean
@@ -38,43 +43,28 @@ export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStrin
     this.withComments = options?.withComments === true
     this.parse = options?.parse ?? JSON.parse
 
-    const SANITIZE_FOR_JSON_STARTS = [",", "[", " ", "\r", "\n", "\t"]
-    const SANITIZE_FOR_JSON_ENDS = [",", "]", " ", "\r", "\n", "\t"]
     const sanitizeForJson: (value: string) => string = value => {
       const l = value.length - 1
       let s, e
       for (s = 0; s < l; ++s) {
-        if (!SANITIZE_FOR_JSON_STARTS.includes(value[s])) {
+        if (!ARRAY_JSON_START.includes(value[s])) {
           break
         }
       }
       for (e = l; e >= 0; --e) {
-        if (!SANITIZE_FOR_JSON_ENDS.includes(value[e])) {
+        if (!ARRAY_JSON_END.includes(value[e])) {
           break
         }
       }
       return value.slice(s, e + 1)
     }
 
-    const replace: (source: string, pattern: RegExp, replacement: string) => string
-      = (source, pattern, replacement) => source.split(pattern).join(replacement)
-
-    const REMOVE_COMMENTS_PATTERN_1 = /\/\*.*\*\//g
-    const REMOVE_COMMENTS_PATTERN_2 = /\/\/.*\n/g
-    const REMOVE_COMMENTS_PATTERN_3 = /\/\/.*$/g
     const removeComments: (value: string) => string = this.withComments
-      ? value => replace(replace(replace(value,
-        REMOVE_COMMENTS_PATTERN_1, ""),
-        REMOVE_COMMENTS_PATTERN_2, ""),
-        REMOVE_COMMENTS_PATTERN_3, "")
+      ? value => value.replace(REGEX_COMMENTS, "")
       : value => value
 
-    const SANITIZE_CRLF = /\r\n/g
-    const SANITIZE_LF = /\n/g
     this.sanitize = this.lineSeparated
-      ? value => removeComments(sanitizeForJson(value
-        .replace(SANITIZE_CRLF, "\n")
-        .replace(SANITIZE_LF, ",")))
+      ? value => removeComments(sanitizeForJson(value.replace(REGEX_NEW_LINES, ",")))
       : value => removeComments(sanitizeForJson(value))
 
     this.indexOfLastSeparator = this.lineSeparated

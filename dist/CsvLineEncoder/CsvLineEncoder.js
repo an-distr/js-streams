@@ -17,6 +17,8 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 import { PullPush, PullPushArrayQueue } from "../PullPush/PullPush.js";
+const ARRAY_ESCAPE_TARGETS = ['"', "\n"];
+const REGEX_ENCLOSURE = /\"/g;
 class CsvLineEncoder extends PullPush {
   constructor(options) {
     super(new PullPushArrayQueue());
@@ -24,10 +26,8 @@ class CsvLineEncoder extends PullPush {
     this.escape = options?.escape ?? "auto";
     this.withNewLine = options?.withNewLine ?? true;
     this.newLine = this.withNewLine ? options?.newLine ?? "\n" : "";
-    const DO_ESCAPE_TARGETS = ['"', "\n"];
-    const DO_ESCAPE_ENCLOSURE = /\"/g;
-    const escapeImpl = (s) => '"' + s.replace(DO_ESCAPE_ENCLOSURE, '""') + '"';
-    this.doEscape = typeof this.escape !== "string" ? this.escape : this.escape === "auto" ? (s) => DO_ESCAPE_TARGETS.includes(s) ? escapeImpl(s) : s : this.escape === "all" ? escapeImpl : (s) => s;
+    const escapeImpl = (s) => '"' + s.replace(REGEX_ENCLOSURE, '""') + '"';
+    this.doEscape = typeof this.escape !== "string" ? this.escape : this.escape === "auto" ? (s) => ARRAY_ESCAPE_TARGETS.includes(s) ? escapeImpl(s) : s : this.escape === "all" ? escapeImpl : (s) => s;
   }
   async *pullpush(data) {
     await this.push(data);

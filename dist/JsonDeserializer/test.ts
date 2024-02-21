@@ -31,9 +31,10 @@ const time = async (fn: () => Promise<void>) => {
 
 const deserializer = async (options?: JsonDeserializerOptions) => new JsonDeserializer(options).transform()
 
-const json = '[\t\r\n{"a":1,"b":2}\t,\r\n{"a":3,"b":4},{"a":5,"b":6}\t,\r\n]'
-const jsonl = '{"a":1,"b":2}\n{"a":3\t,"b":4}\r\n{"a":5,"b":6}'
-const jsonc = `[\t\r\n{"a":1,"b":2/* test */}\t,\r\n{"a":3,"b":4}, // test
+const json = '[\t\r\n{"a":1,"b":2}\t,\r\n{"a":3,"b":4\r},{"a":5,"b":6}\t,\r\n]'
+const jsonl = '{"a":1,"b"  :2 }\n{"a":3\t,"b"\t:4}\r\n{"a":5,"b":6}\r'
+const jsonc = `[\t\r\n{"a":1,"b":2/* test
+abc*/\r}\t,\r\n{"a":3,"b":4}, // test
 {"a":5,"b":6}\t,\r\n]`
 
 const bigJson = (count: number) => {
@@ -55,7 +56,8 @@ const bigJsonLines = (count: number) => {
 const bigJsonWithComments = (count: number) => {
   const a: string[] = []
   for (let i = 0; i < count; ++i) {
-    a.push(`{"a":1/* test */,"b":2} // test
+    a.push(`{"a":1/* test
+    abc */,"b":2} // test
     `)
   }
   return "[" + a.join(",") + "]"

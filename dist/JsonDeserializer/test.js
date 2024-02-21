@@ -24,10 +24,11 @@ const time = async (fn) => {
   console.log(perf.duration);
 };
 const deserializer = async (options) => new JsonDeserializer(options).transform();
-const json = '[	\r\n{"a":1,"b":2}	,\r\n{"a":3,"b":4},{"a":5,"b":6}	,\r\n]';
-const jsonl = '{"a":1,"b":2}\n{"a":3	,"b":4}\r\n{"a":5,"b":6}';
+const json = '[	\r\n{"a":1,"b":2}	,\r\n{"a":3,"b":4\r},{"a":5,"b":6}	,\r\n]';
+const jsonl = '{"a":1,"b"  :2 }\n{"a":3	,"b"	:4}\r\n{"a":5,"b":6}\r';
 const jsonc = `[	\r
-{"a":1,"b":2/* test */}	,\r
+{"a":1,"b":2/* test
+abc*/\r}	,\r
 {"a":3,"b":4}, // test
 {"a":5,"b":6}	,\r
 ]`;
@@ -48,7 +49,8 @@ const bigJsonLines = (count) => {
 const bigJsonWithComments = (count) => {
   const a = [];
   for (let i = 0; i < count; ++i) {
-    a.push(`{"a":1/* test */,"b":2} // test
+    a.push(`{"a":1/* test
+    abc */,"b":2} // test
     `);
   }
   return "[" + a.join(",") + "]";
