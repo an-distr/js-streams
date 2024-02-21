@@ -67,7 +67,7 @@ const test = async (totalSize, readableChunkSize, chunkSize, fixed, isArray) => 
   console.assert((fixed ? chunkSize * Math.ceil(totalSize / chunkSize) : totalSize) === result.sizeOfWritten, {
     sizeOfWritten: result.sizeOfWritten
   });
-  console.table({
+  const perf = {
     totalSize,
     readableChunkSize,
     chunkSize,
@@ -78,9 +78,11 @@ const test = async (totalSize, readableChunkSize, chunkSize, fixed, isArray) => 
     durationMaximum: psResult.maximum,
     durationAverage: psResult.average,
     durationMedian: psResult.median
-  });
+  };
+  console.table(perf);
   console.groupEnd();
   await sleep();
+  return perf;
 };
 const testNewLine = async (chunkSize) => {
   const text = "aaaaaaaaaa\nbbbbbbbbbb\ncccccccccc\ndddddddddd\neeeeeeeeee\n11111";
@@ -117,18 +119,48 @@ const chunkSizes = [
   1e3,
   8192
 ];
-console.groupCollapsed("Testing ArrayBuffer|Array");
+console.group("Testing ArrayBuffer|Array");
 for (const totalSize of totalSizes) {
-  console.groupCollapsed(`totalSize: ${totalSize}`);
+  console.group(`totalSize: ${totalSize}`);
+  let fastest;
+  let slowest;
+  console.groupCollapsed("Tests");
   for (const readableChunkSize of readableChunkSizes) {
     for (const chunkSize of chunkSizes) {
       for (const fixed of [false, true]) {
         for (const isArray of [false, true]) {
-          await test(totalSize, readableChunkSize, chunkSize, fixed, isArray);
+          const perf = await test(totalSize, readableChunkSize, chunkSize, fixed, isArray);
+          if (!fastest || fastest.perf.durationMaximum < perf.durationMaximum) {
+            fastest = {
+              totalSize,
+              readableChunkSize: readableChunkSize === 0 ? totalSize : readableChunkSize,
+              chunkSize,
+              fixed,
+              isArray,
+              perf
+            };
+          }
+          if (!slowest || slowest.perf.durationMaximum < perf.durationMaximum) {
+            slowest = {
+              totalSize,
+              readableChunkSize: readableChunkSize === 0 ? totalSize : readableChunkSize,
+              chunkSize,
+              fixed,
+              isArray,
+              perf
+            };
+          }
         }
       }
     }
   }
+  console.groupEnd();
+  console.group("Fastest");
+  console.table(fastest);
+  console.groupEnd();
+  console.group("Slowest");
+  console.table(slowest);
+  console.groupEnd();
   console.groupEnd();
 }
 console.groupEnd();

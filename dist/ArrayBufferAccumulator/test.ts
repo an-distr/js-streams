@@ -62,6 +62,19 @@ function assertChunkSize<T extends ArrayBufferLike | ArrayLike<any>>(totalSize: 
   })
 }
 
+type Perf = {
+  totalSize: number
+  readableChunkSize: number
+  chunkSize: number
+  sizeOfWritten: number
+  transforming: number
+  durationOfOccupancy: number
+  durationMinimum: number
+  durationMaximum: number
+  durationAverage: number
+  durationMedian: number
+}
+
 const test = async (totalSize: number, readableChunkSize: number, chunkSize: number, fixed: boolean, isArray: boolean) => {
   readableChunkSize = readableChunkSize === 0 ? totalSize : readableChunkSize
 
@@ -91,7 +104,7 @@ const test = async (totalSize: number, readableChunkSize: number, chunkSize: num
     sizeOfWritten: result.sizeOfWritten,
   })
 
-  console.table({
+  const perf: Perf = {
     totalSize,
     readableChunkSize,
     chunkSize,
@@ -102,11 +115,14 @@ const test = async (totalSize: number, readableChunkSize: number, chunkSize: num
     durationMaximum: psResult!.maximum,
     durationAverage: psResult!.average,
     durationMedian: psResult!.median,
-  })
+  }
+  console.table(perf)
 
   console.groupEnd()
 
   await sleep()
+
+  return perf
 }
 
 const testNewLine = async (chunkSize: number) => {
@@ -157,18 +173,61 @@ const chunkSizes = [
   8192,
 ]
 
-console.groupCollapsed("Testing ArrayBuffer|Array")
+type PerfResult = {
+  totalSize: number
+  readableChunkSize: number
+  chunkSize: number
+  fixed: boolean
+  isArray: boolean
+  perf: Perf
+}
+
+console.group("Testing ArrayBuffer|Array")
 for (const totalSize of totalSizes) {
-  console.groupCollapsed(`totalSize: ${totalSize}`)
+  console.group(`totalSize: ${totalSize}`)
+  let fastest: PerfResult | undefined
+  let slowest: PerfResult | undefined
+
+  console.groupCollapsed("Tests")
   for (const readableChunkSize of readableChunkSizes) {
     for (const chunkSize of chunkSizes) {
       for (const fixed of [false, true]) {
         for (const isArray of [false, true]) {
-          await test(totalSize, readableChunkSize, chunkSize, fixed, isArray)
+          const perf = await test(totalSize, readableChunkSize, chunkSize, fixed, isArray)
+          if (!fastest || fastest.perf.durationMaximum < perf.durationMaximum) {
+            fastest = {
+              totalSize,
+              readableChunkSize: readableChunkSize === 0 ? totalSize : readableChunkSize,
+              chunkSize,
+              fixed,
+              isArray,
+              perf
+            }
+          }
+          if (!slowest || slowest.perf.durationMaximum < perf.durationMaximum) {
+            slowest = {
+              totalSize,
+              readableChunkSize: readableChunkSize === 0 ? totalSize : readableChunkSize,
+              chunkSize,
+              fixed,
+              isArray,
+              perf
+            }
+          }
         }
       }
     }
   }
+  console.groupEnd()
+
+  console.group("Fastest")
+  console.table(fastest)
+  console.groupEnd()
+
+  console.group("Slowest")
+  console.table(slowest)
+  console.groupEnd()
+
   console.groupEnd()
 }
 console.groupEnd()
