@@ -130,7 +130,7 @@ for (const totalSize of totalSizes) {
       for (const fixed of [false, true]) {
         for (const isArray of [false, true]) {
           const perf = await test(totalSize, readableChunkSize, chunkSize, fixed, isArray);
-          if (!fastest || fastest.perf.durationMaximum < perf.durationMaximum) {
+          if (!fastest || fastest.perf.durationOfOccupancy < perf.durationOfOccupancy) {
             fastest = {
               totalSize,
               readableChunkSize: readableChunkSize === 0 ? totalSize : readableChunkSize,
@@ -140,7 +140,7 @@ for (const totalSize of totalSizes) {
               perf
             };
           }
-          if (!slowest || slowest.perf.durationMaximum < perf.durationMaximum) {
+          if (!slowest || slowest.perf.durationOfOccupancy < perf.durationOfOccupancy) {
             slowest = {
               totalSize,
               readableChunkSize: readableChunkSize === 0 ? totalSize : readableChunkSize,
