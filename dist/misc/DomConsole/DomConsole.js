@@ -245,24 +245,32 @@ class DomConsole {
     This.withTrace(item.firstElementChild, new Error());
     This.redirect?.error(...data);
   }
-  table(tabularData, properties) {
+  createTable(tabularData, properties) {
     const This = this.getThis();
     const table = document.createElement("table");
     table.classList.add("console-list-item-table");
     const header = table.createTHead();
     const headerRow = header.insertRow(-1);
-    headerRow.append(This.createHeaderCell("(index)"));
+    const columns = ["(index)"];
     if (Array.isArray(tabularData)) {
-      for (const key in tabularData[0]) {
-        if (properties) {
-          if (properties.indexOf(key) === -1) {
+      for (const data of tabularData) {
+        for (const key in data) {
+          if (columns.includes(key)) {
             continue;
           }
+          if (properties) {
+            if (properties.indexOf(key) === -1) {
+              continue;
+            }
+          }
+          columns.push(key);
         }
-        headerRow.append(This.createHeaderCell(key));
       }
     } else {
-      headerRow.append(This.createHeaderCell("Value"));
+      columns.push("Value");
+    }
+    for (const column of columns) {
+      headerRow.append(This.createHeaderCell(column));
     }
     const body = table.createTBody();
     if (tabularData) {
@@ -270,25 +278,46 @@ class DomConsole {
         let dataIndex = 0;
         for (const data of tabularData) {
           const bodyRow = body.insertRow(-1);
-          bodyRow.insertCell(-1).textContent = dataIndex.toString();
+          for (const _ of columns) {
+            bodyRow.insertCell(-1);
+          }
+          bodyRow.cells[columns.indexOf("(index)")].textContent = dataIndex.toString();
           for (const key in data) {
             if (properties) {
               if (properties.indexOf(key) === -1) {
                 continue;
               }
             }
-            bodyRow.insertCell(-1).textContent = data[key];
+            if (typeof data[key] === "object") {
+              const table2 = this.createTable(data[key], properties);
+              bodyRow.cells[columns.indexOf(key)].appendChild(table2);
+            } else {
+              bodyRow.cells[columns.indexOf(key)].textContent = data[key];
+            }
           }
           ++dataIndex;
         }
       } else {
         for (const key in tabularData) {
           const bodyRow = body.insertRow(-1);
-          bodyRow.insertCell(-1).textContent = key;
-          bodyRow.insertCell(-1).textContent = tabularData[key];
+          for (const _ of columns) {
+            bodyRow.insertCell(-1);
+          }
+          bodyRow.cells[columns.indexOf("(index)")].textContent = key;
+          if (typeof tabularData[key] === "object") {
+            const table2 = this.createTable(tabularData[key], properties);
+            bodyRow.cells[columns.indexOf("Value")].appendChild(table2);
+          } else {
+            bodyRow.cells[columns.indexOf("Value")].textContent = tabularData[key];
+          }
         }
       }
     }
+    return table;
+  }
+  table(tabularData, properties) {
+    const This = this.getThis();
+    const table = This.createTable(tabularData, properties);
     const li = This.appendItem();
     li.firstElementChild.append(table);
     This.holder.append(li);

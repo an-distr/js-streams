@@ -146,6 +146,8 @@
 
     document.getElementById("table").onclick = () => {
       console.table({ a: 1, b: 2, c: 3 })
+      console.table({ a: 1, b: 2, c: 3, x: { a: 4, b: 5, c: 6, y: { a: 7, b: 8, c: 9 } } })
+      console.table([{ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3, x: { a: 4, b: 5, c: 6, y: { a: 7, b: 8, c: 9 } } }, { a: 1, b: 2, c: 3, y: { a: 4, b: 5, c: 6 } }])
       console.table([{ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 }])
       console.table([{ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 }], ["a", "c"])
       console.table([{ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 }], "a", "c")

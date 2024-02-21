@@ -134,6 +134,10 @@ input[name="group-visibility"] {
       color: var(--dc-table-row-fore-color);
     }
 
+    td:not(:first-child):has(>.console-list-item-table) {
+      color: unset;
+    }
+
     tbody tr:nth-child(even) {
       background-color: var(--dc-table-row-even-back-color);
     }
