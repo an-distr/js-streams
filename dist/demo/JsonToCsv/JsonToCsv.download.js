@@ -35,12 +35,12 @@ btnConvertUrl.onclick = () => {
       lineSeparated: rdoInputFormatJSONL.checked,
       withComments: rdoInputFormatJSONC.checked
     };
-    const csvLineEncoderOptions = {
+    const csvSerializerOptions = {
       delimiter: rdoOutputFormatCSV.checked ? "," : "	",
       withNewLine: true
     };
     const downloadName = rdoOutputFormatCSV.checked ? "download.csv" : "download.tsv";
-    response.body.pipeThrough(new streams.Utf8DecoderStream()).pipeThrough(new streams.JsonDeserializer(jsonDeserializeOptions).transformable()).pipeThrough(new streams.CsvLineEncoder(csvLineEncoderOptions).transformable()).pipeTo(new streams.DownloadStream(downloadName, downloadStreamOptions));
+    response.body.pipeThrough(new streams.Utf8DecoderStream()).pipeThrough(new streams.JsonDeserializer(jsonDeserializeOptions).transformable()).pipeThrough(new streams.CsvSerializer(csvSerializerOptions).transformable()).pipeTo(new streams.DownloadStream(downloadName, downloadStreamOptions));
   });
 };
 //# sourceMappingURL=JsonToCsv.download.js.map

@@ -20,7 +20,7 @@ export * from "./ArrayAccumulator/ArrayAccumulator.js";
 export * from "./ArrayBufferAccumulator/ArrayBufferAccumulator.js";
 export * from "./AssertStream/AssertStream.js";
 export * from "./CombinedTransformStream/CombinedTransformStream.js";
-export * from "./CsvLineEncoder/CsvLineEncoder.js";
+export * from "./CsvSerializer/CsvSerializer.js";
 export * from "./Flattener/Flattener.js";
 export * from "./JsonDeserializer/JsonDeserializer.js";
 export * from "./JsonSerializer/JsonSerializer.js";

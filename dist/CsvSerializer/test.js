@@ -1,4 +1,4 @@
-import { CsvLineEncoder } from "./CsvLineEncoder.js";
+import { CsvSerializer } from "./CsvSerializer.js";
 import { sleep } from "../funcs/sleep/sleep.js";
 const source = (data2) => new ReadableStream({
   start(controller) {
@@ -20,26 +20,26 @@ const data = [
   { "c1": "a", "c2": "b", "c3": "c", "c4": "d" }
 ];
 console.group("=== escape: all ===");
-await source(data).pipeThrough(new CsvLineEncoder({ escape: "all" }).transformable()).pipeThrough(logging()).pipeTo(terminate());
+await source(data).pipeThrough(new CsvSerializer({ escape: "all" }).transformable()).pipeThrough(logging()).pipeTo(terminate());
 console.groupEnd();
 console.group("=== escape: auto ===");
-await source(data).pipeThrough(new CsvLineEncoder({ escape: "auto" }).transformable()).pipeThrough(logging()).pipeTo(terminate());
+await source(data).pipeThrough(new CsvSerializer({ escape: "auto" }).transformable()).pipeThrough(logging()).pipeTo(terminate());
 console.groupEnd();
 console.group("=== escape: none ===");
-await source(data).pipeThrough(new CsvLineEncoder({ escape: "none" }).transformable()).pipeThrough(logging()).pipeTo(terminate());
+await source(data).pipeThrough(new CsvSerializer({ escape: "none" }).transformable()).pipeThrough(logging()).pipeTo(terminate());
 console.groupEnd();
 console.group("=== escape: custom ===");
-await source(data).pipeThrough(new CsvLineEncoder({ escape: (s) => `[${s}]` }).transformable()).pipeThrough(logging()).pipeTo(terminate());
+await source(data).pipeThrough(new CsvSerializer({ escape: (s) => `[${s}]` }).transformable()).pipeThrough(logging()).pipeTo(terminate());
 console.groupEnd();
 console.group("=== delimiter: custom ===");
-await source(data).pipeThrough(new CsvLineEncoder({ delimiter: "|" }).transformable()).pipeThrough(logging()).pipeTo(terminate());
+await source(data).pipeThrough(new CsvSerializer({ delimiter: "|" }).transformable()).pipeThrough(logging()).pipeTo(terminate());
 console.groupEnd();
 console.group("=== newLine: custom ===");
-await source(data).pipeThrough(new CsvLineEncoder({ newLine: "|" }).transformable()).pipeThrough(logging()).pipeTo(terminate());
+await source(data).pipeThrough(new CsvSerializer({ newLine: "|" }).transformable()).pipeThrough(logging()).pipeTo(terminate());
 console.groupEnd();
 console.group("=== no new line ===");
 let text = "";
-await source(data).pipeThrough(new CsvLineEncoder({ withNewLine: false }).transformable()).pipeTo(new WritableStream({
+await source(data).pipeThrough(new CsvSerializer({ withNewLine: false }).transformable()).pipeTo(new WritableStream({
   write(chunk) {
     text += chunk;
   }
@@ -57,7 +57,7 @@ console.group("Performance test");
 bbb,ccc" }`);
   }
   performance.mark("start");
-  await source(array).pipeThrough(new CsvLineEncoder().transformable()).pipeTo(terminate());
+  await source(array).pipeThrough(new CsvSerializer().transformable()).pipeTo(terminate());
   performance.mark("end");
   performance.measure("perf", "start", "end");
   const perf = performance.getEntriesByName("perf")[0];

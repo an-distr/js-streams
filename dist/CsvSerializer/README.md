@@ -1,16 +1,16 @@
-# CsvLineEncoder
+# CsvSerializer
 
 ## Description
 Convert the object to a CSV line.
 
 ## Example
-https://an-js-streams.pages.dev/mod#CsvLineEncoder
+https://an-js-streams.pages.dev/mod#CsvSerializer
 
 ## Usage
 ```ts
-import { CsvLineEncoder } from "https://an-js-streams.pages.dev/mod.js" // or .ts
+import { CsvSerializer } from "https://an-js-streams.pages.dev/mod.js" // or .ts
 
-const encoder = new CsvLineEncoder({
+const serializer = new CsvSerializer({
   // Specifies the delimiter. The default value is ",".
   delimiter: ",",
   // Specifies how escaping is performed. The default value is "auto".
@@ -31,9 +31,9 @@ const data = [
   { a: 5, b: 6 },
 ]
 
-await encoder.push(data)
+await serializer.push(data)
 
-for await (const line of encoder) {
+for await (const line of serializer) {
   // 1,2\n
   // 3,4\n
   // 5,6\n

@@ -19,21 +19,21 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import { PullPush, PullPushArrayQueue, PullPushTypes } from "../PullPush/PullPush.ts"
 
-export interface CsvLineEncoderOptions {
+export interface CsvSerializerOptions {
   delimiter?: string
   escape?: "auto" | "all" | "none" | ((s: string) => string)
   withNewLine?: boolean
   newLine?: string
 }
 
-export class CsvLineEncoder<I = any> extends PullPush<I, string> {
+export class CsvSerializer<I = any> extends PullPush<I, string> {
   private delimiter: string
   private escape: string | ((s: string) => string)
   private withNewLine: boolean
   private newLine: string
   private doEscape: (s: string) => string
 
-  constructor(options?: CsvLineEncoderOptions) {
+  constructor(options?: CsvSerializerOptions) {
     super(new PullPushArrayQueue)
     this.delimiter = options?.delimiter ?? ","
     this.escape = options?.escape ?? "auto"

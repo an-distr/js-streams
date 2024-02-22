@@ -17,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 import { PullPush, PullPushArrayQueue } from "../PullPush/PullPush.js";
-class CsvLineEncoder extends PullPush {
+class CsvSerializer extends PullPush {
   constructor(options) {
     super(new PullPushArrayQueue());
     this.delimiter = options?.delimiter ?? ",";
@@ -40,6 +40,6 @@ class CsvLineEncoder extends PullPush {
   }
 }
 export {
-  CsvLineEncoder
+  CsvSerializer
 };
-//# sourceMappingURL=CsvLineEncoder.js.map
+//# sourceMappingURL=CsvSerializer.js.map

@@ -25,7 +25,7 @@ txtFile.onchange = () => {
     withComments: rdoInputFormatJSONC.checked,
   }
 
-  const csvLineEncoderOptions = {
+  const csvSerializerOptions = {
     delimiter: rdoOutputFormatCSV.checked
       ? ","
       : "\t",
@@ -39,6 +39,6 @@ txtFile.onchange = () => {
   txtFile.files![0].stream()
     .pipeThrough(new streams.Utf8DecoderStream())
     .pipeThrough(new streams.JsonDeserializer(jsonDeserializeOptions).transformable())
-    .pipeThrough(new streams.CsvLineEncoder(csvLineEncoderOptions).transformable())
+    .pipeThrough(new streams.CsvSerializer(csvSerializerOptions).transformable())
     .pipeTo(new streams.DownloadStream(downloadName, downloadStreamOptions))
 }
