@@ -1,5 +1,5 @@
 import { ArrayBufferAccumulator } from "./ArrayBufferAccumulator.js";
-import { PerformanceStreamBuilder } from "../PerformanceStream/PerformanceStream.js";
+import { SimplePerformanceStreamBuilder } from "../PerformanceStream/PerformanceStream.js";
 import { Utf8DecoderStream, Utf8EncoderStream } from "../Utf8Streams/Utf8Streams.js";
 import { sleep } from "../funcs/sleep/sleep.js";
 function source(totalSize, chunkSize, isArray) {
@@ -53,7 +53,7 @@ function assertChunkSize(totalSize, chunkSize) {
 }
 const test = async (totalSize, readableChunkSize, chunkSize, fixed, isArray) => {
   readableChunkSize = readableChunkSize === 0 ? totalSize : readableChunkSize;
-  const builder = new PerformanceStreamBuilder("ArrayBufferAccumulator", "start", "end");
+  const builder = new SimplePerformanceStreamBuilder();
   const result = { sizeOfWritten: 0 };
   await source(totalSize, readableChunkSize, isArray).pipeThrough(builder.pipe(new ArrayBufferAccumulator(chunkSize, { fixed }).transformable()).build()).pipeThrough(assertChunkSize(totalSize, chunkSize)).pipeTo(results(result));
   const psResult = builder.result();

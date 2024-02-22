@@ -1,5 +1,5 @@
 import { ArrayBufferAccumulator } from "./ArrayBufferAccumulator.ts"
-import { PerformanceStreamBuilder } from "../PerformanceStream/PerformanceStream.ts"
+import { SimplePerformanceStreamBuilder } from "../PerformanceStream/PerformanceStream.ts"
 import { Utf8DecoderStream, Utf8EncoderStream } from "../Utf8Streams/Utf8Streams.ts"
 import { sleep } from "../funcs/sleep/sleep.ts"
 
@@ -78,7 +78,7 @@ type Perf = {
 const test = async (totalSize: number, readableChunkSize: number, chunkSize: number, fixed: boolean, isArray: boolean) => {
   readableChunkSize = readableChunkSize === 0 ? totalSize : readableChunkSize
 
-  const builder = new PerformanceStreamBuilder<Uint8Array | number[], Uint8Array | number[]>("ArrayBufferAccumulator", "start", "end")
+  const builder = new SimplePerformanceStreamBuilder<Uint8Array | number[], Uint8Array | number[]>()
   const result: WritableResult = { sizeOfWritten: 0 }
 
   await source(totalSize, readableChunkSize, isArray)
