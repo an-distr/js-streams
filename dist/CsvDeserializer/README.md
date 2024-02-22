@@ -11,9 +11,9 @@ https://an-js-streams.pages.dev/mod#CsvDeserializer
 import { CsvDeserializer } from "https://an-js-streams.pages.dev/mod.js" // or .ts
 
 const deserializer = new CsvDeserializer({
-  //
+  // If true is specified, the first row of input data is treated as the header row. The initial value is false.
   hasHeader: false,
-  //
+  // Specify a header if required. If specified, the first row of input data is not used as the header row. The initial value is unspecified.
   fields: [],
   // Specifies the delimiter. The default value is ",".
   delimiter: ",",
