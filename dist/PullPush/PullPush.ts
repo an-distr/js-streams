@@ -200,7 +200,7 @@ export abstract class PullPush<I = any, O = any, Q extends PullPushQueue<I, any>
     })
   }
 
-  transform() {
+  transformable() {
     const This = this
     return new TransformStream<I, O>({
       async transform(data, controller) {

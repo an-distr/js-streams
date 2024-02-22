@@ -30,6 +30,6 @@ for await (const obj of deserializer) {
 
 // It can also be processed as a stream.
 const readable = deserializer.readable()
-const transform = deserializer.transform()
+const transformable = deserializer.transformable()
 const writable = deserializer.writable()
 ```

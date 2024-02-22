@@ -35,6 +35,6 @@ for await (const obj of flattener) {
 
 // It can also be processed as a stream.
 const readable = flattener.readable()
-const transform = flattener.transform()
+const transformable = flattener.transformable()
 const writable = flattener.writable()
 ```

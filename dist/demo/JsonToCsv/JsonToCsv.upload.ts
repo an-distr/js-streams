@@ -38,7 +38,7 @@ txtFile.onchange = () => {
 
   txtFile.files![0].stream()
     .pipeThrough(new streams.Utf8DecoderStream())
-    .pipeThrough(new streams.JsonDeserializer(jsonDeserializeOptions).transform())
-    .pipeThrough(new streams.CsvLineEncoder(csvLineEncoderOptions).transform())
+    .pipeThrough(new streams.JsonDeserializer(jsonDeserializeOptions).transformable())
+    .pipeThrough(new streams.CsvLineEncoder(csvLineEncoderOptions).transformable())
     .pipeTo(new streams.DownloadStream(downloadName, downloadStreamOptions))
 }

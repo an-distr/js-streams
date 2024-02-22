@@ -32,6 +32,6 @@ for await (const value of accumulator.pullpush(array)) { // pullpush function is
 
 // It can also be processed as a stream.
 const readable = accumulator.readable()
-const transform = accumulator.transform()
+const transformable = accumulator.transformable()
 const writable = accumulator.writable()
 ```

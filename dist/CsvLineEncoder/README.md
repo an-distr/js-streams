@@ -41,6 +41,6 @@ for await (const line of encoder) {
 
 // It can also be processed as a stream.
 const readable = encoder.readable()
-const transform = encoder.transform()
+const transformable = encoder.transformable()
 const writable = encoder.writable()
 ```

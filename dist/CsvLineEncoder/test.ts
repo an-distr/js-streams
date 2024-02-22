@@ -1,4 +1,5 @@
 import { CsvLineEncoder } from "./CsvLineEncoder.ts"
+import { sleep } from "../funcs/sleep/sleep.ts"
 
 const source = (data: any[]) => new ReadableStream({
   start(controller) {
@@ -25,42 +26,42 @@ const data = [
 
 console.group("=== escape: all ===")
 await source(data)
-  .pipeThrough(new CsvLineEncoder({ escape: "all" }).transform())
+  .pipeThrough(new CsvLineEncoder({ escape: "all" }).transformable())
   .pipeThrough(logging())
   .pipeTo(terminate())
 console.groupEnd()
 
 console.group("=== escape: auto ===")
 await source(data)
-  .pipeThrough(new CsvLineEncoder({ escape: "auto" }).transform())
+  .pipeThrough(new CsvLineEncoder({ escape: "auto" }).transformable())
   .pipeThrough(logging())
   .pipeTo(terminate())
 console.groupEnd()
 
 console.group("=== escape: none ===")
 await source(data)
-  .pipeThrough(new CsvLineEncoder({ escape: "none" }).transform())
+  .pipeThrough(new CsvLineEncoder({ escape: "none" }).transformable())
   .pipeThrough(logging())
   .pipeTo(terminate())
 console.groupEnd()
 
 console.group("=== escape: custom ===")
 await source(data)
-  .pipeThrough(new CsvLineEncoder({ escape: s => `[${s}]` }).transform())
+  .pipeThrough(new CsvLineEncoder({ escape: s => `[${s}]` }).transformable())
   .pipeThrough(logging())
   .pipeTo(terminate())
 console.groupEnd()
 
 console.group("=== delimiter: custom ===")
 await source(data)
-  .pipeThrough(new CsvLineEncoder({ delimiter: "|" }).transform())
+  .pipeThrough(new CsvLineEncoder({ delimiter: "|" }).transformable())
   .pipeThrough(logging())
   .pipeTo(terminate())
 console.groupEnd()
 
 console.group("=== newLine: custom ===")
 await source(data)
-  .pipeThrough(new CsvLineEncoder({ newLine: "|" }).transform())
+  .pipeThrough(new CsvLineEncoder({ newLine: "|" }).transformable())
   .pipeThrough(logging())
   .pipeTo(terminate())
 console.groupEnd()
@@ -68,7 +69,7 @@ console.groupEnd()
 console.group("=== no new line ===")
 let text = ""
 await source(data)
-  .pipeThrough(new CsvLineEncoder({ withNewLine: false }).transform())
+  .pipeThrough(new CsvLineEncoder({ withNewLine: false }).transformable())
   .pipeTo(new WritableStream({
     write(chunk) {
       text += chunk
@@ -76,6 +77,8 @@ await source(data)
   }))
 console.log(text)
 console.groupEnd()
+
+await sleep()
 
 console.group("Performance test")
 {
@@ -90,7 +93,7 @@ console.group("Performance test")
   performance.mark("start")
 
   await source(array)
-    .pipeThrough(new CsvLineEncoder().transform())
+    .pipeThrough(new CsvLineEncoder().transformable())
     .pipeTo(terminate())
 
   performance.mark("end")

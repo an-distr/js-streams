@@ -151,7 +151,7 @@ class PullPush {
       }
     });
   }
-  transform() {
+  transformable() {
     const This = this;
     return new TransformStream({
       async transform(data, controller) {

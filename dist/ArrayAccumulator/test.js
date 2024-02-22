@@ -38,7 +38,7 @@ const testReadable = async (size, data) => {
 };
 const testTransform = async (size, data) => {
   const accumulator = new ArrayAccumulator(size);
-  await source(data).pipeThrough(accumulator.transform()).pipeThrough(logging()).pipeTo(terminate());
+  await source(data).pipeThrough(accumulator.transformable()).pipeThrough(logging()).pipeTo(terminate());
 };
 const testWritable = async (size, data) => {
   const accumulator = new ArrayAccumulator(size);

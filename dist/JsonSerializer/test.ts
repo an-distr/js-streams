@@ -21,12 +21,12 @@ const objs = [
 
 console.log("=== JSON ===")
 await source(objs)
-  .pipeThrough(new JsonSerializer().transform())
+  .pipeThrough(new JsonSerializer().transformable())
   .pipeTo(logging())
 
 console.log("=== JSON Lines ===")
 await source(objs)
-  .pipeThrough(new JsonSerializer({ lineSeparated: true }).transform())
+  .pipeThrough(new JsonSerializer({ lineSeparated: true }).transformable())
   .pipeTo(logging())
 
 console.log("Test completed.")

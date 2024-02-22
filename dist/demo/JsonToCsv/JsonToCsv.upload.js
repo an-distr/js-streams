@@ -24,6 +24,6 @@ txtFile.onchange = () => {
     withNewLine: true
   };
   const downloadName = rdoOutputFormatCSV.checked ? "download.csv" : "download.tsv";
-  txtFile.files[0].stream().pipeThrough(new streams.Utf8DecoderStream()).pipeThrough(new streams.JsonDeserializer(jsonDeserializeOptions).transform()).pipeThrough(new streams.CsvLineEncoder(csvLineEncoderOptions).transform()).pipeTo(new streams.DownloadStream(downloadName, downloadStreamOptions));
+  txtFile.files[0].stream().pipeThrough(new streams.Utf8DecoderStream()).pipeThrough(new streams.JsonDeserializer(jsonDeserializeOptions).transformable()).pipeThrough(new streams.CsvLineEncoder(csvLineEncoderOptions).transformable()).pipeTo(new streams.DownloadStream(downloadName, downloadStreamOptions));
 };
 //# sourceMappingURL=JsonToCsv.upload.js.map

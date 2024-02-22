@@ -19,7 +19,7 @@ const writable = () => new WritableStream()
 const test = async (data: any, limit?: number) => {
   console.groupCollapsed(`=== data: ${JSON.stringify(data)}, limit: ${limit} ===`)
   await readable(data)
-    .pipeThrough(new Flattener(limit).transform())
+    .pipeThrough(new Flattener(limit).transformable())
     .pipeThrough(logging())
     .pipeTo(writable())
   console.groupEnd()

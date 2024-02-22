@@ -23,7 +23,7 @@ const time = async (fn) => {
   const perf = performance.getEntriesByName("perf")[0];
   console.log(perf.duration);
 };
-const deserializer = async (options) => new JsonDeserializer(options).transform();
+const deserializer = async (options) => new JsonDeserializer(options).transformable();
 const json = '[	\r\n{"a":1,"b":2}	,\r\n{"a":3,"b":4\r},{"a":5,"b":6}	,\r\n]';
 const jsonl = '{"a":1,"b"  :2 }\n{"a":3	,"b"	:4}\r\n{"a":5,"b":6}\r';
 const jsonc = `[	\r
@@ -71,7 +71,7 @@ const test = async () => {
     await source(jsonc).pipeThrough(await deserializer({ withComments: true })).pipeTo(logging());
   }
   console.groupEnd();
-  await sleep(0);
+  await sleep();
   console.group("Performance test");
   {
     const count = 1e5;
@@ -84,13 +84,13 @@ const test = async () => {
       await source(json2).pipeThrough(await deserializer(void 0)).pipeTo(terminate());
     });
     console.groupEnd();
-    await sleep(0);
+    await sleep();
     console.group("JSON Lines");
     await time(async () => {
       await source(jsonl2).pipeThrough(await deserializer({ lineSeparated: true })).pipeTo(terminate());
     });
     console.groupEnd();
-    await sleep(0);
+    await sleep();
     console.group("JSON with comments");
     await time(async () => {
       await source(jsonc2).pipeThrough(await deserializer({ withComments: true })).pipeTo(terminate());
@@ -98,7 +98,7 @@ const test = async () => {
     console.groupEnd();
   }
   console.groupEnd();
-  await sleep(0);
+  await sleep();
 };
 console.group("JsonDeserializer");
 await test();

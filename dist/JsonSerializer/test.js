@@ -16,8 +16,8 @@ const objs = [
   { a: 5, b: 6 }
 ];
 console.log("=== JSON ===");
-await source(objs).pipeThrough(new JsonSerializer().transform()).pipeTo(logging());
+await source(objs).pipeThrough(new JsonSerializer().transformable()).pipeTo(logging());
 console.log("=== JSON Lines ===");
-await source(objs).pipeThrough(new JsonSerializer({ lineSeparated: true }).transform()).pipeTo(logging());
+await source(objs).pipeThrough(new JsonSerializer({ lineSeparated: true }).transformable()).pipeTo(logging());
 console.log("Test completed.");
 //# sourceMappingURL=test.js.map

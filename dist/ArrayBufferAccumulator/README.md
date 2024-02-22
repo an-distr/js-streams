@@ -25,7 +25,7 @@ const accumulator = new ArrayBufferAccumulator(
   })
 
 await readable
-  .pipeThrough(accumulator.transform())
+  .pipeThrough(accumulator.transformable())
   .pipeTo(writable)
 ```
 **Sequence**

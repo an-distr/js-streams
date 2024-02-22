@@ -26,6 +26,6 @@ for await (const obj of serializer) {
 
 // It can also be processed as a stream.
 const readable = serializer.readable()
-const transform = serializer.transform()
+const transformable = serializer.transformable()
 const writable = serializer.writable()
 ```

@@ -29,7 +29,7 @@ const time = async (fn: () => Promise<void>) => {
   console.log(perf.duration)
 }
 
-const deserializer = async (options?: JsonDeserializerOptions) => new JsonDeserializer(options).transform()
+const deserializer = async (options?: JsonDeserializerOptions) => new JsonDeserializer(options).transformable()
 
 const json = '[\t\r\n{"a":1,"b":2}\t,\r\n{"a":3,"b":4\r},{"a":5,"b":6}\t,\r\n]'
 const jsonl = '{"a":1,"b"  :2 }\n{"a":3\t,"b"\t:4}\r\n{"a":5,"b":6}\r'
@@ -88,7 +88,7 @@ const test = async () => {
   }
   console.groupEnd()
 
-  await sleep(0)
+  await sleep()
 
   console.group("Performance test")
   {
@@ -107,7 +107,7 @@ const test = async () => {
     })
     console.groupEnd()
 
-    await sleep(0)
+    await sleep()
 
     console.group("JSON Lines")
     await time(async () => {
@@ -117,7 +117,7 @@ const test = async () => {
     })
     console.groupEnd()
 
-    await sleep(0)
+    await sleep()
 
     console.group("JSON with comments")
     await time(async () => {
@@ -129,7 +129,7 @@ const test = async () => {
   }
   console.groupEnd()
 
-  await sleep(0)
+  await sleep()
 }
 
 console.group("JsonDeserializer")

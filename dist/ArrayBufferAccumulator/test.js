@@ -55,7 +55,7 @@ const test = async (totalSize, readableChunkSize, chunkSize, fixed, isArray) => 
   readableChunkSize = readableChunkSize === 0 ? totalSize : readableChunkSize;
   const builder = new PerformanceStreamBuilder("ArrayBufferAccumulator", "start", "end");
   const result = { sizeOfWritten: 0 };
-  await source(totalSize, readableChunkSize, isArray).pipeThrough(builder.pipe(new ArrayBufferAccumulator(chunkSize, { fixed }).transform()).build()).pipeThrough(assertChunkSize(totalSize, chunkSize)).pipeTo(results(result));
+  await source(totalSize, readableChunkSize, isArray).pipeThrough(builder.pipe(new ArrayBufferAccumulator(chunkSize, { fixed }).transformable()).build()).pipeThrough(assertChunkSize(totalSize, chunkSize)).pipeTo(results(result));
   const psResult = builder.result();
   console.assert(psResult !== void 0);
   console.groupCollapsed([
@@ -97,9 +97,9 @@ const testNewLine = async (chunkSize) => {
       console.log(`[${chunk}]`);
     }
   });
-  await readable.pipeThrough(new Utf8EncoderStream()).pipeThrough(new ArrayBufferAccumulator(chunkSize, { forceEmit: [[10, 13], [13], [10]] }).transform()).pipeThrough(new Utf8DecoderStream()).pipeTo(writable);
+  await readable.pipeThrough(new Utf8EncoderStream()).pipeThrough(new ArrayBufferAccumulator(chunkSize, { forceEmit: [[10, 13], [13], [10]] }).transformable()).pipeThrough(new Utf8DecoderStream()).pipeTo(writable);
 };
-await source(1, 1, false).pipeThrough(new ArrayBufferAccumulator(1).transform()).pipeTo(new WritableStream());
+await source(1, 1, false).pipeThrough(new ArrayBufferAccumulator(1).transformable()).pipeTo(new WritableStream());
 const totalSizes = [
   1,
   1e3,

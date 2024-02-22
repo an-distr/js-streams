@@ -40,7 +40,7 @@ btnConvertUrl.onclick = () => {
       withNewLine: true
     };
     const downloadName = rdoOutputFormatCSV.checked ? "download.csv" : "download.tsv";
-    response.body.pipeThrough(new streams.Utf8DecoderStream()).pipeThrough(new streams.JsonDeserializer(jsonDeserializeOptions).transform()).pipeThrough(new streams.CsvLineEncoder(csvLineEncoderOptions).transform()).pipeTo(new streams.DownloadStream(downloadName, downloadStreamOptions));
+    response.body.pipeThrough(new streams.Utf8DecoderStream()).pipeThrough(new streams.JsonDeserializer(jsonDeserializeOptions).transformable()).pipeThrough(new streams.CsvLineEncoder(csvLineEncoderOptions).transformable()).pipeTo(new streams.DownloadStream(downloadName, downloadStreamOptions));
   });
 };
 //# sourceMappingURL=JsonToCsv.download.js.map

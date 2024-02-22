@@ -83,7 +83,7 @@ const test = async (totalSize: number, readableChunkSize: number, chunkSize: num
 
   await source(totalSize, readableChunkSize, isArray)
     .pipeThrough(builder
-      .pipe(new ArrayBufferAccumulator(chunkSize, { fixed }).transform())
+      .pipe(new ArrayBufferAccumulator(chunkSize, { fixed }).transformable())
       .build())
     .pipeThrough(assertChunkSize(totalSize, chunkSize))
     .pipeTo(results(result))
@@ -143,14 +143,14 @@ const testNewLine = async (chunkSize: number) => {
 
   await readable
     .pipeThrough(new Utf8EncoderStream)
-    .pipeThrough(new ArrayBufferAccumulator(chunkSize, { forceEmit: [[10, 13], [13], [10]] }).transform())
+    .pipeThrough(new ArrayBufferAccumulator(chunkSize, { forceEmit: [[10, 13], [13], [10]] }).transformable())
     .pipeThrough(new Utf8DecoderStream)
     .pipeTo(writable)
 }
 
 // warmup
 await source(1, 1, false)
-  .pipeThrough(new ArrayBufferAccumulator(1).transform())
+  .pipeThrough(new ArrayBufferAccumulator(1).transformable())
   .pipeTo(new WritableStream)
 
 const totalSizes = [
