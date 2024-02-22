@@ -1,7 +1,7 @@
 # CsvSerializer
 
 ## Description
-Convert the object to a CSV line.
+Convert the object to a CSV/TSV.
 
 ## Example
 https://an-js-streams.pages.dev/mod#CsvSerializer
@@ -40,7 +40,7 @@ for await (const line of serializer) {
 }
 
 // It can also be processed as a stream.
-const readable = encoder.readable()
-const transformable = encoder.transformable()
-const writable = encoder.writable()
+const readable = serializer.readable()
+const transformable = serializer.transformable()
+const writable = serializer.writable()
 ```
