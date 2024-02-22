@@ -1,8 +1,6 @@
 import { CsvDeserializer } from "./CsvDeserializer.js";
 import { PerformanceStreamBuilder } from "../PerformanceStream/PerformanceStream.js";
 import { sleep } from "../funcs/sleep/sleep.js";
-import { CompatiblePerformance } from "../misc/CompatiblePerformance/CompatiblePerformance.js";
-globalThis.performance = new CompatiblePerformance();
 const source = (source2) => new ReadableStream({
   start(controller) {
     for (const line of source2) {

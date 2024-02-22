@@ -1,8 +1,6 @@
 import { JsonDeserializer } from "./JsonDeserializer.js";
 import { PerformanceStreamBuilder } from "../PerformanceStream/PerformanceStream.js";
 import { sleep } from "../funcs/sleep/sleep.js";
-import { CompatiblePerformance } from "../misc/CompatiblePerformance/CompatiblePerformance.js";
-globalThis.performance = new CompatiblePerformance();
 const source = (s) => new ReadableStream({
   start(controller) {
     controller.enqueue(s);
