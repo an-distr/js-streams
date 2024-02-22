@@ -31,7 +31,8 @@ Stream utilities for JavaScript/TypeScript.
 |[ArrayBufferAccumulator](dist/ArrayBufferAccumulator/README.md)|Accumulate the ArrayBuffer stream and emit it at a constant size or condition.|
 |[AssertStream](dist/AssertStream/README.md)|Assert for Stream.|
 |[CombinedTransformStream](dist/CombinedTransformStream/README.md)|Combine multiple TransfromStreams.|
-|[CsvSerializer](dist/CsvSerializer/README.md)|Convert the object to a CSV line.|
+|[CsvDeserializer](dist/CsvDeserializer/README.md)|Convert the CSV/TSV to a object.|
+|[CsvSerializer](dist/CsvSerializer/README.md)|Convert the object to a CSV/TSV.|
 |[DownloadStream](dist/DownloadStream/README.md)|Download the stream.|
 |[Flattener](dist/Flattener/README.md)|Flatten the array.|
 |[JsonDeserializer](dist/JsonDeserializer/README.md)|Convert the string to a JSON/JSON Lines/JSON with comments array.|

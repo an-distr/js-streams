@@ -43,6 +43,11 @@
     <changefreq>always</changefreq>
   </url>
   <url>
+    <loc>https://an-js-streams.pages.dev/mod#CsvDeserializer</loc>
+    <lastmod>2024-02-22</lastmod>
+    <changefreq>always</changefreq>
+  </url>
+  <url>
     <loc>https://an-js-streams.pages.dev/mod#CsvSerializer</loc>
     <lastmod>2024-02-22</lastmod>
     <changefreq>always</changefreq>
