@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="description"
+    content="Streams(https://github.com/an-dist/js-streams) for JavaScript/TypeScript Demos and Examples">
+
+  <link rel="modulepreload" href="/web.min.js">
+  <link rel="modulepreload" href="CsvToJson.download.min.js">
+  <link rel="modulepreload" href="CsvToJson.upload.min.js">
+
+  <link rel="preload" as="script" href="/site/site.min.js">
+  <link rel="preload" as="style" href="/site/site.min.css">
+
+  <link rel="icon" href="/site/favicon.svg" type="image/svg+xml" sizes="any">
+  <link rel="icon" href="/site/favicon.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/site/apple-touch-icon.png" sizes="192x192">
+
+  <link rel="stylesheet" href="/site/site.min.css">
+  <script defer src="/site/site.min.js"></script>
+
+  <title>CSV to Json</title>
+</head>
+
+<body>
+  <header>
+    <a href="/#demo_CsvToJson">
+      <img src="/site/favicon.svg" alt="favicon" loading="lazy" decoding="async" width="32" height="32">
+      <h1></h1>
+    </a>
+    <div>
+      <label for="siteTheme">Theme</label>
+      <select id="siteTheme">
+        <option value="auto">Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </div>
+  </header>
+
+  <main>
+
+    <section>
+      <h2>Options</h2>
+      <input id="chkDirect" type="checkbox">
+      <label for="chkDirect">Direct download</label>
+      <section>
+        <h3>Input Format</h3>
+        <input id="rdoInputFormatCSV" type="radio" name="inputFormat" value="csv" checked>
+        <label for="rdoInputFormatCSV">CSV</label>
+        <input id="rdoInputFormatTSV" type="radio" name="inputFormat" value="tsv">
+        <label for="rdoInputFormatTSV">TSV</label>
+      </section>
+      <section>
+        <h3>Output Format</h3>
+        <input id="rdoOutputFormatJSON" type="radio" name="outputFormat" value="json" checked>
+        <label for="rdoOutputFormatJSON">JSON</label>
+        <input id="rdoOutputFormatJSONL" type="radio" name="outputFormat" value="jsonl">
+        <label for="rdoOutputFormatJSONL">JSON Lines</label>
+      </section>
+    </section>
+
+    <hr>
+
+    <section>
+      <label for="txtUrl">
+        <h2>CSV to JSON (Download)</h2>
+      </label>
+      <script type="module" src="CsvToJson.download.min.js"></script>
+      <input id="txtUrl" type="url">
+      <button id="btnConvertUrl">Convert</button>
+      <div style="display: flex; flex-direction: column;"></div>
+    </section>
+
+    <hr>
+
+    <section>
+      <label for="txtFile">
+        <h2>CSV to JSON (Upload)</h2>
+      </label>
+      <script type="module" src="CsvToJson.upload.min.js"></script>
+      <input id="txtFile" type="file" accept=".csv,.tsv">
+      <div style="display: flex; flex-direction: column;"></div>
+    </section>
+
+    <hr>
+
+    <section id="console"></section>
+
+  </main>
+
+  <script>
+    const siteTheme = document.getElementById("siteTheme")
+    siteTheme.value = localStorage.getItem("theme.site") ?? "auto"
+    siteTheme.addEventListener("change", () => {
+      localStorage.setItem("theme.site", siteTheme.value)
+    })
+  </script>
+
+  <script type="module">
+    import { DomConsole } from "/web.min.js"
+
+    globalThis.console = new DomConsole("console", globalThis.console)
+
+    document.getElementById("txtUrl").value =
+      new URL("sample.csv", location.href).href
+  </script>
+
+</body>

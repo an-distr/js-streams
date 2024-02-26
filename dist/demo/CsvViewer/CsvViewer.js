@@ -1,5 +1,6 @@
 import * as streams from "/web.js";
 globalThis.console = new streams.DomConsole("console", globalThis.console);
+const rdoInputFormatTSV = document.getElementById("rdoInputFormatTSV");
 const txtFile = document.getElementById("txtFile");
 const tblResult = document.getElementById("tblResult");
 let controller;
@@ -13,7 +14,10 @@ txtFile.onchange = async () => {
   if (!txtFile.files || txtFile.files.length === 0) {
     return;
   }
-  const source = txtFile.files[0].stream().pipeThrough(new streams.Utf8DecoderStream(), { signal: controller.signal }).pipeThrough(new streams.CsvDeserializer({ hasHeader: true }).transformable(), { signal: controller.signal });
+  const source = txtFile.files[0].stream().pipeThrough(new streams.Utf8DecoderStream(), { signal: controller.signal }).pipeThrough(new streams.CsvDeserializer({
+    hasHeader: true,
+    delimitor: rdoInputFormatTSV.checked ? "	" : ","
+  }).transformable(), { signal: controller.signal });
   let no = 1;
   for await (const obj of streams.toAsyncIterableIterator(source, { signal: controller.signal })) {
     if (!tblResult.tHead) {

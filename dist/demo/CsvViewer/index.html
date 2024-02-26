@@ -42,11 +42,19 @@
   <main>
 
     <section>
+      <h3>Input Format</h3>
+      <input id="rdoInputFormatCSV" type="radio" name="inputFormat" value="csv" checked>
+      <label for="rdoInputFormatCSV">CSV</label>
+      <input id="rdoInputFormatTSV" type="radio" name="inputFormat" value="tsv">
+      <label for="rdoInputFormatTSV">TSV</label>
+    </section>
+
+    <section>
       <label for="txtFile">
         <h2>CSV</h2>
       </label>
       <script type="module" src="CsvViewer.js"></script>
-      <input id="txtFile" type="file" accept=".csv">
+      <input id="txtFile" type="file" accept=".csv,.tsv">
       <table id="tblResult"></table>
     </section>
 

@@ -3,6 +3,7 @@ import * as streams from "/web.ts"
 
 globalThis.console = new streams.DomConsole("console", globalThis.console)
 
+const rdoInputFormatTSV = document.getElementById("rdoInputFormatTSV") as HTMLInputElement
 const txtFile = document.getElementById("txtFile") as HTMLInputElement
 const tblResult = document.getElementById("tblResult") as HTMLTableElement
 
@@ -23,7 +24,10 @@ txtFile.onchange = async () => {
 
   const source = txtFile.files[0].stream()
     .pipeThrough(new streams.Utf8DecoderStream(), { signal: controller.signal })
-    .pipeThrough(new streams.CsvDeserializer({ hasHeader: true }).transformable(), { signal: controller.signal })
+    .pipeThrough(new streams.CsvDeserializer({
+      hasHeader: true,
+      delimitor: rdoInputFormatTSV.checked ? "\t" : ",",
+    }).transformable(), { signal: controller.signal })
 
   let no = 1
   for await (const obj of streams.toAsyncIterableIterator(source, { signal: controller.signal })) {
