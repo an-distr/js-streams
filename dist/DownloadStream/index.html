@@ -69,7 +69,7 @@
         console.warn(response.status, response.statusText)
         return
       }
-      await response.body.pipeTo(new DownloadStream("download.json"))
+      await response.body.pipeTo(new DownloadStream("download.txt"))
     }
   </script>
 
