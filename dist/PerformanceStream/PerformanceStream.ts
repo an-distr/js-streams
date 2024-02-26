@@ -124,3 +124,83 @@ export class PerformanceStreamBuilder<I = any, O = any> {
     }
   }
 }
+
+export class SimplePerformanceStreamBuilder<I = any, O = any> {
+  private transforms: TransformStream[] = []
+  private point: number = 0
+  private durations: number[] = []
+
+  pipe(transform: TransformStream) {
+    this.transforms.push(transform)
+    return this
+  }
+
+  build(options?: StreamPipeOptions): TransformStream<I, O> {
+    const This = this
+
+    const first = new TransformStream<I, I>({
+      transform(chunk, controller) {
+        This.point = performance.now()
+        controller.enqueue(chunk)
+      }
+    })
+
+    const last = new TransformStream<O, O>({
+      transform(chunk, controller) {
+        const now = performance.now()
+        This.durations.push(now - This.point)
+        This.point = now
+        controller.enqueue(chunk)
+      },
+      flush() {
+        This.durations.push(performance.now() - This.point)
+      }
+    })
+
+    const combined = new CombinedTransformStream<I, O>(this.transforms, options)
+    this.transforms.splice(0)
+
+    first.readable.pipeTo(combined.writable, options)
+    combined.readable.pipeTo(last.writable, options)
+
+    return {
+      writable: first.writable,
+      readable: last.readable,
+    }
+  }
+
+  result(): PerformanceStreamResult | undefined {
+    if (!this.durations || this.durations.length === 0) return undefined
+
+    if (this.durations.length === 0) {
+      return {
+        transforming: 0,
+        occupancy: 0,
+        minimum: 0,
+        maximum: 0,
+        average: 0,
+        median: 0,
+      }
+    }
+
+    const occupancy = this.durations.reduce((s, d) => s += d, 0.0)
+    const minimum = this.durations.reduce((l, r) => Math.min(l, r))
+    const maximum = this.durations.reduce((l, r) => Math.max(l, r))
+    const sorted = [...new Set(this.durations.sort((l, r) => l - r))]
+    const medianIndex = sorted.length / 2 | 0
+    const median = sorted.length === 0
+      ? 0
+      : sorted.length % 2
+        ? sorted[medianIndex]
+        : sorted[medianIndex - 1] + sorted[medianIndex]
+
+    return {
+      transforming: this.durations.length,
+      occupancy: occupancy,
+      minimum: minimum,
+      maximum: maximum,
+      average: occupancy / this.durations.length,
+      median: median,
+    }
+  }
+}

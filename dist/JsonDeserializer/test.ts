@@ -1,5 +1,5 @@
 import { JsonDeserializer, JsonDeserializerOptions } from "./JsonDeserializer.ts"
-import { PerformanceStreamBuilder } from "../PerformanceStream/PerformanceStream.ts"
+import { SimplePerformanceStreamBuilder } from "../PerformanceStream/PerformanceStream.ts"
 import { sleep } from "../funcs/sleep/sleep.ts"
 
 const source = (s: string) => new ReadableStream({
@@ -18,7 +18,7 @@ const logging = () => new WritableStream({
 const terminate = () => new WritableStream()
 
 const testPerformance = async (data: string, options?: JsonDeserializerOptions) => {
-  const builder = new PerformanceStreamBuilder("perf", "start", "end")
+  const builder = new SimplePerformanceStreamBuilder()
 
   await source(data)
     .pipeThrough(builder

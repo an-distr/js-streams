@@ -1,5 +1,5 @@
 import { CsvDeserializer } from "./CsvDeserializer.js";
-import { PerformanceStreamBuilder } from "../PerformanceStream/PerformanceStream.js";
+import { SimplePerformanceStreamBuilder } from "../PerformanceStream/PerformanceStream.js";
 import { sleep } from "../funcs/sleep/sleep.js";
 const source = (source2) => new ReadableStream({
   start(controller) {
@@ -52,7 +52,7 @@ const testPerformance = async (columnCount, rowCount) => {
     }
     rows.push(fields.join(","));
   }
-  const builder = new PerformanceStreamBuilder("perf", "start", "end");
+  const builder = new SimplePerformanceStreamBuilder();
   await source(rows).pipeThrough(builder.pipe(deserializer({ hasHeader: true }).transformable()).build()).pipeTo(terminate());
   const perf = builder.result();
   console.table(perf);

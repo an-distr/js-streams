@@ -1,5 +1,5 @@
 import { CsvDeserializer, CsvDeserializerOptions } from "./CsvDeserializer.ts"
-import { PerformanceStreamBuilder } from "../PerformanceStream/PerformanceStream.ts"
+import { SimplePerformanceStreamBuilder } from "../PerformanceStream/PerformanceStream.ts"
 import { sleep } from "../funcs/sleep/sleep.ts"
 
 const source = (source: string[]) => new ReadableStream({
@@ -64,7 +64,7 @@ const testPerformance = async (columnCount: number, rowCount: number) => {
     rows.push(fields.join(","))
   }
 
-  const builder = new PerformanceStreamBuilder("perf", "start", "end")
+  const builder = new SimplePerformanceStreamBuilder()
 
   await source(rows)
     .pipeThrough(builder
