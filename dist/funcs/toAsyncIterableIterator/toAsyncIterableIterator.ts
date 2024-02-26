@@ -17,10 +17,15 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-export async function* toAsyncIterableIterator<R>(readable: ReadableStream<R>) {
+export interface toAsyncIterableIteratorOptions {
+  signal?: AbortSignal
+}
+
+export async function* toAsyncIterableIterator<R>(readable: ReadableStream<R>, options?: toAsyncIterableIteratorOptions) {
+  const signal = options?.signal ?? new AbortController().signal
   const reader = readable.getReader()
   try {
-    while (true) {
+    while (!signal.aborted) {
       const { done, value } = await reader.read()
       if (done) break
       yield value

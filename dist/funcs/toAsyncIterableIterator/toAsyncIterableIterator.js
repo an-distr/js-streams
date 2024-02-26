@@ -16,10 +16,11 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-async function* toAsyncIterableIterator(readable) {
+async function* toAsyncIterableIterator(readable, options) {
+  const signal = options?.signal ?? new AbortController().signal;
   const reader = readable.getReader();
   try {
-    while (true) {
+    while (!signal.aborted) {
       const { done, value } = await reader.read();
       if (done)
         break;
