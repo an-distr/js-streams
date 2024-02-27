@@ -57,7 +57,7 @@ export class CsvDeserializer<O = any> extends PullPush<string, O, PullPushString
         }
         else {
           for (let i = 0; i < this.fields.length; ++i) {
-            this.headers.push(`${this.autoColumnPrefix}${i + 1}`)
+            this.headers.push(this.autoColumnPrefix + (i + 1))
           }
         }
       }
@@ -107,7 +107,6 @@ export class CsvDeserializer<O = any> extends PullPush<string, O, PullPushString
       }
 
       if (flush) {
-        this.queue.empty()
         if (this.fieldBuffer.length > 0) {
           this.fields.push(this.fieldBuffer.replace(/\\\"/g, "\""))
         }
@@ -118,6 +117,10 @@ export class CsvDeserializer<O = any> extends PullPush<string, O, PullPushString
             await this.push(next)
           }
         }
+        this.queue.empty()
+        this.prevChar = ""
+        this.fieldBuffer = ""
+        this.fields.length = 0
       }
     } while (this.queue.more())
   }

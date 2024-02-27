@@ -38,7 +38,7 @@ class CsvDeserializer extends PullPush {
           return void 0;
         } else {
           for (let i = 0; i < this.fields.length; ++i) {
-            this.headers.push(`${this.autoColumnPrefix}${i + 1}`);
+            this.headers.push(this.autoColumnPrefix + (i + 1));
           }
         }
       }
@@ -82,7 +82,6 @@ class CsvDeserializer extends PullPush {
         }
       }
       if (flush) {
-        this.queue.empty();
         if (this.fieldBuffer.length > 0) {
           this.fields.push(this.fieldBuffer.replace(/\\\"/g, '"'));
         }
@@ -93,6 +92,10 @@ class CsvDeserializer extends PullPush {
             await this.push(next);
           }
         }
+        this.queue.empty();
+        this.prevChar = "";
+        this.fieldBuffer = "";
+        this.fields.length = 0;
       }
     } while (this.queue.more());
   }
