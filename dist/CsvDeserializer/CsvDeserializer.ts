@@ -21,6 +21,7 @@ import { PullPush, PullPushStringQueue, PullPushTypes } from "../PullPush/PullPu
 
 export interface CsvDeserializerOptions {
   hasHeader?: boolean
+  autoColumnPrefix?: string
   headers?: string[]
   delimiter?: string
   lineSeparators?: string[]
@@ -28,6 +29,7 @@ export interface CsvDeserializerOptions {
 
 export class CsvDeserializer<O = any> extends PullPush<string, O, PullPushStringQueue> {
   private hasHeader: boolean
+  private autoColumnPrefix: string
   private headers: string[]
   private delimiter: string
   private lineSeparators: string[]
@@ -40,6 +42,7 @@ export class CsvDeserializer<O = any> extends PullPush<string, O, PullPushString
   constructor(options?: CsvDeserializerOptions) {
     super(new PullPushStringQueue)
     this.hasHeader = options?.hasHeader ?? false
+    this.autoColumnPrefix = options?.autoColumnPrefix ?? ""
     this.headers = options?.headers ?? []
     this.delimiter = options?.delimiter ?? ","
     this.lineSeparators = options?.lineSeparators ?? ["\r", "\n"]
@@ -54,7 +57,7 @@ export class CsvDeserializer<O = any> extends PullPush<string, O, PullPushString
         }
         else {
           for (let i = 0; i < this.fields.length; ++i) {
-            this.headers.push(`column${i + 1}`)
+            this.headers.push(`${this.autoColumnPrefix}${i + 1}`)
           }
         }
       }

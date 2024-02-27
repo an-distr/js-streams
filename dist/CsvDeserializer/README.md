@@ -13,6 +13,8 @@ import { CsvDeserializer } from "https://an-js-streams.pages.dev/mod.js" // or .
 const deserializer = new CsvDeserializer({
   // If true is specified, the first row of input data is treated as the header row. The initial value is false.
   hasHeader: false,
+  // If "hasHeader" is set to false and "fields" is not specified, the column name is automatically determined. Specifies the prefix to be used. The initial value is a empty.
+  autoColumnPrefix: "",
   // Specify a header if required. If specified, the first row of input data is not used as the header row. The initial value is unspecified.
   fields: [],
   // Specifies the delimiter. The default value is ",".

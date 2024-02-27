@@ -4,7 +4,8 @@ import { sleep } from "../funcs/sleep/sleep.js";
 const source = (source2) => new ReadableStream({
   start(controller) {
     for (const line of source2) {
-      controller.enqueue(line + "\n");
+      controller.enqueue(line);
+      controller.enqueue("\n");
     }
     controller.close();
   }
@@ -25,13 +26,15 @@ const csvHeaderLess = [
 const csvHeaderIncluded = ["column1,column2,column3"].concat(csvHeaderLess);
 const tsvHeaderLess = csvHeaderLess.map((x) => x.replace(/,/g, "	"));
 const tsvHeaderIncluded = csvHeaderIncluded.map((x) => x.replace(/,/g, "	"));
-const test = async (title, data, headers, delimiter) => {
+const test = async (title, data, hasHeader, headers, delimiter) => {
   console.group(title);
+  console.log("hasHeader=", hasHeader);
   console.log("headers=", headers);
   console.log("data=", data);
   console.log("result=");
   await source(data).pipeThrough(deserializer({
-    hasHeader: !headers || headers.length === 0,
+    hasHeader,
+    autoColumnPrefix: "auto_column_",
     headers,
     delimiter
   }).transformable()).pipeThrough(logging()).pipeTo(terminate());
@@ -59,10 +62,12 @@ const testPerformance = async (columnCount, rowCount) => {
   console.groupEnd();
 };
 console.group("Testing");
-await test("CSV Header less", csvHeaderLess, ["c1", "c2"]);
-await test("CSV Header included", csvHeaderIncluded);
-await test("TSV Header less", tsvHeaderLess, ["c1", "c2"], "	");
-await test("TSV Header included", tsvHeaderIncluded, void 0, "	");
+await test("CSV Header less", csvHeaderLess, false, ["c1", "c2"]);
+await test("CSV Header less (Auto column)", csvHeaderLess, false);
+await test("CSV Header included", csvHeaderIncluded, true);
+await test("TSV Header less", tsvHeaderLess, false, ["c1", "c2"], "	");
+await test("TSV Header less (Auto column)", tsvHeaderLess, false, void 0, "	");
+await test("TSV Header included", tsvHeaderIncluded, true, void 0, "	");
 console.groupEnd();
 await sleep();
 console.group("Testing performance");

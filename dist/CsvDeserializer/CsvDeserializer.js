@@ -25,6 +25,7 @@ class CsvDeserializer extends PullPush {
     this.inField = false;
     this.fields = [];
     this.hasHeader = options?.hasHeader ?? false;
+    this.autoColumnPrefix = options?.autoColumnPrefix ?? "";
     this.headers = options?.headers ?? [];
     this.delimiter = options?.delimiter ?? ",";
     this.lineSeparators = options?.lineSeparators ?? ["\r", "\n"];
@@ -37,7 +38,7 @@ class CsvDeserializer extends PullPush {
           return void 0;
         } else {
           for (let i = 0; i < this.fields.length; ++i) {
-            this.headers.push(`column${i + 1}`);
+            this.headers.push(`${this.autoColumnPrefix}${i + 1}`);
           }
         }
       }
