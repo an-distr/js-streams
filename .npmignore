@@ -10,3 +10,7 @@ deno.lock
 *.sh
 *.bat
 *.json
+*.jsonl
+*.jsonc
+*.csv
+*.tsv
