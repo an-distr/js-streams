@@ -30,7 +30,7 @@ const lines = [
   "e,5,f\ng,6,h",
 ]
 
-await deserializer.push(lines)
+await deserializer.push(lines.join("\n"))
 
 for await (const obj of deserializer) {
   // { column1: "a", column2: 1, column3: "b,2\"" }
