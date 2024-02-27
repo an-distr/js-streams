@@ -10,7 +10,7 @@ const txtUrl = document.getElementById("txtUrl") as HTMLInputElement
 const btnConvertUrl = document.getElementById("btnConvertUrl") as HTMLButtonElement
 const linkHolder = btnConvertUrl.parentElement!.lastElementChild as HTMLDivElement
 
-const onChangeInputFromat = () => {
+const onChangeInputFormat = () => {
   if (rdoInputFormatCSV.checked) {
     txtUrl.value = new URL("sample.csv", location.href).href
   }
@@ -18,8 +18,8 @@ const onChangeInputFromat = () => {
     txtUrl.value = new URL("sample.tsv", location.href).href
   }
 }
-rdoInputFormatCSV.addEventListener("change", onChangeInputFromat)
-rdoInputFormatTSV.addEventListener("change", onChangeInputFromat)
+rdoInputFormatCSV.addEventListener("change", onChangeInputFormat)
+rdoInputFormatTSV.addEventListener("change", onChangeInputFormat)
 
 btnConvertUrl.onclick = () => {
   fetch(txtUrl.value, { credentials: "include" }).then(async response => {

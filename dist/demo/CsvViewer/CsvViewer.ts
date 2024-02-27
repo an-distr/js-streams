@@ -3,9 +3,22 @@ import * as streams from "/web.ts"
 
 globalThis.console = new streams.DomConsole("console", globalThis.console)
 
+const rdoInputFormatCSV = document.getElementById("rdoInputFormatCSV") as HTMLInputElement
 const rdoInputFormatTSV = document.getElementById("rdoInputFormatTSV") as HTMLInputElement
+const lblRecords = document.getElementById("lblRecords") as HTMLSpanElement
 const txtFile = document.getElementById("txtFile") as HTMLInputElement
 const tblResult = document.getElementById("tblResult") as HTMLTableElement
+
+const onChangeInputFormat = () => {
+  if (rdoInputFormatCSV.checked) {
+    txtFile.accept = ".csv"
+  }
+  else if (rdoInputFormatTSV.checked) {
+    txtFile.accept = ".tsv"
+  }
+}
+rdoInputFormatCSV.addEventListener("change", onChangeInputFormat)
+rdoInputFormatTSV.addEventListener("change", onChangeInputFormat)
 
 let controller: AbortController | undefined
 
@@ -47,6 +60,9 @@ txtFile.onchange = async () => {
     row.insertCell().textContent = (no++).toLocaleString()
     for (const value of Object.values(obj)) {
       row.insertCell().textContent = value?.toString() ?? ""
+    }
+    lblRecords.textContent = no.toLocaleString()
+    if (no % 1000 === 0) {
       await streams.sleep(0)
     }
   }

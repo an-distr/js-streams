@@ -7,15 +7,15 @@ const rdoOutputFormatJSONL = document.getElementById("rdoOutputFormatJSONL");
 const txtUrl = document.getElementById("txtUrl");
 const btnConvertUrl = document.getElementById("btnConvertUrl");
 const linkHolder = btnConvertUrl.parentElement.lastElementChild;
-const onChangeInputFromat = () => {
+const onChangeInputFormat = () => {
   if (rdoInputFormatCSV.checked) {
     txtUrl.value = new URL("sample.csv", location.href).href;
   } else if (rdoInputFormatTSV.checked) {
     txtUrl.value = new URL("sample.tsv", location.href).href;
   }
 };
-rdoInputFormatCSV.addEventListener("change", onChangeInputFromat);
-rdoInputFormatTSV.addEventListener("change", onChangeInputFromat);
+rdoInputFormatCSV.addEventListener("change", onChangeInputFormat);
+rdoInputFormatTSV.addEventListener("change", onChangeInputFormat);
 btnConvertUrl.onclick = () => {
   fetch(txtUrl.value, { credentials: "include" }).then(async (response) => {
     if (!response.ok) {
