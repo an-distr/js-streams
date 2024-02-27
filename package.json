@@ -24,7 +24,7 @@
     "@cloudflare/workers-types": "^4.20240208.0",
     "@types/jsdom": "^21.1.6",
     "assemblyscript": "^0.27.24",
-    "esbuild": "^0.20.0",
+    "esbuild": "^0.20.1",
     "fast-glob": "^3.3.2",
     "jsdom": "^24.0.0",
     "wrangler": "^3.28.1"
