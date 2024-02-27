@@ -21,38 +21,23 @@ export { }
 
 declare global {
   interface ReadableStream<R = any> {
-    [Symbol.asyncIterator](): AsyncIterator<R>
+    [Symbol.asyncIterator](): AsyncGenerator<R>
   }
 }
 
 if (typeof ReadableStream.prototype[Symbol.asyncIterator] !== "function") {
   console.info("[Polyfill] ReadableStream.asyncIterator")
-  ReadableStream.prototype[Symbol.asyncIterator] = function () {
-    const This = this
-    const createGenerator = async function* () {
-      const reader = This.getReader()
-      try {
-        while (true) {
-          const { done, value } = await reader.read()
-          if (done) break
-          yield value
-        }
-      }
-      finally {
-        reader.releaseLock()
+  ReadableStream.prototype[Symbol.asyncIterator] = async function* () {
+    const reader = this.getReader()
+    try {
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        yield value
       }
     }
-    const generator = createGenerator()
-    return {
-      next(...args: [] | [undefined]) {
-        return generator.next(...args)
-      },
-      return(value?: any) {
-        return generator.return(value)
-      },
-      throw(e?: any) {
-        return generator.throw(e)
-      }
+    finally {
+      reader.releaseLock()
     }
   }
 }
