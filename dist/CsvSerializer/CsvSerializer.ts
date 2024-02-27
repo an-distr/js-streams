@@ -60,7 +60,7 @@ export class CsvSerializer<I = any> extends PullPush<I, string> {
     await this.push(data)
 
     while (this.queue.more()) {
-      const value = this.queue.pop() as any
+      const value = this.queue.shift() as any
 
       const line = Object.keys(value)
         .map(k => this.doEscape(value[k]?.toString() ?? ""))

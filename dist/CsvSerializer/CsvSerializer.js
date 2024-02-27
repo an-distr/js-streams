@@ -32,7 +32,7 @@ class CsvSerializer extends PullPush {
   async *pullpush(data) {
     await this.push(data);
     while (this.queue.more()) {
-      const value = this.queue.pop();
+      const value = this.queue.shift();
       const line = Object.keys(value).map((k) => this.doEscape(value[k]?.toString() ?? "")).join(this.delimiter);
       const pushed = yield line + this.newLine;
       await this.push(pushed);
