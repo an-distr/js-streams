@@ -28,10 +28,12 @@ class PullPushNonQueue {
   }
   push(_data) {
   }
-  shift() {
+  pop() {
     return void 0;
   }
-  pop() {
+  unshift(_data) {
+  }
+  shift() {
     return void 0;
   }
   empty() {
@@ -56,11 +58,14 @@ class PullPushArrayQueue {
   push(data) {
     this.queue.push(data);
   }
-  shift() {
-    return this.queue.shift();
-  }
   pop() {
     return this.queue.pop();
+  }
+  unshift(data) {
+    this.queue.unshift(data);
+  }
+  shift() {
+    return this.queue.shift();
   }
   empty() {
     this.queue.splice(0);
@@ -89,11 +94,14 @@ class PullPushStringQueue {
   push(data) {
     this.queue += data;
   }
-  shift() {
-    return this.splice(0, 1);
-  }
   pop() {
     return this.splice(-1);
+  }
+  unshift(data) {
+    this.queue = data + this.queue;
+  }
+  shift() {
+    return this.splice(0, 1);
   }
   empty() {
     this.queue = "";

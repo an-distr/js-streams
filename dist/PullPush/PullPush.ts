@@ -24,8 +24,9 @@ export interface PullPushQueue<T, All> {
   more(): boolean
   all(): All
   push(data: T): void
-  shift(): T |undefined
   pop(): T | undefined
+  unshift(data: T): void
+  shift(): T | undefined
   empty(): void
   splice(start: number, deleteCount?: number): All
 }
@@ -46,11 +47,14 @@ export class PullPushNonQueue<I, O> implements PullPushQueue<I, O> {
   push(_data: I) {
   }
 
-  shift() {
+  pop() {
     return undefined
   }
 
-  pop() {
+  unshift(_data: I) {
+  }
+
+  shift() {
     return undefined
   }
 
@@ -81,12 +85,16 @@ export class PullPushArrayQueue<T = any> implements PullPushQueue<T, ArrayLike<T
     this.queue.push(data)
   }
 
-  shift() {
-    return this.queue.shift()
-  }
-
   pop() {
     return this.queue.pop()
+  }
+
+  unshift(data: T) {
+    this.queue.unshift(data)
+  }
+
+  shift() {
+    return this.queue.shift()
   }
 
   empty() {
@@ -122,12 +130,16 @@ export class PullPushStringQueue implements PullPushQueue<string, string> {
     this.queue += data
   }
 
-  shift() {
-    return this.splice(0, 1)
-  }
-
   pop() {
     return this.splice(-1)
+  }
+
+  unshift(data: string) {
+    this.queue = data + this.queue
+  }
+
+  shift() {
+    return this.splice(0, 1)
   }
 
   empty() {

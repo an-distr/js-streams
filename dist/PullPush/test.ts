@@ -1,7 +1,8 @@
 import * as pp from "./PullPush.ts"
 
+console.group("PullPushStringQueue")
+console.log("Asserting...")
 {
-  console.group("PullPushStringQueue")
   const q = new pp.PullPushStringQueue()
   console.assert(q.length() === 0, "q.length() === 0:", q.length())
   console.assert(!q.more(), "!q.more():", q.more())
@@ -27,33 +28,60 @@ import * as pp from "./PullPush.ts"
   s = q.splice(1)
   console.assert(q.all() === "1", 'q.all() === "1":', q.all())
   console.assert(s === "245", 's === "245":', s)
-  console.groupEnd()
+  q.unshift("0")
+  console.assert(q.all() === "01", 'q.all() === "01":', q.all())
+  s = q.shift()
+  console.assert(q.all() === "1", 'q.all() === "1":', q.all())
+  console.assert(s === "0", 's === "0":', s)
+  s = q.shift()
+  console.assert(q.all() === "", 'q.all() === "":', q.all())
+  console.assert(s === "1", 's === "1":', s)
+  s = q.shift()
+  console.assert(q.all() === "", 'q.all() === "":', q.all())
+  console.assert(s === "", 's === "":', s)
 }
+console.groupEnd()
 
 console.group("PullPushArrayQueue")
-const q = new pp.PullPushArrayQueue<number>()
-console.assert(q.length() === 0, "q.length() === 0:", q.length())
-console.assert(!q.more(), "!q.more():", q.more());
-[1, 2, 3].forEach(n => q.push(n))
-console.assert(q.length() === 3, "q.length() === 3:", q.length())
-console.assert(q.more(), "q.more():", q.more())
-let s = [q.pop()]
-console.assert(q.length() === 2, "q.length() === 2:", q.length())
-console.assert(q.more(), "q.more():", q.more())
-console.assert(q.all().toString() === [1, 2].toString(), "q.all().toString() === [1, 2].toString():", q.all())
-console.assert(s.toString() === [3].toString(), "s.toString() === [3].toString():", s)
-q.empty()
-console.assert(q.length() === 0, "q.length() === 0:", q.length())
-console.assert(!q.more(), "!q.more():", q.more());
-[1, 2, 3, 4, 5, 6].forEach(n => q.push(n))
-console.assert(q.all().toString() === [1, 2, 3, 4, 5, 6].toString(), "q.all().toString() === [1, 2, 3, 4, 5, 6].toString():", q.all())
-s = q.splice(2, 1)
-console.assert(q.all().toString() === [1, 2, 4, 5, 6].toString(), "q.all().toString() === [1, 2, 4, 5, 6].toString():", q.all())
-console.assert(s.toString() === [3].toString(), "s.toString() === [3].toString():", s)
-s = q.splice(-1)
-console.assert(q.all().toString() === [1, 2, 4, 5].toString(), "q.all().toString() === [1, 2, 4, 5].toString():", q.all())
-console.assert(s.toString() === [6].toString(), "s.toString() === [6].toString():", s)
-s = q.splice(1)
-console.assert(q.all().toString() === [1].toString(), "q.all().toString() === [1].toString():", q.all())
-console.assert(s.toString() === [2, 4, 5].toString(), "s.toString() === [2, 4, 5].toString():", s)
+console.log("Asserting...")
+{
+  const q = new pp.PullPushArrayQueue<number>()
+  console.assert(q.length() === 0, "q.length() === 0:", q.length())
+  console.assert(!q.more(), "!q.more():", q.more());
+  [1, 2, 3].forEach(n => q.push(n))
+  console.assert(q.length() === 3, "q.length() === 3:", q.length())
+  console.assert(q.more(), "q.more():", q.more())
+  let s = [q.pop()]
+  console.assert(q.length() === 2, "q.length() === 2:", q.length())
+  console.assert(q.more(), "q.more():", q.more())
+  console.assert(q.all().toString() === [1, 2].toString(), "q.all().toString() === [1, 2].toString():", q.all())
+  console.assert(s.toString() === [3].toString(), "s.toString() === [3].toString():", s)
+  q.empty()
+  console.assert(q.length() === 0, "q.length() === 0:", q.length())
+  console.assert(!q.more(), "!q.more():", q.more());
+  [1, 2, 3, 4, 5, 6].forEach(n => q.push(n))
+  console.assert(q.all().toString() === [1, 2, 3, 4, 5, 6].toString(), "q.all().toString() === [1, 2, 3, 4, 5, 6].toString():", q.all())
+  s = q.splice(2, 1)
+  console.assert(q.all().toString() === [1, 2, 4, 5, 6].toString(), "q.all().toString() === [1, 2, 4, 5, 6].toString():", q.all())
+  console.assert(s.toString() === [3].toString(), "s.toString() === [3].toString():", s)
+  s = q.splice(-1)
+  console.assert(q.all().toString() === [1, 2, 4, 5].toString(), "q.all().toString() === [1, 2, 4, 5].toString():", q.all())
+  console.assert(s.toString() === [6].toString(), "s.toString() === [6].toString():", s)
+  s = q.splice(1)
+  console.assert(q.all().toString() === [1].toString(), "q.all().toString() === [1].toString():", q.all())
+  console.assert(s.toString() === [2, 4, 5].toString(), "s.toString() === [2, 4, 5].toString():", s)
+  q.unshift(0)
+  console.assert(q.all().toString() === [0, 1].toString(), 'q.all().toString() === [0, 1].toString():', q.all())
+  s = [q.shift()]
+  console.assert(q.all().toString() === [1].toString(), 'q.all().toString() === [1].toString():', q.all())
+  console.assert(s.toString() === [0].toString(), 's.toString() === [0].toString():', s)
+  s = [q.shift()]
+  console.assert(q.all().toString() === [].toString(), 'q.all().toString() === [].toString():', q.all())
+  console.assert(s.toString() === [1].toString(), 's.toString() === [1].toString():', s)
+  s = [q.shift()]
+  console.assert(q.all().toString() === [].toString(), 'q.all().toString() === [].toString():', q.all())
+  console.assert(s.toString() === [].toString(), 's.toString() === [].toString():', s)
+}
 console.groupEnd()
+
+console.log("Test completed.")
