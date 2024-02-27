@@ -3,6 +3,7 @@ import * as streams from "/web.ts"
 
 const chkDirect = document.getElementById("chkDirect") as HTMLInputElement
 const rdoInputFormatCSV = document.getElementById("rdoInputFormatCSV") as HTMLInputElement
+const rdoHeaderDetectionFromFile = document.getElementById("rdoHeaderDetectionFromFile") as HTMLInputElement
 const rdoOutputFormatJSON = document.getElementById("rdoOutputFormatJSON") as HTMLInputElement
 const rdoOutputFormatJSONL = document.getElementById("rdoOutputFormatJSONL") as HTMLInputElement
 const txtFile = document.getElementById("txtFile") as HTMLInputElement
@@ -21,7 +22,7 @@ txtFile.onchange = () => {
   }
 
   const csvDeserializerOptions = {
-    hasHeader: true,
+    hasHeader: rdoHeaderDetectionFromFile.checked,
     delimiter: rdoInputFormatCSV.checked ? "," : "\t",
   }
 

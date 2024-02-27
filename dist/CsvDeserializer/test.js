@@ -4,7 +4,7 @@ import { sleep } from "../funcs/sleep/sleep.js";
 const source = (source2) => new ReadableStream({
   start(controller) {
     for (const line of source2) {
-      controller.enqueue(line);
+      controller.enqueue(line + "\n");
     }
     controller.close();
   }

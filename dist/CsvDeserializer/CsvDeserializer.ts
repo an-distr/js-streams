@@ -23,89 +23,99 @@ export interface CsvDeserializerOptions {
   hasHeader?: boolean
   headers?: string[]
   delimiter?: string
-  lineSeparator?: string
+  lineSeparators?: string[]
 }
 
 export class CsvDeserializer<O = any> extends PullPush<string, O, PullPushStringQueue> {
   private hasHeader: boolean
   private headers: string[]
   private delimiter: string
-  private lineSeparator: string
-  private readFields: () => AsyncGenerator<string[]>
+  private lineSeparators: string[]
+  private fieldBuffer = ""
+  private prevChar = ""
+  private inField = false
+  private fields: string[] = []
+  private fieldsToObject: () => O | undefined
 
   constructor(options?: CsvDeserializerOptions) {
     super(new PullPushStringQueue)
     this.hasHeader = options?.hasHeader ?? false
     this.headers = options?.headers ?? []
     this.delimiter = options?.delimiter ?? ","
-    this.lineSeparator = options?.lineSeparator ?? "\n"
+    this.lineSeparators = options?.lineSeparators ?? ["\r", "\n"]
 
-    this.readFields = async function* () {
-      const text = this.queue.all()
-      this.queue.empty()
-      const length = text.length
-      let buffer = ""
-      const fields: string[] = []
-      let prevChar = ""
-      let inField = false
-      for (let i = 0; i < length; ++i) {
-        const c = text[i]
-        if (c === this.lineSeparator && !inField) {
-          if (buffer.length > 0) {
-            fields.push(buffer.replace(/\\\"/g, "\""))
-          }
-          yield fields
-          fields.length = 0
-          prevChar = ""
-          buffer = ""
-          continue
-        }
-        else if (c === "\"" && prevChar !== "\\") {
-          inField = !inField
-          prevChar = c
-          continue
-        }
-        else if (c === this.delimiter && !inField) {
-          fields.push(buffer.replace(/\\\"/g, "\""))
-          prevChar = c
-          buffer = ""
-          continue
+    this.fieldsToObject = () => {
+      const obj = {} as any
+      if (this.headers.length === 0) {
+        if (this.hasHeader) {
+          this.fields.forEach(f => this.headers.push(f))
+          this.fields.length = 0
+          return undefined
         }
         else {
-          prevChar = c
-          buffer += c
+          for (let i = 0; i < this.fields.length; ++i) {
+            this.headers.push(`column${i + 1}`)
+          }
         }
       }
-      if (buffer.length > 0) {
-        fields.push(buffer.replace(/\\\"/g, "\""))
-      }
-      if (fields.length > 0) {
-        yield fields
-      }
+      this.headers.forEach((h, i) => obj[h] = this.fields[i])
+      this.fields.length = 0
+      return obj as O
     }
   }
 
-  async *pullpush(data?: PullPushTypes<string>) {
+  async *pullpush(data?: PullPushTypes<string>, flush?: boolean) {
     await this.push(data)
 
-    while (this.queue.more()) {
-      for await (const fields of this.readFields()) {
-        const obj = {} as any
-        if (this.headers.length === 0) {
-          if (this.hasHeader) {
-            fields.forEach(f => this.headers.push(f))
+    do {
+      const length = this.queue.length()
+      for (let i = 0; i < length; ++i) {
+        const c = this.queue.shift()
+        if (this.lineSeparators.includes(c) && !this.inField) {
+          if (this.fieldBuffer.length > 0) {
+            this.fields.push(this.fieldBuffer.replace(/\\\"/g, "\""))
+            this.fieldBuffer = ""
           }
-          else {
-            for (let i = 0; i < fields.length; ++i) {
-              this.headers.push(`column${i + 1}`)
+          if (this.fields.length > 0) {
+            const obj = this.fieldsToObject()
+            if (obj) {
+              const next: string = yield obj as O
+              await this.push(next)
             }
           }
+          this.prevChar = ""
           continue
         }
-        this.headers.forEach((h, i) => obj[h] = fields[i])
-        const next: string = yield obj as O
-        await this.push(next)
+        else if (c === "\"" && this.prevChar !== "\\") {
+          this.inField = !this.inField
+          this.prevChar = c
+          continue
+        }
+        else if (c === this.delimiter && !this.inField) {
+          this.fields.push(this.fieldBuffer.replace(/\\\"/g, "\""))
+          this.prevChar = c
+          this.fieldBuffer = ""
+          continue
+        }
+        else {
+          this.prevChar = c
+          this.fieldBuffer += c
+        }
       }
-    }
+
+      if (flush) {
+        this.queue.empty()
+        if (this.fieldBuffer.length > 0) {
+          this.fields.push(this.fieldBuffer.replace(/\\\"/g, "\""))
+        }
+        if (this.fields.length > 0) {
+          const obj = this.fieldsToObject()
+          if (obj) {
+            const next: string = yield obj as O
+            await this.push(next)
+          }
+        }
+      }
+    } while (this.queue.more())
   }
 }

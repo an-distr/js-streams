@@ -28,6 +28,9 @@ class PullPushNonQueue {
   }
   push(_data) {
   }
+  shift() {
+    return void 0;
+  }
   pop() {
     return void 0;
   }
@@ -52,6 +55,9 @@ class PullPushArrayQueue {
   }
   push(data) {
     this.queue.push(data);
+  }
+  shift() {
+    return this.queue.shift();
   }
   pop() {
     return this.queue.pop();
@@ -82,6 +88,9 @@ class PullPushStringQueue {
   }
   push(data) {
     this.queue += data;
+  }
+  shift() {
+    return this.splice(0, 1);
   }
   pop() {
     return this.splice(-1);

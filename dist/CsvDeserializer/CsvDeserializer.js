@@ -20,71 +20,80 @@ import { PullPush, PullPushStringQueue } from "../PullPush/PullPush.js";
 class CsvDeserializer extends PullPush {
   constructor(options) {
     super(new PullPushStringQueue());
+    this.fieldBuffer = "";
+    this.prevChar = "";
+    this.inField = false;
+    this.fields = [];
     this.hasHeader = options?.hasHeader ?? false;
     this.headers = options?.headers ?? [];
     this.delimiter = options?.delimiter ?? ",";
-    this.lineSeparator = options?.lineSeparator ?? "\n";
-    this.readFields = async function* () {
-      const text = this.queue.all();
-      this.queue.empty();
-      const length = text.length;
-      let buffer = "";
-      const fields = [];
-      let prevChar = "";
-      let inField = false;
-      for (let i = 0; i < length; ++i) {
-        const c = text[i];
-        if (c === this.lineSeparator && !inField) {
-          if (buffer.length > 0) {
-            fields.push(buffer.replace(/\\\"/g, '"'));
-          }
-          yield fields;
-          fields.length = 0;
-          prevChar = "";
-          buffer = "";
-          continue;
-        } else if (c === '"' && prevChar !== "\\") {
-          inField = !inField;
-          prevChar = c;
-          continue;
-        } else if (c === this.delimiter && !inField) {
-          fields.push(buffer.replace(/\\\"/g, '"'));
-          prevChar = c;
-          buffer = "";
-          continue;
+    this.lineSeparators = options?.lineSeparators ?? ["\r", "\n"];
+    this.fieldsToObject = () => {
+      const obj = {};
+      if (this.headers.length === 0) {
+        if (this.hasHeader) {
+          this.fields.forEach((f) => this.headers.push(f));
+          this.fields.length = 0;
+          return void 0;
         } else {
-          prevChar = c;
-          buffer += c;
+          for (let i = 0; i < this.fields.length; ++i) {
+            this.headers.push(`column${i + 1}`);
+          }
         }
       }
-      if (buffer.length > 0) {
-        fields.push(buffer.replace(/\\\"/g, '"'));
-      }
-      if (fields.length > 0) {
-        yield fields;
-      }
+      this.headers.forEach((h, i) => obj[h] = this.fields[i]);
+      this.fields.length = 0;
+      return obj;
     };
   }
-  async *pullpush(data) {
+  async *pullpush(data, flush) {
     await this.push(data);
-    while (this.queue.more()) {
-      for await (const fields of this.readFields()) {
-        const obj = {};
-        if (this.headers.length === 0) {
-          if (this.hasHeader) {
-            fields.forEach((f) => this.headers.push(f));
-          } else {
-            for (let i = 0; i < fields.length; ++i) {
-              this.headers.push(`column${i + 1}`);
+    do {
+      const length = this.queue.length();
+      for (let i = 0; i < length; ++i) {
+        const c = this.queue.shift();
+        if (this.lineSeparators.includes(c) && !this.inField) {
+          if (this.fieldBuffer.length > 0) {
+            this.fields.push(this.fieldBuffer.replace(/\\\"/g, '"'));
+            this.fieldBuffer = "";
+          }
+          if (this.fields.length > 0) {
+            const obj = this.fieldsToObject();
+            if (obj) {
+              const next = yield obj;
+              await this.push(next);
             }
           }
+          this.prevChar = "";
           continue;
+        } else if (c === '"' && this.prevChar !== "\\") {
+          this.inField = !this.inField;
+          this.prevChar = c;
+          continue;
+        } else if (c === this.delimiter && !this.inField) {
+          this.fields.push(this.fieldBuffer.replace(/\\\"/g, '"'));
+          this.prevChar = c;
+          this.fieldBuffer = "";
+          continue;
+        } else {
+          this.prevChar = c;
+          this.fieldBuffer += c;
         }
-        this.headers.forEach((h, i) => obj[h] = fields[i]);
-        const next = yield obj;
-        await this.push(next);
       }
-    }
+      if (flush) {
+        this.queue.empty();
+        if (this.fieldBuffer.length > 0) {
+          this.fields.push(this.fieldBuffer.replace(/\\\"/g, '"'));
+        }
+        if (this.fields.length > 0) {
+          const obj = this.fieldsToObject();
+          if (obj) {
+            const next = yield obj;
+            await this.push(next);
+          }
+        }
+      }
+    } while (this.queue.more());
   }
 }
 export {

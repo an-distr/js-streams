@@ -2,6 +2,7 @@ import * as streams from "/web.js";
 const chkDirect = document.getElementById("chkDirect");
 const rdoInputFormatCSV = document.getElementById("rdoInputFormatCSV");
 const rdoInputFormatTSV = document.getElementById("rdoInputFormatTSV");
+const rdoHeaderDetectionFromFile = document.getElementById("rdoHeaderDetectionFromFile");
 const rdoOutputFormatJSON = document.getElementById("rdoOutputFormatJSON");
 const rdoOutputFormatJSONL = document.getElementById("rdoOutputFormatJSONL");
 const txtUrl = document.getElementById("txtUrl");
@@ -29,7 +30,7 @@ btnConvertUrl.onclick = () => {
       };
     }
     const csvDeserializerOptions = {
-      hasHeader: true,
+      hasHeader: rdoHeaderDetectionFromFile.checked,
       delimiter: rdoInputFormatCSV.checked ? "," : "	"
     };
     const jsonSerializeOptions = {

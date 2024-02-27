@@ -4,6 +4,7 @@ import * as streams from "/web.ts"
 const chkDirect = document.getElementById("chkDirect") as HTMLInputElement
 const rdoInputFormatCSV = document.getElementById("rdoInputFormatCSV") as HTMLInputElement
 const rdoInputFormatTSV = document.getElementById("rdoInputFormatTSV") as HTMLInputElement
+const rdoHeaderDetectionFromFile = document.getElementById("rdoHeaderDetectionFromFile") as HTMLInputElement
 const rdoOutputFormatJSON = document.getElementById("rdoOutputFormatJSON") as HTMLInputElement
 const rdoOutputFormatJSONL = document.getElementById("rdoOutputFormatJSONL") as HTMLInputElement
 const txtUrl = document.getElementById("txtUrl") as HTMLInputElement
@@ -36,8 +37,8 @@ btnConvertUrl.onclick = () => {
     }
 
     const csvDeserializerOptions = {
-    hasHeader: true,
-    delimiter: rdoInputFormatCSV.checked ? "," : "\t",
+      hasHeader: rdoHeaderDetectionFromFile.checked,
+      delimiter: rdoInputFormatCSV.checked ? "," : "\t",
     }
 
     const jsonSerializeOptions = {

@@ -1,6 +1,7 @@
 import * as streams from "/web.js";
 const chkDirect = document.getElementById("chkDirect");
 const rdoInputFormatCSV = document.getElementById("rdoInputFormatCSV");
+const rdoHeaderDetectionFromFile = document.getElementById("rdoHeaderDetectionFromFile");
 const rdoOutputFormatJSON = document.getElementById("rdoOutputFormatJSON");
 const rdoOutputFormatJSONL = document.getElementById("rdoOutputFormatJSONL");
 const txtFile = document.getElementById("txtFile");
@@ -16,7 +17,7 @@ txtFile.onchange = () => {
     };
   }
   const csvDeserializerOptions = {
-    hasHeader: true,
+    hasHeader: rdoHeaderDetectionFromFile.checked,
     delimiter: rdoInputFormatCSV.checked ? "," : "	"
   };
   const jsonSerializeOptions = {
