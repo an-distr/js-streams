@@ -15,5 +15,6 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/async function*l(a,r){const t=r?.signal??new AbortController().signal,e=a.getReader();try{for(;!t.aborted;){const{done:n,value:o}=await e.read();if(n)break;yield o}}finally{e.releaseLock()}}export{l as toAsyncIterableIterator};
-//# sourceMappingURL=toAsyncIterableIterator.min.js.map
+*/
+
+export * from "./ReadableStream.asyncIterator/ReadableStream.asyncIterator.ts"

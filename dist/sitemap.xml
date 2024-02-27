@@ -100,12 +100,12 @@
     <changefreq>always</changefreq>
   </url>
   <url>
-    <loc>https://an-js-streams.pages.dev/mod#funcs/toAsyncIterableIterator</loc>
+    <loc>https://an-js-streams.pages.dev/mod#misc/Environment</loc>
     <lastmod>2024-02-27</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
-    <loc>https://an-js-streams.pages.dev/mod#misc/Environment</loc>
+    <loc>https://an-js-streams.pages.dev/mod#polyfill/ReadableStream.asyncIterator</loc>
     <lastmod>2024-02-27</lastmod>
     <changefreq>always</changefreq>
   </url>

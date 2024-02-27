@@ -1,4 +1,4 @@
-import { toAsyncIterableIterator } from "./toAsyncIterableIterator.ts"
+import "./ReadableStream.asyncIterator.ts"
 
 const source = (vals: any[]) => new ReadableStream({
   start(controller) {
@@ -14,7 +14,7 @@ const test = async (vals: any[]) => {
   console.log("Asserting...")
   const readable = source(vals)
   let i = 0
-  for await (const val of toAsyncIterableIterator(readable)) {
+  for await (const val of readable) {
     console.assert(val === vals[i])
     ++i
   }

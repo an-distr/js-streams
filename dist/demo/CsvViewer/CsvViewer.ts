@@ -47,14 +47,14 @@ txtFile.onchange = async () => {
 
   let no = 1
   const limit = Number(txtReadingLimit.value)
-  for await (const obj of streams.toAsyncIterableIterator(source, { signal: controller.signal })) {
+  for await (const obj of source) {
     if (!tblResult.tHead) {
       const head = tblResult.createTHead()
       const row = head.insertRow()
       let th = document.createElement("th")
       th.textContent = "#"
       row.append(th)
-      for (const key in obj) {
+      for (const key in obj as any) {
         th = document.createElement("th")
         th.textContent = key
         row.append(th)
@@ -62,7 +62,7 @@ txtFile.onchange = async () => {
     }
     const row = tblResult.tBodies[0].insertRow()
     row.insertCell().textContent = no.toLocaleString()
-    for (const value of Object.values(obj)) {
+    for (const value of Object.values(obj as any)) {
       row.insertCell().textContent = value?.toString() ?? ""
     }
     lblRecords.textContent = no.toLocaleString()

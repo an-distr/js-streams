@@ -30,4 +30,5 @@ export * from "./PerformanceStream/PerformanceStream.js";
 export * from "./Utf8Streams/Utf8Streams.js";
 export * from "./misc/Environment/Environment.js";
 export * from "./funcs/mod.js";
+export * from "./polyfill/mod.js";
 //# sourceMappingURL=mod.js.map

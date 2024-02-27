@@ -33,3 +33,5 @@ export * from "./Utf8Streams/Utf8Streams.ts"
 export * from "./misc/Environment/Environment.ts"
 
 export * from "./funcs/mod.ts"
+
+export * from "./polyfill/mod.ts"

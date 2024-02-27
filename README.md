@@ -44,6 +44,9 @@ Stream utilities for JavaScript/TypeScript.
 ## Functions
 * [Functions](dist/funcs/README.md)
 
+## Polyfill
+* [Polyfill](dist/polyfill/README.md)
+
 ## Unrelated
 * [DomConsole](dist/misc/DomConsole/README.md)
 * [Environment](dist/misc/Environment/README.md)

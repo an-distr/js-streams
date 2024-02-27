@@ -34,7 +34,7 @@ txtFile.onchange = async () => {
   }).transformable(), { signal: controller.signal });
   let no = 1;
   const limit = Number(txtReadingLimit.value);
-  for await (const obj of streams.toAsyncIterableIterator(source, { signal: controller.signal })) {
+  for await (const obj of source) {
     if (!tblResult.tHead) {
       const head = tblResult.createTHead();
       const row2 = head.insertRow();
