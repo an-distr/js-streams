@@ -70,8 +70,14 @@ class CsvDeserializer extends PullPush {
     while (this.queue.more()) {
       for await (const fields of this.readFields()) {
         const obj = {};
-        if (this.headers.length === 0 && this.hasHeader) {
-          fields.forEach((f) => this.headers.push(f));
+        if (this.headers.length === 0) {
+          if (this.hasHeader) {
+            fields.forEach((f) => this.headers.push(f));
+          } else {
+            for (let i = 0; i < fields.length; ++i) {
+              this.headers.push(`column${i + 1}`);
+            }
+          }
           continue;
         }
         this.headers.forEach((h, i) => obj[h] = fields[i]);

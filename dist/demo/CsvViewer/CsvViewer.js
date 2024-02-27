@@ -2,6 +2,8 @@ import * as streams from "/web.js";
 globalThis.console = new streams.DomConsole("console", globalThis.console);
 const rdoInputFormatCSV = document.getElementById("rdoInputFormatCSV");
 const rdoInputFormatTSV = document.getElementById("rdoInputFormatTSV");
+const rdoHeaderDetectionFromFile = document.getElementById("rdoHeaderDetectionFromFile");
+const txtReadingLimit = document.getElementById("txtReadingLimit");
 const lblRecords = document.getElementById("lblRecords");
 const txtFile = document.getElementById("txtFile");
 const tblResult = document.getElementById("tblResult");
@@ -18,18 +20,20 @@ let controller;
 txtFile.onchange = async () => {
   if (!controller || !controller.signal.aborted) {
     controller?.abort();
-    controller = new AbortController();
   }
+  controller = new AbortController();
+  lblRecords.textContent = "0";
   tblResult.innerHTML = "";
   tblResult.createTBody();
   if (!txtFile.files || txtFile.files.length === 0) {
     return;
   }
   const source = txtFile.files[0].stream().pipeThrough(new streams.Utf8DecoderStream(), { signal: controller.signal }).pipeThrough(new streams.CsvDeserializer({
-    hasHeader: true,
+    hasHeader: rdoHeaderDetectionFromFile.checked,
     delimitor: rdoInputFormatTSV.checked ? "	" : ","
   }).transformable(), { signal: controller.signal });
   let no = 1;
+  const limit = Number(txtReadingLimit.value);
   for await (const obj of streams.toAsyncIterableIterator(source, { signal: controller.signal })) {
     if (!tblResult.tHead) {
       const head = tblResult.createTHead();
@@ -44,14 +48,19 @@ txtFile.onchange = async () => {
       }
     }
     const row = tblResult.tBodies[0].insertRow();
-    row.insertCell().textContent = (no++).toLocaleString();
+    row.insertCell().textContent = no.toLocaleString();
     for (const value of Object.values(obj)) {
       row.insertCell().textContent = value?.toString() ?? "";
     }
     lblRecords.textContent = no.toLocaleString();
-    if (no % 1e3 === 0) {
+    if (no % (limit / 10) === 0) {
       await streams.sleep(0);
     }
+    if (no >= limit) {
+      controller.abort();
+      break;
+    }
+    ++no;
   }
 };
 //# sourceMappingURL=CsvViewer.js.map

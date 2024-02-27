@@ -119,6 +119,7 @@ button:disabled {
 }
 
 input[type="text"],
+input[type="number"],
 input[type="url"],
 input[type="file"] {
   width: 100%;
