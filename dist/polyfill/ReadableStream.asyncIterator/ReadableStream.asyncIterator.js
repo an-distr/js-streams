@@ -16,7 +16,8 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-if (!(Symbol.asyncIterator in ReadableStream)) {
+if (typeof ReadableStream.prototype[Symbol.asyncIterator] !== "function") {
+  console.info("[Polyfill] ReadableStream.asyncIterator");
   ReadableStream.prototype[Symbol.asyncIterator] = function() {
     const This = this;
     const createGenerator = async function* () {

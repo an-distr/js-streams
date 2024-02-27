@@ -25,7 +25,8 @@ declare global {
   }
 }
 
-if (!(Symbol.asyncIterator in ReadableStream)) {
+if (typeof ReadableStream.prototype[Symbol.asyncIterator] !== "function") {
+  console.info("[Polyfill] ReadableStream.asyncIterator")
   ReadableStream.prototype[Symbol.asyncIterator] = function () {
     const This = this
     const createGenerator = async function* () {
