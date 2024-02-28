@@ -66,8 +66,8 @@ export class CsvSerializer<I = any> extends PullPush<I, string> {
         .map(k => this.doEscape(value[k]?.toString() ?? ""))
         .join(this.delimiter)
 
-      const pushed: I = yield line + this.newLine
-      await this.push(pushed)
+      const next: I = yield line + this.newLine
+      await this.push(next)
     }
   }
 }

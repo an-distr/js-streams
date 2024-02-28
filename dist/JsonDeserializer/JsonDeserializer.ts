@@ -98,17 +98,17 @@ export class JsonDeserializer<O = any> extends PullPush<string, O, PullPushStrin
       if (lastSeparator >= 0) {
         const range = this.queue.splice(0, lastSeparator)
         const json = this.sanitize(range)
-        const pushed = yield* this.parse("[" + json + "]")
-        await this.push(pushed)
+        const next = yield* this.parse("[" + json + "]")
+        await this.push(next)
       }
 
       if (flush) {
         if (this.queue.more()) {
           const range = this.queue.all()
           const json = this.sanitize(range)
-          const pushed = yield* this.parse("[" + json + "]")
+          const next = yield* this.parse("[" + json + "]")
           this.queue.empty()
-          await this.push(pushed)
+          await this.push(next)
         }
       }
       else {

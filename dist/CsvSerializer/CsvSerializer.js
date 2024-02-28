@@ -34,8 +34,8 @@ class CsvSerializer extends PullPush {
     while (this.queue.more()) {
       const value = this.queue.shift();
       const line = Object.keys(value).map((k) => this.doEscape(value[k]?.toString() ?? "")).join(this.delimiter);
-      const pushed = yield line + this.newLine;
-      await this.push(pushed);
+      const next = yield line + this.newLine;
+      await this.push(next);
     }
   }
 }

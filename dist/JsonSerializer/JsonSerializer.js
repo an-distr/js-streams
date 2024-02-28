@@ -30,22 +30,22 @@ class JsonSerializer extends PullPush {
     do {
       for (const value of this.queue.splice(0)) {
         if (this.isNotFirst) {
-          const pushed = yield this.separator + this.stringify(value);
-          await this.push(pushed);
+          const next = yield this.separator + this.stringify(value);
+          await this.push(next);
         } else {
           if (!this.lineSeparated) {
-            const pushed2 = yield "[";
-            await this.push(pushed2);
+            const next2 = yield "[";
+            await this.push(next2);
           }
-          const pushed = yield this.stringify(value);
-          await this.push(pushed);
+          const next = yield this.stringify(value);
+          await this.push(next);
           this.isNotFirst = true;
         }
       }
       if (flush) {
         if (!this.lineSeparated) {
-          const pushed = yield "]";
-          await this.push(pushed);
+          const next = yield "]";
+          await this.push(next);
         }
         this.isNotFirst = false;
       }
