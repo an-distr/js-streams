@@ -17,7 +17,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 import { PullPush, PullPushNonQueue } from "../PullPush/PullPush.js";
-const bitsToStr = /* @__PURE__ */ new Map([
+const BASE64_BIT_TO_CHAR = /* @__PURE__ */ new Map([
   ["000000", "A"],
   ["000001", "B"],
   ["000010", "C"],
@@ -83,16 +83,16 @@ const bitsToStr = /* @__PURE__ */ new Map([
   ["111110", "+"],
   ["111111", "/"]
 ]);
-const strToBits = new Map(function* () {
-  for (const entry of bitsToStr.entries()) {
+const BASE64_CHAR_TO_BIT = new Map(function* () {
+  for (const entry of BASE64_BIT_TO_CHAR.entries()) {
     yield [entry[1], entry[0]];
   }
 }());
 class Base64Encoder extends PullPush {
   constructor() {
     super(new PullPushNonQueue());
-    this.bits = [];
-    this.block = [];
+    this.inputBuffer = [];
+    this.outputBuffer = [];
   }
   async push(data) {
     if (!data) {
@@ -101,74 +101,74 @@ class Base64Encoder extends PullPush {
     for (const n of data) {
       for (const c of n.toString(2).padStart(8, "0")) {
         if (c === "0")
-          this.bits.push(0);
+          this.inputBuffer.push(0);
         else if (c === "1")
-          this.bits.push(1);
+          this.inputBuffer.push(1);
       }
     }
   }
   async *pullpush(data, flush) {
     await this.push(data);
     do {
-      while (this.bits.length >= 6) {
-        const bits = this.bits.splice(0, 6).join("");
-        this.block.push(bitsToStr.get(bits));
+      while (this.inputBuffer.length >= 6) {
+        const bits = this.inputBuffer.splice(0, 6).join("");
+        this.outputBuffer.push(BASE64_BIT_TO_CHAR.get(bits));
       }
-      while (this.block.length >= 4) {
-        const next = yield this.block.splice(0, 4).join("");
+      while (this.outputBuffer.length >= 4) {
+        const next = yield this.outputBuffer.splice(0, 4).join("");
         await this.push(next);
       }
       if (flush) {
-        if (this.bits.length > 0) {
-          const bits = this.bits.splice(0, 6).join("").padEnd(6, "0");
-          this.block.push(bitsToStr.get(bits));
-          const next = yield this.block.splice(0, 4).join("").padEnd(4, "=");
+        if (this.inputBuffer.length > 0) {
+          const bits = this.inputBuffer.splice(0, 6).join("").padEnd(6, "0");
+          this.outputBuffer.push(BASE64_BIT_TO_CHAR.get(bits));
+          const next = yield this.outputBuffer.splice(0, 4).join("").padEnd(4, "=");
           await this.push(next);
         }
       } else {
         break;
       }
-    } while (this.bits.length > 0);
+    } while (this.inputBuffer.length > 0);
   }
 }
 class Base64Decoder extends PullPush {
   constructor() {
     super(new PullPushNonQueue());
-    this.bits = [];
-    this.buffer = [];
+    this.inputBuffer = [];
+    this.outputBuffer = [];
   }
   async push(data) {
     if (!data) {
       return;
     }
     for (const s of data) {
-      for (const n of strToBits.get(s) ?? "") {
+      for (const n of BASE64_CHAR_TO_BIT.get(s) ?? "") {
         if (n === "0")
-          this.bits.push(0);
+          this.inputBuffer.push(0);
         else if (n === "1")
-          this.bits.push(1);
+          this.inputBuffer.push(1);
       }
     }
   }
   async *pullpush(data, flush) {
     await this.push(data);
     do {
-      while (this.bits.length >= 8) {
-        const byte = this.bits.splice(0, 8).join("");
-        this.buffer.push(parseInt(byte, 2));
+      while (this.inputBuffer.length >= 8) {
+        const byte = this.inputBuffer.splice(0, 8).join("");
+        this.outputBuffer.push(parseInt(byte, 2));
       }
-      if (this.buffer.length > 0) {
-        const next = yield new Uint8Array(this.buffer);
-        this.buffer.length = 0;
+      if (this.outputBuffer.length > 0) {
+        const next = yield new Uint8Array(this.outputBuffer);
+        this.outputBuffer.length = 0;
         await this.push(next);
       }
       if (flush) {
-        this.bits.length = 0;
-        this.buffer.length = 0;
+        this.inputBuffer.length = 0;
+        this.outputBuffer.length = 0;
       } else {
         break;
       }
-    } while (this.bits.length > 0);
+    } while (this.inputBuffer.length > 0);
   }
 }
 export {
