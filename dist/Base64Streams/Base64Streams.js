@@ -16,20 +16,30 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTIO
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-export * from "./ArrayAccumulator/ArrayAccumulator.js";
-export * from "./ArrayBufferAccumulator/ArrayBufferAccumulator.js";
-export * from "./AssertStream/AssertStream.js";
-export * from "./Base64Streams/Base64Streams.js";
-export * from "./CombinedTransformStream/CombinedTransformStream.js";
-export * from "./CsvDeserializer/CsvDeserializer.js";
-export * from "./CsvSerializer/CsvSerializer.js";
-export * from "./Flattener/Flattener.js";
-export * from "./JsonDeserializer/JsonDeserializer.js";
-export * from "./JsonSerializer/JsonSerializer.js";
-export * from "./PeekStream/PeekStream.js";
-export * from "./PerformanceStream/PerformanceStream.js";
-export * from "./Utf8Streams/Utf8Streams.js";
-export * from "./misc/Environment/Environment.js";
-export * from "./funcs/mod.js";
-export * from "./polyfill/mod.js";
-//# sourceMappingURL=mod.js.map
+class Base64DecoderStream extends TransformStream {
+  constructor() {
+    super({
+      transform(chunk, controller) {
+        controller.enqueue(
+          new Uint8Array([...atob(chunk)].map((s) => s.charCodeAt(0)))
+        );
+      }
+    });
+  }
+}
+class Base64EncoderStream extends TransformStream {
+  constructor() {
+    super({
+      transform(chunk, controller) {
+        controller.enqueue(
+          btoa([...chunk].map((b) => String.fromCharCode(b)).join(""))
+        );
+      }
+    });
+  }
+}
+export {
+  Base64DecoderStream,
+  Base64EncoderStream
+};
+//# sourceMappingURL=Base64Streams.js.map
