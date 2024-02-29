@@ -22,6 +22,10 @@ txtFile.onchange = async () => {
       }
     }))
 
-  txtResult.textContent = base64
-  imgResult.src = `data:image/png;base64,${base64}`
+  txtResult.value = base64
+  txtResult.dispatchEvent(new Event("input"))
+}
+
+txtResult.oninput = () => {
+  imgResult.src = `data:image/png;base64,${txtResult.value}`
 }
