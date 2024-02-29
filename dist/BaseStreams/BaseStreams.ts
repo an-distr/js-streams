@@ -39,12 +39,14 @@ export interface BaseContext {
   bitLen: number
   padLen: number
   padding: boolean
+  paddingChar: string
 }
 
 function createContext(base?: BaseType) {
   const context = {} as BaseContext
   context.bitsPerByte = 8
   context.padding = true
+  context.paddingChar = "="
 
   base ??= "base64"
   base = base.toLowerCase()
@@ -191,6 +193,9 @@ export class BaseDecoder extends PullPush<string, Uint8Array, PullPushNonQueue<s
 
     for (const s of strarr) {
       for (const c of s) {
+        if (c === this.context.paddingChar) {
+          continue
+        }
         const index = this.context.map.indexOf(c)
         if (index < 0) {
           throw new Error(`Invalid character '${c}'`)

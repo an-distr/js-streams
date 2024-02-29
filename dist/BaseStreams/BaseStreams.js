@@ -26,6 +26,7 @@ function createContext(base) {
   const context = {};
   context.bitsPerByte = 8;
   context.padding = true;
+  context.paddingChar = "=";
   base ??= "base64";
   base = base.toLowerCase();
   switch (base) {
@@ -140,6 +141,9 @@ class BaseDecoder extends PullPush {
     }
     for (const s of strarr) {
       for (const c of s) {
+        if (c === this.context.paddingChar) {
+          continue;
+        }
         const index = this.context.map.indexOf(c);
         if (index < 0) {
           throw new Error(`Invalid character '${c}'`);
