@@ -121,7 +121,8 @@ button:disabled {
 input[type="text"],
 input[type="number"],
 input[type="url"],
-input[type="file"] {
+input[type="file"],
+textarea {
   width: 100%;
   padding: 0.5rem;
   border-radius: 0.5rem;

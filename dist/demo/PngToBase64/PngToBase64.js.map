@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["PngToBase64.ts"],
+  "sourcesContent": ["// @ts-ignore\nimport * as streams from \"/web.ts\"\n\nglobalThis.console = new streams.DomConsole(\"console\", globalThis.console)\n\nconst txtFile = document.getElementById(\"txtFile\") as HTMLInputElement\nconst txtResult = document.getElementById(\"txtResult\") as HTMLTextAreaElement\nconst imgResult = document.getElementById(\"imgResult\") as HTMLImageElement\n\ntxtFile.onchange = async () => {\n  if (!txtFile.files || txtFile.files.length === 0) {\n    return\n  }\n\n  let base64 = \"\"\n\n  await txtFile.files[0].stream()\n    .pipeThrough(new streams.BaseEncoder(\"base64\").transformable())\n    .pipeTo(new WritableStream({\n      write(chunk) {\n        base64 += chunk\n      }\n    }))\n\n  txtResult.textContent = base64\n  imgResult.src = `data:image/png;base64,${base64}`\n}"],
+  "mappings": "AACA,YAAY,aAAa;AAEzB,WAAW,UAAU,IAAI,QAAQ,WAAW,WAAW,WAAW,OAAO;AAEzE,MAAM,UAAU,SAAS,eAAe,SAAS;AACjD,MAAM,YAAY,SAAS,eAAe,WAAW;AACrD,MAAM,YAAY,SAAS,eAAe,WAAW;AAErD,QAAQ,WAAW,YAAY;AAC7B,MAAI,CAAC,QAAQ,SAAS,QAAQ,MAAM,WAAW,GAAG;AAChD;AAAA,EACF;AAEA,MAAI,SAAS;AAEb,QAAM,QAAQ,MAAM,CAAC,EAAE,OAAO,EAC3B,YAAY,IAAI,QAAQ,YAAY,QAAQ,EAAE,cAAc,CAAC,EAC7D,OAAO,IAAI,eAAe;AAAA,IACzB,MAAM,OAAO;AACX,gBAAU;AAAA,IACZ;AAAA,EACF,CAAC,CAAC;AAEJ,YAAU,cAAc;AACxB,YAAU,MAAM,yBAAyB,MAAM;AACjD;",
+  "names": []
+}

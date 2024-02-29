@@ -67,8 +67,15 @@ class BaseEncoder extends PullPush {
       return;
     }
     let bytes;
-    if (Array.isArray(data)) {
-      bytes = data;
+    if (typeof data === "number") {
+      bytes = [data];
+    } else if (typeof data[Symbol.iterator] === "function") {
+      bytes = Array.from(data);
+    } else if (typeof data[Symbol.asyncIterator] === "function") {
+      bytes = [];
+      for await (const value of data) {
+        bytes.push(value);
+      }
     } else {
       bytes = Array.from(new Uint8Array(data));
     }

@@ -77,7 +77,7 @@ function createContext(base?: BaseType) {
   return context
 }
 
-export class BaseEncoder extends PullPush<ArrayBufferLike | ArrayLike<number>, string, PullPushNonQueue<ArrayBufferLike | ArrayLike<number>, string>> {
+export class BaseEncoder extends PullPush<number, string, PullPushNonQueue<number, string>> {
   private context: BaseContext
   private inputBuffer: number[] = []
   private outputBuffer: string[] = []
@@ -94,14 +94,23 @@ export class BaseEncoder extends PullPush<ArrayBufferLike | ArrayLike<number>, s
     }
   }
 
-  override async push(data?: PullPushTypes<ArrayBufferLike | ArrayLike<number>>) {
+  override async push(data?: PullPushTypes<number>) {
     if (!data) {
       return
     }
 
     let bytes: number[]
-    if (Array.isArray(data)) {
-      bytes = data
+    if (typeof data === "number") {
+      bytes = [data]
+    }
+    else if (typeof (data as Iterable<number>)[Symbol.iterator] === "function") {
+      bytes = Array.from(data as Iterable<number>)
+    }
+    else if (typeof (data as AsyncIterable<number>)[Symbol.asyncIterator] === "function") {
+      bytes = []
+      for await (const value of data as AsyncIterable<number>) {
+        bytes.push(value)
+      }
     }
     else {
       bytes = Array.from(new Uint8Array(data as ArrayBufferLike))
@@ -114,7 +123,7 @@ export class BaseEncoder extends PullPush<ArrayBufferLike | ArrayLike<number>, s
     }
   }
 
-  async *pullpush(data?: PullPushTypes<ArrayBufferLike | ArrayLike<number>>, flush?: boolean) {
+  async *pullpush(data?: PullPushTypes<number>, flush?: boolean) {
     await this.push(data)
 
     do {
@@ -127,7 +136,7 @@ export class BaseEncoder extends PullPush<ArrayBufferLike | ArrayLike<number>, s
         const chunk = this.outputBuffer.splice(0,
           this.context.padLen * Math.floor(this.outputBuffer.length / this.context.padLen))
           .join("")
-        const next: PullPushTypes<ArrayBufferLike | ArrayLike<number>> = yield chunk
+        const next: PullPushTypes<number> = yield chunk
         await this.push(next)
       }
 
@@ -139,7 +148,7 @@ export class BaseEncoder extends PullPush<ArrayBufferLike | ArrayLike<number>, s
           if (this.context.padding) {
             chunk = chunk.padEnd(this.context.padLen, "=")
           }
-          const next: PullPushTypes<ArrayBufferLike | ArrayLike<number>> = yield chunk
+          const next: PullPushTypes<number> = yield chunk
           await this.push(next)
         }
       }
