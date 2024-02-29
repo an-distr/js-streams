@@ -30,7 +30,7 @@ Stream utilities for JavaScript/TypeScript.
 |[ArrayAccumulator](dist/ArrayAccumulator/README.md)|Accumulate the stream and emit it at a constant size array.|
 |[ArrayBufferAccumulator](dist/ArrayBufferAccumulator/README.md)|Accumulate the ArrayBuffer stream and emit it at a constant size or condition.|
 |[AssertStream](dist/AssertStream/README.md)|Assert for Stream.|
-|[Base64Streams](dist/Base64Streams/README.md)|Streaming encode/decode for Base64.|
+|[BaseStreams](dist/BaseStreams/README.md)|Streaming encode/decode for BaseN.|
 |[CombinedTransformStream](dist/CombinedTransformStream/README.md)|Combine multiple TransfromStreams.|
 |[CsvDeserializer](dist/CsvDeserializer/README.md)|Convert the CSV/TSV to a object.|
 |[CsvSerializer](dist/CsvSerializer/README.md)|Convert the object to a CSV/TSV.|
