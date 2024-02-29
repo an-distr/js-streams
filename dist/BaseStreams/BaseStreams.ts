@@ -33,7 +33,7 @@ const MAP_BASE32_HEX = "0123456789ABCDEFGHIJKLMNOPQRSTUV"
 const MAP_BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 const MAP_BASE64_URL = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
 
-interface BaseContext {
+export interface BaseContext {
   bitsPerByte: number
   map: string
   bitLen: number
@@ -80,9 +80,16 @@ export class BaseEncoder extends PullPush<ArrayBufferLike | ArrayLike<number>, s
   private inputBuffer: number[] = []
   private outputBuffer: string[] = []
 
-  constructor(mode?: BaseType) {
+  constructor(mode?: BaseType)
+  constructor(context?: BaseContext)
+  constructor(arg?: BaseType | BaseContext) {
     super(new PullPushNonQueue)
-    this.context = createContext(mode)
+    if (typeof arg === "string") {
+      this.context = createContext(arg)
+    }
+    else {
+      this.context = arg ?? createContext()
+    }
   }
 
   override async push(data?: PullPushTypes<ArrayBufferLike | ArrayLike<number>>) {
@@ -130,9 +137,16 @@ export class BaseDecoder extends PullPush<string, Uint8Array, PullPushNonQueue<s
   private inputBuffer: number[] = []
   private outputBuffer: number[] = []
 
-  constructor(mode?: BaseType) {
+  constructor(mode?: BaseType)
+  constructor(context?: BaseContext)
+  constructor(arg?: BaseType | BaseContext) {
     super(new PullPushNonQueue)
-    this.context = createContext(mode)
+    if (typeof arg === "string") {
+      this.context = createContext(arg)
+    }
+    else {
+      this.context = arg ?? createContext()
+    }
   }
 
   override async push(data?: PullPushTypes<string>) {

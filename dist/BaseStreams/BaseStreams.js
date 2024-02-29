@@ -51,11 +51,15 @@ function createContext(mode) {
   return context;
 }
 class BaseEncoder extends PullPush {
-  constructor(mode) {
+  constructor(arg) {
     super(new PullPushNonQueue());
     this.inputBuffer = [];
     this.outputBuffer = [];
-    this.context = createContext(mode);
+    if (typeof arg === "string") {
+      this.context = createContext(arg);
+    } else {
+      this.context = arg ?? createContext();
+    }
   }
   async push(data) {
     const bytes = !data ? [] : [...data];
@@ -90,11 +94,15 @@ class BaseEncoder extends PullPush {
   }
 }
 class BaseDecoder extends PullPush {
-  constructor(mode) {
+  constructor(arg) {
     super(new PullPushNonQueue());
     this.inputBuffer = [];
     this.outputBuffer = [];
-    this.context = createContext(mode);
+    if (typeof arg === "string") {
+      this.context = createContext(arg);
+    } else {
+      this.context = arg ?? createContext();
+    }
   }
   async push(data) {
     const strarr = !data ? [] : [...data];
