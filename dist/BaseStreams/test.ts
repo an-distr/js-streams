@@ -39,7 +39,6 @@ const terminate = (result: { decoded: string | Array<number> }) => new WritableS
 
 const testText = async (mode: BaseType, data: string[]) => {
   console.group("Testing(text):", mode)
-  console.groupCollapsed("Debug info")
 
   const result = {
     encoded: "",
@@ -54,7 +53,6 @@ const testText = async (mode: BaseType, data: string[]) => {
     .pipeThrough(new Utf8DecoderStream())
     .pipeTo(terminate(result))
 
-  console.groupEnd()
   console.log("source:", data.join(""), "(", data.join("").length, ")")
   console.log(`${mode}:`, result.encoded, "(", result.encoded.length, ")")
   console.log("decoded:", result.decoded, "(", result.decoded.length, ")")

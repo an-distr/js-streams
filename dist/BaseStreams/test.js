@@ -33,13 +33,11 @@ const terminate = (result) => new WritableStream({
 });
 const testText = async (mode, data) => {
   console.group("Testing(text):", mode);
-  console.groupCollapsed("Debug info");
   const result = {
     encoded: "",
     decoded: ""
   };
   await textSource(data).pipeThrough(new Utf8EncoderStream()).pipeThrough(new BaseEncoder(mode).transformable()).pipeThrough(peek(result)).pipeThrough(new BaseDecoder(mode).transformable()).pipeThrough(new Utf8DecoderStream()).pipeTo(terminate(result));
-  console.groupEnd();
   console.log("source:", data.join(""), "(", data.join("").length, ")");
   console.log(`${mode}:`, result.encoded, "(", result.encoded.length, ")");
   console.log("decoded:", result.decoded, "(", result.decoded.length, ")");
