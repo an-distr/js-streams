@@ -107,7 +107,7 @@ class BaseEncoder extends PullPush {
           this.outputBuffer.push(this.context.map[bits]);
           let chunk = this.outputBuffer.splice(0, this.context.padLen).join("");
           if (this.context.padding) {
-            chunk = chunk.padEnd(this.context.padLen, "=");
+            chunk = chunk.padEnd(this.context.padLen, this.context.paddingChar);
           }
           const next = yield chunk;
           await this.push(next);
