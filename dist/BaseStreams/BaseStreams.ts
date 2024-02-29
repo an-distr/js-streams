@@ -41,15 +41,15 @@ export interface BaseContext {
   padding: boolean
 }
 
-function createContext(mode?: BaseType) {
+function createContext(base?: BaseType) {
   const context = {} as BaseContext
   context.bitsPerByte = 8
   context.padding = true
 
-  mode ??= "base64"
-  mode = mode.toLowerCase()
+  base ??= "base64"
+  base = base.toLowerCase()
 
-  switch (mode) {
+  switch (base) {
     case "base16":
       context.map = MAP_BASE16;
       context.bitLen = 4;
@@ -58,14 +58,14 @@ function createContext(mode?: BaseType) {
 
     case "base32":
     case "base32hex":
-      context.map = mode === "base32hex" ? MAP_BASE32_HEX : MAP_BASE32;
+      context.map = base === "base32hex" ? MAP_BASE32_HEX : MAP_BASE32;
       context.bitLen = 5;
       context.padLen = 8;
       break;
 
     case "base64":
     case "base64url":
-      context.map = mode === "base64url" ? MAP_BASE64_URL : MAP_BASE64;
+      context.map = base === "base64url" ? MAP_BASE64_URL : MAP_BASE64;
       context.bitLen = 6;
       context.padLen = 4;
       break;
@@ -82,7 +82,7 @@ export class BaseEncoder extends PullPush<ArrayBufferLike | ArrayLike<number>, s
   private inputBuffer: number[] = []
   private outputBuffer: string[] = []
 
-  constructor(mode?: BaseType)
+  constructor(base?: BaseType)
   constructor(context?: BaseContext)
   constructor(arg?: BaseType | BaseContext) {
     super(new PullPushNonQueue)
@@ -155,7 +155,7 @@ export class BaseDecoder extends PullPush<string, Uint8Array, PullPushNonQueue<s
   private inputBuffer: number[] = []
   private outputBuffer: number[] = []
 
-  constructor(mode?: BaseType)
+  constructor(base?: BaseType)
   constructor(context?: BaseContext)
   constructor(arg?: BaseType | BaseContext) {
     super(new PullPushNonQueue)
@@ -183,13 +183,11 @@ export class BaseDecoder extends PullPush<string, Uint8Array, PullPushNonQueue<s
     for (const s of strarr) {
       for (const c of s) {
         const index = this.context.map.indexOf(c)
-        if (index >= 0) {
-          for (const n of index.toString(2).padStart(this.context.bitLen, "0")) {
-            switch (n) {
-              case "0": this.inputBuffer.push(0); break;
-              case "1": this.inputBuffer.push(1); break;
-            }
-          }
+        if (index < 0) {
+          throw new Error(`Invalid character '${c}'`)
+        }
+        for (const n of index.toString(2).padStart(this.context.bitLen, "0")) {
+          this.inputBuffer.push(n === "0" ? 0 : 1)
         }
       }
     }
