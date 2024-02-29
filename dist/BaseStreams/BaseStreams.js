@@ -32,20 +32,20 @@ function createContext(base) {
   switch (base) {
     case "base16":
       context.map = MAP_BASE16;
-      context.bitLen = 4;
-      context.padLen = 1;
+      context.bitSpan = 4;
+      context.blockSize = 1;
       break;
     case "base32":
     case "base32hex":
       context.map = base === "base32hex" ? MAP_BASE32_HEX : MAP_BASE32;
-      context.bitLen = 5;
-      context.padLen = 8;
+      context.bitSpan = 5;
+      context.blockSize = 8;
       break;
     case "base64":
     case "base64url":
       context.map = base === "base64url" ? MAP_BASE64_URL : MAP_BASE64;
-      context.bitLen = 6;
-      context.padLen = 4;
+      context.bitSpan = 6;
+      context.blockSize = 4;
       break;
     default:
       throw new Error("Unsupported");
@@ -89,25 +89,25 @@ class BaseEncoder extends PullPush {
   async *pullpush(data, flush) {
     await this.push(data);
     do {
-      while (this.inputBuffer.length >= this.context.bitLen) {
-        const bits = parseInt(this.inputBuffer.splice(0, this.context.bitLen).join(""), 2);
+      while (this.inputBuffer.length >= this.context.bitSpan) {
+        const bits = parseInt(this.inputBuffer.splice(0, this.context.bitSpan).join(""), 2);
         this.outputBuffer.push(this.context.map[bits]);
       }
-      if (this.outputBuffer.length >= this.context.padLen) {
+      if (this.outputBuffer.length >= this.context.blockSize) {
         const chunk = this.outputBuffer.splice(
           0,
-          this.context.padLen * Math.floor(this.outputBuffer.length / this.context.padLen)
+          this.context.blockSize * Math.floor(this.outputBuffer.length / this.context.blockSize)
         ).join("");
         const next = yield chunk;
         await this.push(next);
       }
       if (flush) {
         if (this.inputBuffer.length > 0) {
-          const bits = parseInt(this.inputBuffer.splice(0, this.context.bitLen).join("").padEnd(this.context.bitLen, "0"), 2);
+          const bits = parseInt(this.inputBuffer.splice(0, this.context.bitSpan).join("").padEnd(this.context.bitSpan, "0"), 2);
           this.outputBuffer.push(this.context.map[bits]);
-          let chunk = this.outputBuffer.splice(0, this.context.padLen).join("");
+          let chunk = this.outputBuffer.splice(0, this.context.blockSize).join("");
           if (this.context.padding) {
-            chunk = chunk.padEnd(this.context.padLen, this.context.paddingChar);
+            chunk = chunk.padEnd(this.context.blockSize, this.context.paddingChar);
           }
           const next = yield chunk;
           await this.push(next);
@@ -148,7 +148,7 @@ class BaseDecoder extends PullPush {
         if (index < 0) {
           throw new Error(`Invalid character '${c}'`);
         }
-        for (const n of index.toString(2).padStart(this.context.bitLen, "0")) {
+        for (const n of index.toString(2).padStart(this.context.bitSpan, "0")) {
           this.inputBuffer.push(n === "0" ? 0 : 1);
         }
       }
