@@ -1,17 +1,19 @@
 import { BaseDecoder, BaseEncoder } from "./BaseStreams.js";
 import { Utf8DecoderStream, Utf8EncoderStream } from "../Utf8Streams/Utf8Streams.js";
-const source = (data2) => new ReadableStream({
+import { PerformanceStreamBuilder } from "../PerformanceStream/PerformanceStream.js";
+import { sleep } from "../funcs/sleep/sleep.js";
+const textSource = (data) => new ReadableStream({
   start(controller) {
-    for (const d of data2) {
+    for (const d of data) {
       controller.enqueue(d);
     }
     controller.close();
   }
 });
-const logging = (prefix) => new TransformStream({
-  transform(chunk, controller) {
-    console.log(prefix, JSON.stringify(chunk));
-    controller.enqueue(chunk);
+const binarySource = (data) => new ReadableStream({
+  start(controller) {
+    controller.enqueue(data);
+    controller.close();
   }
 });
 const peek = (result) => new TransformStream({
@@ -22,17 +24,21 @@ const peek = (result) => new TransformStream({
 });
 const terminate = (result) => new WritableStream({
   write(chunk) {
-    result.decoded += chunk;
+    if (typeof result.decoded === "string") {
+      result.decoded += chunk;
+    } else {
+      result.decoded = result.decoded.concat([...chunk]);
+    }
   }
 });
-const test = async (mode) => {
-  console.group("Testing:", mode);
+const testText = async (mode, data) => {
+  console.group("Testing(text):", mode);
   console.groupCollapsed("Debug info");
   const result = {
     encoded: "",
     decoded: ""
   };
-  await source(data).pipeThrough(logging("Source :")).pipeThrough(new Utf8EncoderStream()).pipeThrough(new BaseEncoder(mode).transformable()).pipeThrough(logging("Encoded:")).pipeThrough(peek(result)).pipeThrough(new BaseDecoder(mode).transformable()).pipeThrough(new Utf8DecoderStream()).pipeThrough(logging("Decoded:")).pipeTo(terminate(result));
+  await textSource(data).pipeThrough(new Utf8EncoderStream()).pipeThrough(new BaseEncoder(mode).transformable()).pipeThrough(peek(result)).pipeThrough(new BaseDecoder(mode).transformable()).pipeThrough(new Utf8DecoderStream()).pipeTo(terminate(result));
   console.groupEnd();
   console.log("source:", data.join(""), "(", data.join("").length, ")");
   console.log(`${mode}:`, result.encoded, "(", result.encoded.length, ")");
@@ -52,6 +58,39 @@ const test = async (mode) => {
   );
   console.groupEnd();
 };
+const testBinary = async (mode, data) => {
+  console.group("Testing(binary):", mode);
+  const result = {
+    encoded: "",
+    decoded: []
+  };
+  const encodePerf = new PerformanceStreamBuilder("encode_perf", "encode_start", "encode_end");
+  const decodePerf = new PerformanceStreamBuilder("decode_perf", "decode_start", "decode_end");
+  await binarySource(data).pipeThrough(encodePerf.pipe(new BaseEncoder(mode).transformable()).build()).pipeThrough(peek(result)).pipeThrough(decodePerf.pipe(new BaseDecoder(mode).transformable()).build()).pipeTo(terminate(result));
+  console.log("source:", "(", data.byteLength, ")");
+  console.log(`${mode}:`, "(", result.encoded.length, ")");
+  console.log("decoded:", "(", result.decoded.length, ")");
+  console.assert(
+    result.decoded.every((x, i) => x === data[i]),
+    "data=[",
+    data,
+    "](",
+    data.byteLength,
+    ")",
+    "result=[",
+    result.decoded,
+    "](",
+    result.decoded.length,
+    "),"
+  );
+  console.group("Encode performance");
+  console.table(encodePerf.result());
+  console.groupEnd();
+  console.group("Decode performance");
+  console.table(decodePerf.result());
+  console.groupEnd();
+  console.groupEnd();
+};
 const modes = [
   "base16",
   "base32",
@@ -59,11 +98,18 @@ const modes = [
   "base64",
   "base64url"
 ];
-const data = [
+const stringData = [
   "Hello, World."
 ];
+const binaryData = new Uint8Array(8192);
+for (let i = 0; i < binaryData.byteLength; ++i) {
+  binaryData[i] = Math.random() * 256;
+}
 for (const mode of modes) {
-  await test(mode);
+  await testText(mode, stringData);
+  await sleep();
+  await testBinary(mode, binaryData);
+  await sleep();
 }
 console.log("Test completed.");
 //# sourceMappingURL=test.js.map

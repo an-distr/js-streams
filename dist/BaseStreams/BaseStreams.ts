@@ -93,7 +93,18 @@ export class BaseEncoder extends PullPush<ArrayBufferLike | ArrayLike<number>, s
   }
 
   override async push(data?: PullPushTypes<ArrayBufferLike | ArrayLike<number>>) {
-    const bytes = !data ? [] : [...data as any as Iterable<number>]
+    if (!data) {
+      return
+    }
+
+    let bytes: number[]
+    if (Array.isArray(data)) {
+      bytes = data
+    }
+    else {
+      bytes = Array.from(new Uint8Array(data as ArrayBufferLike))
+    }
+
     for (const b of bytes) {
       for (const n of b.toString(2).padStart(this.context.bitsPerByte, "0")) {
         this.inputBuffer.push(n === "0" ? 0 : 1)
@@ -150,7 +161,18 @@ export class BaseDecoder extends PullPush<string, Uint8Array, PullPushNonQueue<s
   }
 
   override async push(data?: PullPushTypes<string>) {
-    const strarr = !data ? [] : [...data as any as Iterable<string>]
+    if (!data) {
+      return
+    }
+
+    let strarr: string[]
+    if (Array.isArray(data)) {
+      strarr = data
+    }
+    else {
+      strarr = Array.from(data as Iterable<string>)
+    }
+
     for (const s of strarr) {
       for (const c of s) {
         const index = this.context.map.indexOf(c)

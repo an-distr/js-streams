@@ -62,7 +62,15 @@ class BaseEncoder extends PullPush {
     }
   }
   async push(data) {
-    const bytes = !data ? [] : [...data];
+    if (!data) {
+      return;
+    }
+    let bytes;
+    if (Array.isArray(data)) {
+      bytes = data;
+    } else {
+      bytes = Array.from(new Uint8Array(data));
+    }
     for (const b of bytes) {
       for (const n of b.toString(2).padStart(this.context.bitsPerByte, "0")) {
         this.inputBuffer.push(n === "0" ? 0 : 1);
@@ -105,7 +113,15 @@ class BaseDecoder extends PullPush {
     }
   }
   async push(data) {
-    const strarr = !data ? [] : [...data];
+    if (!data) {
+      return;
+    }
+    let strarr;
+    if (Array.isArray(data)) {
+      strarr = data;
+    } else {
+      strarr = Array.from(data);
+    }
     for (const s of strarr) {
       for (const c of s) {
         const index = this.context.map.indexOf(c);
