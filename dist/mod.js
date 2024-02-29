@@ -19,7 +19,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 export * from "./ArrayAccumulator/ArrayAccumulator.js";
 export * from "./ArrayBufferAccumulator/ArrayBufferAccumulator.js";
 export * from "./AssertStream/AssertStream.js";
-export * from "./Base64Streams/Base64Streams.js";
+export * from "./BaseStreams/BaseStreams.js";
 export * from "./CombinedTransformStream/CombinedTransformStream.js";
 export * from "./CsvDeserializer/CsvDeserializer.js";
 export * from "./CsvSerializer/CsvSerializer.js";

@@ -20,7 +20,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 export * from "./ArrayAccumulator/ArrayAccumulator.ts"
 export * from "./ArrayBufferAccumulator/ArrayBufferAccumulator.ts"
 export * from "./AssertStream/AssertStream.ts"
-export * from "./Base64Streams/Base64Streams.ts"
+export * from "./BaseStreams/BaseStreams.ts"
 export * from "./CombinedTransformStream/CombinedTransformStream.ts"
 export * from "./CsvDeserializer/CsvDeserializer.ts"
 export * from "./CsvSerializer/CsvSerializer.ts"

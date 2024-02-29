@@ -2,116 +2,116 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://an-js-streams.pages.dev/</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <priority>1.0</priority>
     <changefreq>never</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/DownloadStream</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/demo/CsvToJson</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <priority>0.9</priority>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/demo/CsvViewer</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <priority>0.9</priority>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/demo/JsonToCsv</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <priority>0.9</priority>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/misc/DomConsole</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/mod#ArrayAccumulator</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/mod#ArrayBufferAccumulator</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/mod#AssertStream</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
-    <loc>https://an-js-streams.pages.dev/mod#Base64Streams</loc>
-    <lastmod>2024-02-28</lastmod>
+    <loc>https://an-js-streams.pages.dev/mod#BaseStreams</loc>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/mod#CombinedTransformStream</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/mod#CsvDeserializer</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/mod#CsvSerializer</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/mod#Flattener</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/mod#JsonDeserializer</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/mod#JsonSerializer</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/mod#PeekStream</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/mod#PerformanceStream</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/mod#Utf8Streams</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/mod#funcs/sleep</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/mod#misc/Environment</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
   <url>
     <loc>https://an-js-streams.pages.dev/mod#polyfill/ReadableStream.asyncIterator</loc>
-    <lastmod>2024-02-28</lastmod>
+    <lastmod>2024-02-29</lastmod>
     <changefreq>always</changefreq>
   </url>
 </urlset>
