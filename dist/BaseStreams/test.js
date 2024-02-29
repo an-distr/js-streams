@@ -10,9 +10,11 @@ const textSource = (data) => new ReadableStream({
     controller.close();
   }
 });
-const binarySource = (data) => new ReadableStream({
+const binarySource = (data, repeat) => new ReadableStream({
   start(controller) {
-    controller.enqueue(data);
+    for (let i = 0; i < repeat; ++i) {
+      controller.enqueue(data);
+    }
     controller.close();
   }
 });
@@ -56,15 +58,20 @@ const testText = async (mode, data) => {
   );
   console.groupEnd();
 };
-const testBinary = async (mode, data) => {
-  console.group("Testing(binary):", mode);
+const testBinary = async (mode, data, repeat) => {
+  console.group("Testing(binary):", mode, ", repeat=", repeat);
   const result = {
     encoded: "",
     decoded: []
   };
   const encodePerf = new PerformanceStreamBuilder("encode_perf", "encode_start", "encode_end");
   const decodePerf = new PerformanceStreamBuilder("decode_perf", "decode_start", "decode_end");
-  await binarySource(data).pipeThrough(encodePerf.pipe(new BaseEncoder(mode).transformable()).build()).pipeThrough(peek(result)).pipeThrough(decodePerf.pipe(new BaseDecoder(mode).transformable()).build()).pipeTo(terminate(result));
+  await binarySource(data, repeat).pipeThrough(encodePerf.pipe(new BaseEncoder(mode).transformable()).build()).pipeThrough(peek(result)).pipeThrough(decodePerf.pipe(new BaseDecoder(mode).transformable()).build()).pipeTo(terminate(result));
+  let arr = [];
+  for (let i = 0; i < repeat; ++i) {
+    arr = arr.concat([...data]);
+  }
+  data = new Uint8Array(arr);
   console.log("source:", "(", data.byteLength, ")");
   console.log(`${mode}:`, "(", result.encoded.length, ")");
   console.log("decoded:", "(", result.decoded.length, ")");
@@ -89,15 +96,15 @@ const testBinary = async (mode, data) => {
   console.groupEnd();
   console.groupEnd();
 };
-const testBuiltinBase64 = async (data) => {
-  console.group("Testing(Builtin base64):");
+const testBuiltinBase64 = async (data, repeat) => {
+  console.group("Testing(Builtin base64):", ", repeat=", repeat);
   const result = {
     encoded: "",
     decoded: []
   };
   const encodePerf = new PerformanceStreamBuilder("encode_perf", "encode_start", "encode_end");
   const decodePerf = new PerformanceStreamBuilder("decode_perf", "decode_start", "decode_end");
-  await binarySource(data).pipeThrough(new TransformStream({
+  await binarySource(data, repeat).pipeThrough(new TransformStream({
     transform(chunk, controller) {
       let s = "";
       for (let i = 0; i < chunk.byteLength; ++i) {
@@ -122,6 +129,11 @@ const testBuiltinBase64 = async (data) => {
       controller.enqueue(new Uint8Array(buffer));
     }
   })).pipeTo(terminate(result));
+  let arr = [];
+  for (let i = 0; i < repeat; ++i) {
+    arr = arr.concat([...data]);
+  }
+  data = new Uint8Array(arr);
   console.log("source:", "(", data.byteLength, ")");
   console.log("base64(builtin):", "(", result.encoded.length, ")");
   console.log("decoded:", "(", result.decoded.length, ")");
@@ -156,16 +168,16 @@ const modes = [
 const stringData = [
   "Hello, World."
 ];
-const binaryData = new Uint8Array(8192 + 3);
+const binaryData = new Uint8Array(8192);
 for (let i = 0; i < binaryData.byteLength; ++i) {
   binaryData[i] = Math.random() * 255;
 }
 for (const mode of modes) {
   await testText(mode, stringData);
   await sleep();
-  await testBinary(mode, binaryData);
+  await testBinary(mode, binaryData, 3);
   await sleep();
 }
-await testBuiltinBase64(binaryData);
+await testBuiltinBase64(binaryData, 3);
 console.log("Test completed.");
 //# sourceMappingURL=test.js.map

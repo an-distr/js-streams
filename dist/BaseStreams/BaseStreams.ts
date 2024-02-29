@@ -38,11 +38,13 @@ export interface BaseContext {
   map: string
   bitLen: number
   padLen: number
+  padding: boolean
 }
 
 function createContext(mode?: BaseType) {
   const context = {} as BaseContext
   context.bitsPerByte = 8
+  context.padding = true
 
   mode ??= "base64"
   mode = mode.toLowerCase()
@@ -134,7 +136,9 @@ export class BaseEncoder extends PullPush<ArrayBufferLike | ArrayLike<number>, s
           const bits = parseInt(this.inputBuffer.splice(0, this.context.bitLen).join("").padEnd(this.context.bitLen, "0"), 2)
           this.outputBuffer.push(this.context.map[bits])
           let chunk = this.outputBuffer.splice(0, this.context.padLen).join("")
-          chunk = chunk.padEnd(this.context.padLen, "=")
+          if (this.context.padding) {
+            chunk = chunk.padEnd(this.context.padLen, "=")
+          }
           const next: PullPushTypes<ArrayBufferLike | ArrayLike<number>> = yield chunk
           await this.push(next)
         }

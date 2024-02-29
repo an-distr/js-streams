@@ -25,6 +25,7 @@ const MAP_BASE64_URL = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123
 function createContext(mode) {
   const context = {};
   context.bitsPerByte = 8;
+  context.padding = true;
   mode ??= "base64";
   mode = mode.toLowerCase();
   switch (mode) {
@@ -97,7 +98,9 @@ class BaseEncoder extends PullPush {
           const bits = parseInt(this.inputBuffer.splice(0, this.context.bitLen).join("").padEnd(this.context.bitLen, "0"), 2);
           this.outputBuffer.push(this.context.map[bits]);
           let chunk = this.outputBuffer.splice(0, this.context.padLen).join("");
-          chunk = chunk.padEnd(this.context.padLen, "=");
+          if (this.context.padding) {
+            chunk = chunk.padEnd(this.context.padLen, "=");
+          }
           const next = yield chunk;
           await this.push(next);
         }
