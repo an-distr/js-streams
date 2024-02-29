@@ -89,6 +89,63 @@ const testBinary = async (mode, data) => {
   console.groupEnd();
   console.groupEnd();
 };
+const testBuiltinBase64 = async (data) => {
+  console.group("Testing(Builtin base64):");
+  const result = {
+    encoded: "",
+    decoded: []
+  };
+  const encodePerf = new PerformanceStreamBuilder("encode_perf", "encode_start", "encode_end");
+  const decodePerf = new PerformanceStreamBuilder("decode_perf", "decode_start", "decode_end");
+  await binarySource(data).pipeThrough(new TransformStream({
+    transform(chunk, controller) {
+      let s = "";
+      for (let i = 0; i < chunk.byteLength; ++i) {
+        s += String.fromCharCode(chunk[i]);
+      }
+      controller.enqueue(s);
+    }
+  })).pipeThrough(encodePerf.pipe(new TransformStream({
+    transform(chunk, controller) {
+      controller.enqueue(btoa(chunk));
+    }
+  })).build()).pipeThrough(peek(result)).pipeThrough(decodePerf.pipe(new TransformStream({
+    transform(chunk, controller) {
+      controller.enqueue(atob(chunk));
+    }
+  })).build()).pipeThrough(new TransformStream({
+    transform(chunk, controller) {
+      const buffer = [];
+      for (let i = 0; i < chunk.length; ++i) {
+        buffer.push(chunk[i].charCodeAt(0));
+      }
+      controller.enqueue(new Uint8Array(buffer));
+    }
+  })).pipeTo(terminate(result));
+  console.log("source:", "(", data.byteLength, ")");
+  console.log("base64(builtin):", "(", result.encoded.length, ")");
+  console.log("decoded:", "(", result.decoded.length, ")");
+  console.assert(
+    result.decoded.every((x, i) => x === data[i]),
+    "data=[",
+    data,
+    "](",
+    data.byteLength,
+    ")",
+    "result=[",
+    result.decoded,
+    "](",
+    result.decoded.length,
+    "),"
+  );
+  console.group("Encode performance");
+  console.table(encodePerf.result());
+  console.groupEnd();
+  console.group("Decode performance");
+  console.table(decodePerf.result());
+  console.groupEnd();
+  console.groupEnd();
+};
 const modes = [
   "base16",
   "base32",
@@ -99,9 +156,9 @@ const modes = [
 const stringData = [
   "Hello, World."
 ];
-const binaryData = new Uint8Array(8192);
+const binaryData = new Uint8Array(8192 + 3);
 for (let i = 0; i < binaryData.byteLength; ++i) {
-  binaryData[i] = Math.random() * 256;
+  binaryData[i] = Math.random() * 255;
 }
 for (const mode of modes) {
   await testText(mode, stringData);
@@ -109,5 +166,6 @@ for (const mode of modes) {
   await testBinary(mode, binaryData);
   await sleep();
 }
+await testBuiltinBase64(binaryData);
 console.log("Test completed.");
 //# sourceMappingURL=test.js.map

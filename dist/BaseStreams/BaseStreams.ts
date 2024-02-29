@@ -121,9 +121,11 @@ export class BaseEncoder extends PullPush<ArrayBufferLike | ArrayLike<number>, s
         this.outputBuffer.push(this.context.map[bits])
       }
 
-      while (this.outputBuffer.length >= this.context.padLen) {
-        const next: PullPushTypes<ArrayBufferLike | ArrayLike<number>>
-          = yield this.outputBuffer.splice(0, this.context.padLen).join("")
+      if (this.outputBuffer.length >= this.context.padLen) {
+        const chunk = this.outputBuffer.splice(0,
+          this.context.padLen * Math.floor(this.outputBuffer.length / this.context.padLen))
+          .join("")
+        const next: PullPushTypes<ArrayBufferLike | ArrayLike<number>> = yield chunk
         await this.push(next)
       }
 
@@ -131,8 +133,9 @@ export class BaseEncoder extends PullPush<ArrayBufferLike | ArrayLike<number>, s
         if (this.inputBuffer.length > 0) {
           const bits = parseInt(this.inputBuffer.splice(0, this.context.bitLen).join("").padEnd(this.context.bitLen, "0"), 2)
           this.outputBuffer.push(this.context.map[bits])
-          const next: PullPushTypes<ArrayBufferLike | ArrayLike<number>>
-            = yield this.outputBuffer.splice(0, this.context.padLen).join("").padEnd(this.context.padLen, "=")
+          let chunk = this.outputBuffer.splice(0, this.context.padLen).join("")
+          chunk = chunk.padEnd(this.context.padLen, "=")
+          const next: PullPushTypes<ArrayBufferLike | ArrayLike<number>> = yield chunk
           await this.push(next)
         }
       }
