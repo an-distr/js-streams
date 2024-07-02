@@ -27,30 +27,30 @@ Stream utilities for JavaScript/TypeScript.
 ## Modules
 |Module|Description|
 |-|-|
-|[ArrayAccumulator](dist/ArrayAccumulator/README.md)|Accumulate the stream and emit it at a constant size array.|
-|[ArrayBufferAccumulator](dist/ArrayBufferAccumulator/README.md)|Accumulate the ArrayBuffer stream and emit it at a constant size or condition.|
-|[AssertStream](dist/AssertStream/README.md)|Assert for Stream.|
-|[BaseStreams](dist/BaseStreams/README.md)|Streaming encode/decode for BaseN.|
-|[CombinedTransformStream](dist/CombinedTransformStream/README.md)|Combine multiple TransfromStreams.|
-|[CsvDeserializer](dist/CsvDeserializer/README.md)|Convert the CSV/TSV to a object.|
-|[CsvSerializer](dist/CsvSerializer/README.md)|Convert the object to a CSV/TSV.|
-|[DownloadStream](dist/DownloadStream/README.md)|Download the stream.|
-|[Flattener](dist/Flattener/README.md)|Flatten the array.|
-|[JsonDeserializer](dist/JsonDeserializer/README.md)|Convert the string to a JSON/JSON Lines/JSON with comments array.|
-|[JsonSerializer](dist/JsonSerializer/README.md)|Convert the object to a JSON/JSON Lines string.|
-|[PeekStream](dist/PeekStream/README.md)|Peeking chunk of stream.|
-|[PerformanceStream](dist/PerformanceStream/README.md)|Measure the processing time of the Stream.|
-|[Utf8Streams](dist/Utf8Streams/README.md)|Convert streams and UTF-8 strings to and from each other.|
+|[ArrayAccumulator]dist/ArrayAccumulator/README.md)|Accumulate the stream and emit it at a constant size array.|
+|[ArrayBufferAccumulator]dist/ArrayBufferAccumulator/README.md)|Accumulate the ArrayBuffer stream and emit it at a constant size or condition.|
+|[AssertStream]dist/AssertStream/README.md)|Assert for Stream.|
+|[BaseStreams]dist/BaseStreams/README.md)|Streaming encode/decode for BaseN.|
+|[CombinedTransformStream]dist/CombinedTransformStream/README.md)|Combine multiple TransfromStreams.|
+|[CsvDeserializer]dist/CsvDeserializer/README.md)|Convert the CSV/TSV to a object.|
+|[CsvSerializer]dist/CsvSerializer/README.md)|Convert the object to a CSV/TSV.|
+|[DownloadStream]dist/DownloadStream/README.md)|Download the stream.|
+|[Flattener]dist/Flattener/README.md)|Flatten the array.|
+|[JsonDeserializer]dist/JsonDeserializer/README.md)|Convert the string to a JSON/JSON Lines/JSON with comments array.|
+|[JsonSerializer]dist/JsonSerializer/README.md)|Convert the object to a JSON/JSON Lines string.|
+|[PeekStream]dist/PeekStream/README.md)|Peeking chunk of stream.|
+|[PerformanceStream]dist/PerformanceStream/README.md)|Measure the processing time of the Stream.|
+|[Utf8Streams]dist/Utf8Streams/README.md)|Convert streams and UTF-8 strings to and from each other.|
 
 ## Functions
-* [Functions](dist/funcs/README.md)
+* [Functions]dist/funcs/README.md)
 
 ## Polyfill
-* [Polyfill](dist/polyfill/README.md)
+* [Polyfill]dist/polyfill/README.md)
 
 ## Unrelated
-* [DomConsole](dist/misc/DomConsole/README.md)
-* [Environment](dist/misc/Environment/README.md)
+* [DomConsole]dist/misc/DomConsole/README.md)
+* [Environment]dist/misc/Environment/README.md)
 
 ## Demos and Examples
 * [https://an-js-streams.pages.dev/](https://an-js-streams.pages.dev/)

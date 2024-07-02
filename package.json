@@ -5,7 +5,7 @@
   "description": "Stream utilities for JavaScript/TypeScript.",
   "author": {
     "name": "an",
-    "url": "https://github.com/an-dist/js-streams"
+    "url": "https://github.com/an-distr/js-streams"
   },
   "type": "module",
   "files": [
