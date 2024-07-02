@@ -4,7 +4,7 @@
 Reproduce the output of globalThis.console on HTML.
 
 ## Example
-https://an-js-streams.pages.dev/misc/DomConsole/test
+https://an-js-streams.pages.dev/misc/DomConsole/
 
 ## Usage
 ```html
