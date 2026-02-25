@@ -102,12 +102,10 @@ class DomConsole {
     menu.style.position = "fixed";
     let target;
     owner.addEventListener("contextmenu", (ev) => {
-      if (!ev.target?.parentElement?.classList.contains("console-list-item-group"))
-        return;
+      if (!ev.target?.parentElement?.classList.contains("console-list-item-group")) return;
       ev.preventDefault();
       const menu2 = owner.querySelector(".console-menu");
-      if (!menu2)
-        return;
+      if (!menu2) return;
       menu2.style.left = ev.pageX + "px";
       menu2.style.top = ev.pageY - scrollY + "px";
       menu2.style.display = "block";
@@ -115,8 +113,7 @@ class DomConsole {
     });
     window.addEventListener("click", () => {
       const menu2 = owner.querySelector(".console-menu");
-      if (!menu2)
-        return;
+      if (!menu2) return;
       menu2.style.display = "none";
     });
     const addItem = (text, action) => {
@@ -192,8 +189,7 @@ class DomConsole {
   }
   groupEnd() {
     const This = this.getThis();
-    if (This.parent)
-      This.parent.child = void 0;
+    if (This.parent) This.parent.child = void 0;
     This.redirect?.groupEnd();
   }
   clear() {

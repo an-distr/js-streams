@@ -22,8 +22,7 @@ class CombinedTransformStream {
     const last = transforms.slice(-1)[0];
     let previous = void 0;
     for (const transform of transforms) {
-      if (previous)
-        previous.readable.pipeTo(transform.writable, options);
+      if (previous) previous.readable.pipeTo(transform.writable, options);
       previous = transform;
     }
     this.writable = first.writable;

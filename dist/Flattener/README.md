@@ -1,12 +1,15 @@
 # Flattener
 
 ## Description
+
 Flatten the array.
 
 ## Example
-https://an-js-streams.pages.dev/mod#Flattener
+
+<https://an-js-streams.pages.dev/mod#Flattener>
 
 ## Usage
+
 ```ts
 import { Flattener } from "https://an-js-streams.pages.dev/mod.js" // or .ts
 

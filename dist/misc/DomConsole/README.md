@@ -1,12 +1,15 @@
 # DomConsole
 
 ## Description
+
 Reproduce the output of globalThis.console on HTML.
 
 ## Example
-https://an-js-streams.pages.dev/misc/DomConsole/
+
+<https://an-js-streams.pages.dev/misc/DomConsole/>
 
 ## Usage
+
 ```html
 <!-- Applies a style for the output of the DomConsole. -->
 <link rel="stylesheet" href="https://an-js-streams.pages.dev/misc/DomConsole/DomConsole.css">

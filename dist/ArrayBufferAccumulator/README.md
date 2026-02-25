@@ -1,14 +1,17 @@
 # ArrayBufferAccumulator
 
 ## Description
+
 Accumulate the ArrayBuffer stream and emit it at a constant size or condition.
 
 **If you can set a "[highWaterMark](https://developer.mozilla.org/en-US/docs/Web/API/ByteLengthQueuingStrategy/highWaterMark)" for "[ReadableStream](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)", it is more efficient.**
 
 ## Example
-https://an-js-streams.pages.dev/mod#ArrayBufferAccumulator
+
+<https://an-js-streams.pages.dev/mod#ArrayBufferAccumulator>
 
 ## Usage
+
 ```ts
 import { ArrayBufferAccumulator } from "https://an-js-streams.pages.dev/mod.js" // or .ts
 
@@ -28,8 +31,10 @@ await readable
   .pipeThrough(accumulator.transformable())
   .pipeTo(writable)
 ```
-**Sequence**
-```
+
+### Sequence
+
+```txt
 Readable(chunk: 1100)
   => Accumulator(size: 512)
     => (chunk: 512)

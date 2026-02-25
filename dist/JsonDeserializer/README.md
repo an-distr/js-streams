@@ -1,12 +1,15 @@
 # JsonDeserializer
 
 ## Description
+
 Convert the string to a JSON/JSON Lines/JSON with comments array.
 
 ## Example
-https://an-js-streams.pages.dev/mod#JsonDeserializer
+
+<https://an-js-streams.pages.dev/mod#JsonDeserializer>
 
 ## Usage
+
 ```ts
 import { JsonDeserializer } from "https://an-js-streams.pages.dev/mod.js" // or .ts
 

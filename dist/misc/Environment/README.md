@@ -1,12 +1,15 @@
 # Environment
 
 ## Description
+
 Get environment values.
 
 ## Example
-https://an-js-streams.pages.dev/mod#misc/Environment
+
+<https://an-js-streams.pages.dev/mod#misc/Environment>
 
 ## Usage
+
 ```ts
 import { Environment } from "https://an-js-streams.pages.dev/mod.js" // or .ts
 

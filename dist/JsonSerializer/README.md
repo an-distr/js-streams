@@ -1,12 +1,15 @@
 # JsonSerializer
 
 ## Description
+
 Convert the object to a JSON/JSON Lines string.
 
 ## Example
-https://an-js-streams.pages.dev/mod#JsonSerializer
+
+<https://an-js-streams.pages.dev/mod#JsonSerializer>
 
 ## Usage
+
 ```ts
 import { JsonSerializer } from "https://an-js-streams.pages.dev/mod.js" // or .ts
 

@@ -1,12 +1,15 @@
 # PerformanceStream
 
 ## Description
+
 Measure the processing time of the Stream.
 
 ## Example
-https://an-js-streams.pages.dev/mod#PerformanceStream
+
+<https://an-js-streams.pages.dev/mod#PerformanceStream>
 
 ## Usage
+
 ```ts
 import { PerformanceStream } from "https://an-js-streams.pages.dev/mod.js" // or .ts
 

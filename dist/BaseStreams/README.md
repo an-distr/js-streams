@@ -1,12 +1,15 @@
 # BaseStreams
 
 ## Description
+
 Streaming encode/decode for BaseN.
 
 ## Example
-https://an-js-streams.pages.dev/mod#BaseStreams
+
+<https://an-js-streams.pages.dev/mod#BaseStreams>
 
 ## Usage
+
 ```ts
 import { BaseEncoder, BaseDecoder } from "https://an-js-streams.pages.dev/mod.js" // or .ts
 

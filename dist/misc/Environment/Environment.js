@@ -118,22 +118,18 @@ class Environment {
     });
   }
   static runtime() {
-    if (this.hasBunApi() || this.hasDenoApi() || this.hasNodeApi())
-      return "Server";
-    else if (this.hasBrowserApi())
-      return "Browser";
+    if (this.hasBunApi() || this.hasDenoApi() || this.hasNodeApi()) return "Server";
+    else if (this.hasBrowserApi()) return "Browser";
     return "Unknown";
   }
   static async brand() {
     const brands = await this.getBrands();
-    if (brands.length > 0)
-      return brands[0].brand;
+    if (brands.length > 0) return brands[0].brand;
     return "Unknown";
   }
   static async version() {
     const brands = await this.getBrands();
-    if (brands.length > 0)
-      return brands[0].version;
+    if (brands.length > 0) return brands[0].version;
     return "Unknown";
   }
 }

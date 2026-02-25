@@ -23,8 +23,7 @@ await test([1, 2, 3, 4, 5]);
 await test(["a", "b", "c", "d", "e"]);
 await test([1, void 0, null, "a", 0.1]);
 const big = [];
-for (let i = 0; i < 1e5; ++i)
-  big.push(i);
+for (let i = 0; i < 1e5; ++i) big.push(i);
 await test(big);
 console.log("Test completed.");
 //# sourceMappingURL=test.js.map

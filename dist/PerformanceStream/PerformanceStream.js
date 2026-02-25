@@ -65,8 +65,7 @@ class PerformanceStreamBuilder {
     };
   }
   result() {
-    if (!this.entries || this.entries.length === 0)
-      return void 0;
+    if (!this.entries || this.entries.length === 0) return void 0;
     const durations = this.entries.map((e) => e.duration);
     if (durations.length === 0) {
       return {
@@ -133,8 +132,7 @@ class SimplePerformanceStreamBuilder {
     };
   }
   result() {
-    if (!this.durations || this.durations.length === 0)
-      return void 0;
+    if (!this.durations || this.durations.length === 0) return void 0;
     if (this.durations.length === 0) {
       return {
         transforming: 0,

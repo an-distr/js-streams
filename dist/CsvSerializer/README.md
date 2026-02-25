@@ -1,12 +1,15 @@
 # CsvSerializer
 
 ## Description
+
 Convert the object to a CSV/TSV.
 
 ## Example
-https://an-js-streams.pages.dev/mod#CsvSerializer
+
+<https://an-js-streams.pages.dev/mod#CsvSerializer>
 
 ## Usage
+
 ```ts
 import { CsvSerializer } from "https://an-js-streams.pages.dev/mod.js" // or .ts
 

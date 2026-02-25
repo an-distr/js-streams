@@ -1,6 +1,6 @@
 async function instantiate(module, imports = {}) {
   const adaptedImports = {
-    env: Object.assign(Object.create(globalThis), imports.env || {}, {
+    env: Object.setPrototypeOf({
       abort(message, fileName, lineNumber, columnNumber) {
         // ~lib/builtins/abort(~lib/string/String | null?, ~lib/string/String | null?, u32?, u32?) => void
         message = __liftString(message >>> 0);
@@ -12,7 +12,7 @@ async function instantiate(module, imports = {}) {
           throw Error(`${message} in ${fileName}:${lineNumber}:${columnNumber}`);
         })();
       },
-    }),
+    }, Object.assign(Object.create(globalThis), imports.env || {})),
   };
   const { exports } = await WebAssembly.instantiate(module, adaptedImports);
   const memory = exports.memory || imports.env.memory;
@@ -87,8 +87,9 @@ export const {
   indexOfLastSeparator_json,
 } = await (async url => instantiate(
   await (async () => {
-    try { return await globalThis.WebAssembly.compileStreaming(globalThis.fetch(url)); }
-    catch { return globalThis.WebAssembly.compile(await (await import("node:fs/promises")).readFile(url)); }
+    const isNodeOrBun = typeof process != "undefined" && process.versions != null && (process.versions.node != null || process.versions.bun != null);
+    if (isNodeOrBun) { return globalThis.WebAssembly.compile(await (await import("node:fs/promises")).readFile(url)); }
+    else { return await globalThis.WebAssembly.compileStreaming(globalThis.fetch(url)); }
   })(), {
   }
 ))(new URL("JsonDeserializerNative.wasm", import.meta.url));

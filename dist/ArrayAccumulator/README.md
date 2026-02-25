@@ -1,12 +1,15 @@
 # ArrayAccumulator
 
 ## Description
+
 Accumulate the array and emit it at a constant size array.
 
 ## Example
-https://an-js-streams.pages.dev/mod#ArrayAccumulator
+
+<https://an-js-streams.pages.dev/mod#ArrayAccumulator>
 
 ## Usage
+
 ```ts
 import { ArrayAccumulator } from "https://an-js-streams.pages.dev/mod.js" // or .ts
 

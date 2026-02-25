@@ -1,10 +1,10 @@
 @echo off
 
-npm install -D esbuild
-npm install -D jsdom
-npm install -D @types/jsdom
-npm install -D fast-glob
-npm install -D @clack/prompts
+pnpm install -D esbuild
+pnpm install -D jsdom
+pnpm install -D @types/jsdom
+pnpm install -D fast-glob
+pnpm install -D @clack/prompts
 
-npm install -D wrangler
-npm install -D @cloudflare/workers-types
+pnpm install -D wrangler
+pnpm install -D @cloudflare/workers-types

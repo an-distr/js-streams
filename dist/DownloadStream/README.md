@@ -1,16 +1,20 @@
 # DownloadStream
 
 ## Description
+
 Download the stream.
 
 ## Example
-https://an-js-streams.pages.dev/DownloadStream/test
+
+<https://an-js-streams.pages.dev/DownloadStream/test>
 
 ## Compatibility
+
 * \>= ECMAScript2018
 * **It only works with WebBrowser.**
 
 ## Usage
+
 ```ts
 import { DownloadStream } from "https://an-js-streams.pages.dev/web.js" // or .ts
 

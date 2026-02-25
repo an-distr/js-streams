@@ -3,8 +3,8 @@
   "tasks": {
     "build": "deno run --allow-all build.ts",
     "build-sitemap": "deno run --allow-all build_sitemap.ts",
-    "test-web": "npx wrangler pages dev --local-protocol=https dist",
-    "test-node": "node --experimental-default-type=module test_runner.js",
+    "test-web": "pnpm wrangler pages dev --local-protocol=https dist",
+    "test-node": "node test_runner.js",
     "test-deno": "deno run --allow-all test_runner.ts",
     "test-bun": "bun test_runner.ts"
   }

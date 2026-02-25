@@ -1,12 +1,15 @@
 # CombinedTransformStream
 
 ## Description
+
 Combine multiple TransfromStreams.
 
 ## Example
-https://an-js-streams.pages.dev/mod#CombinedTransformStream
+
+<https://an-js-streams.pages.dev/mod#CombinedTransformStream>
 
 ## Usage
+
 ```ts
 import { CombinedTransformStream } from "https://an-js-streams.pages.dev/mod.js" // or .ts
 

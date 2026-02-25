@@ -1,12 +1,15 @@
 # AssertStream
 
 ## Description
+
 Assert for Stream.
 
 ## Example
-https://an-js-streams.pages.dev/mod#AssertStream
+
+<https://an-js-streams.pages.dev/mod#AssertStream>
 
 ## Usage
+
 ```ts
 import { AssertStream } from "https://an-js-streams.pages.dev/mod.js" // or .ts
 
